@@ -1,0 +1,13 @@
+<?php
+defined( 'ABSPATH' ) or die( 'Cheatin\' uh?' );
+
+$rocket_cookie_hash = '54abeef9edc4c83bfb7252fb760ace96';
+$rocket_secret_cache_key = '58a5642e036dc017284547';
+$rocket_cache_reject_uri = '.*/feed/?|/wp-json/(.*)';
+$rocket_cache_reject_cookies = 'wordpress_logged_in_|wp-postpass_|wptouch_switch_toggle|comment_author_|comment_author_email_';
+$rocket_cache_query_strings = array (
+);
+$rocket_cache_reject_ua = 'facebookexternalhit';
+$rocket_cache_mandatory_cookies = '';
+$rocket_cache_dynamic_cookies = array (
+);
