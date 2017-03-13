@@ -5,8 +5,8 @@ sudo apt upgrade
 # TODO Set debian noninteractive package management
 
 # setup TPB admin and kiosk users
-admin_user_exists=$(id -u tpb > /dev/null 2>&1; echo $?)
-if !${admin_user_exists};
+admin_user_not_exists=$(id -u tpb > /dev/null 2>&1; echo $?)
+if ${admin_user_not_exists};
     then
         echo "creating admin user"
         sudo adduser "tpb" --gecos ""
@@ -16,8 +16,8 @@ if !${admin_user_exists};
         echo "admin user already exists"
 fi
 
-kiosk_user_exists=$(id -u kiosk > /dev/null 2>&1; echo $?)
-if !${kiosk_user_exists};
+kiosk_user_not_exists=$(id -u kiosk > /dev/null 2>&1; echo $?)
+if ${kiosk_user_not_exists};
     then
         echo "creating kiosk user"
         sudo adduser --disabled-password --gecos "" "kiosk"
@@ -29,7 +29,7 @@ sudo apt install apache2
 
 # copy apache config into place
 sudo mv /etc/apache2/apache2.conf /etc/apache2/apache2.conf.old
-sudo mv ./config/apache2.conf /etc/apache2/apache2.conf
+sudo cp ./config/apache2.conf /etc/apache2/apache2.conf
 sudo systemctl restart apache2
 
 # enable rewrite for wordpress
@@ -63,9 +63,10 @@ mv ./latestbuild/sql/tpb_waaark_dev.sql ~/tpb_import.sql
 mysql < ~/tpb_import.sql
 
 # move WP files to apache serving directory
-mv ./latestbuild/www/ /var/www
+sudo cp -r ./latestbuild/www/ /var/
 
 # install browser for kiosk and other useful things
-sudo apt-install chromium-browser unclutter xdotool
+sudo apt install chromium-browser unclutter xdotool
 
 # add TPB kiosk launch task
+# todo: configure launch user profile stuff
