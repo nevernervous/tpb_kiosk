@@ -39,6 +39,7 @@ sudo systemctl restart apache2
 
 # enable rewrite for wordpress
 sudo a2enmod rewrite
+sudo service apache reload
 
 # modify firewall to allow traffic thru Apache on 80 and 443 (todo: is this necessary?)
 # sudo ufw allow in "Apache Full"
@@ -52,11 +53,6 @@ sudo mysql -u root mysql < ./config/mysql-setup.sql
 # substitute staging host for localhost where found in sql dump
 sed -ie 's/tpb.waaark.dev/the.peak.beyond/g' /tmp/tpb/latestbuild/sql/tpb_waaark_dev.sql
 mysql -u tpb --password='tpb2017' the_peak_beyond < /tmp/tpb/latestbuild/sql/tpb_waaark_dev.sql
-
-# configure MySQL
-sudo chown -R tpb:www-data /var/www/html
-sudo find /var/www/html -type d -exec chmod g+s {} \;
-sudo chmod g+w /var/www/html/wp-content
 
 # set up host to be 'the.peak.beyond' cause that's easy and kinda neat
 sudo sed -i "2 a 127.0.1.11    the.peak.beyond" /etc/hosts
@@ -78,14 +74,22 @@ sudo cp ./config/apache/apache2.conf /etc/apache2/apache2.conf
 # move WP files to apache serving directory
 sudo cp -r /tmp/tpb/latestbuild/www/ /var/www/html
 
+# move .htaccess to apache dir
+sudo cp ./config/.htaccess /var/www/html
+
 # modify configuration WP configuration
 sed -ie "s/define('DB_USER', 'root');/define('DB_USER', 'tpb');/g" /var/www/html/wp-config.php
 sed -ie "s/define('DB_PASSWORD', '');/define('DB_PASSWORD', 'tpb2017');/g" /var/www/html/wp-config.php
 
+# configure MySQL permissions
+sudo chown -R tpb:www-data /var/www/html
+sudo find /var/www/html -type d -exec chmod g+s {} \;
+sudo chmod g+w /var/www/html/wp-content
+
 # install browser for kiosk and other useful things
 sudo apt install -y -q chromium-browser unclutter xdotool
 
-# set up thermal printer
+## set up thermal printer
 
 # needs java runtime
 sudo apt-get -y -q install default-jre
