@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
-sudo apt update
-sudo apt upgrade
 
-# TODO Set debian noninteractive package management
+# Don't prompt for input from user during package installations
 export DEBIAN_FRONTEND=noninteractive;
+
+sudo apt update -y -q
+sudo apt upgrade -y -q
 
 # setup TPB admin and kiosk users
 admin_user_not_exists=$(id -u tpb > /dev/null 2>&1; echo $?)
@@ -26,7 +27,7 @@ if ${kiosk_user_not_exists};
         echo "kiosk user already exists"
 fi
 # install Apache
-sudo apt install apache2
+sudo apt-get install -y -q apache2
 
 # copy apache config into place
 sudo mv /etc/apache2/apache2.conf /etc/apache2/apache2.conf.old
@@ -40,7 +41,7 @@ sudo a2enmod rewrite
 # sudo ufw allow in "Apache Full"
 
 # install MySQL
-sudo apt-get install mysql-server
+sudo apt-get install -y -q mysql-server
 # todo: secure settings for the MySQL DB should be determined and set up here
 mysql -u root -e 'CREATE DATABASE the_peak_beyond;'
 
@@ -60,7 +61,7 @@ sudo chmod g+w /var/www/html/wp-content
 sudo sed -i "2 a 127.0.1.11    the.peak.beyond" /etc/hosts
 
 # install php
-sudo apt-get install php phpmyadmin libapache2-mod-php php-mcrypt php-mysql php-curl php-gd php-mbstring php-gettext php-xml php-xmlrpc
+sudo apt-get install -y -q php phpmyadmin libapache2-mod-php php-mcrypt php-mysql php-curl php-gd php-mbstring php-gettext php-xml php-xmlrpc
 sudo phpenmod mcrypt
 sudo phpenmod mbstring
 sudo systemctl restart apache2
@@ -82,19 +83,10 @@ sudo cp -r ~/latestbuild/www/* /var/www/html
 # sed -ie "s/define('DB_PASSWORD', '');/define('DB_PASSWORD', 'tpbDB2017');/g" /var/www/html/wp-config.php
 
 
-# install teamViewer
-wget https://download.teamviewer.com/download/teamviewer_i386.deb -O ~/teamviewer.deb
-sudo apt install ~/teamviewer.deb
-
-# update TeamViewer startup config to wait for network to boot
-sed -i "4 a After=time-sync.target" /etc/systemd/system/teamviewerd.service
-sed -i "4 a After=network-online.target" /etc/systemd/system/teamviewerd.service;
-sudo service teamviewerd reload
-sudo service teamviewerd restart
 
 
 # install browser for kiosk and other useful things
-sudo apt install chromium-browser unclutter xdotool
+sudo apt install -y -q chromium-browser unclutter xdotool
 
 # set up thermal printer
 
@@ -103,3 +95,13 @@ sudo apt-get install default-jre
 
 # add TPB kiosk launch task
 # todo: configure launch user profile stuff
+
+# install teamViewer
+wget https://download.teamviewer.com/download/teamviewer_i386.deb -O ~/teamviewer.deb
+sudo apt install -y -q ~/teamviewer.deb
+
+# update TeamViewer startup config to wait for network to boot
+sed -i "4 a After=time-sync.target" /etc/systemd/system/teamviewerd.service
+sed -i "4 a After=network-online.target" /etc/systemd/system/teamviewerd.service;
+sudo service teamviewerd reload
+sudo service teamviewerd restart
