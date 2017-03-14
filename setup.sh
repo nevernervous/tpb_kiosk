@@ -3,6 +3,9 @@
 # Don't prompt for input from user during package installations
 export DEBIAN_FRONTEND=noninteractive;
 
+# move build files to disk
+unzip -o ./tpb/latestbuild.zip -d /tmp/tpb/
+
 sudo apt update -y -q
 sudo apt upgrade -y -q
 
@@ -31,7 +34,7 @@ sudo apt-get install -y -q apache2
 
 # copy apache config into place
 sudo mv /etc/apache2/apache2.conf /etc/apache2/apache2.conf.old
-sudo cp ./config/apache/apache2.conf /etc/apache2/apache2.conf
+sudo cp ./apache/apache2.conf /etc/apache2/apache2.conf
 sudo systemctl restart apache2
 
 # enable rewrite for wordpress
@@ -42,14 +45,13 @@ sudo a2enmod rewrite
 
 # install MySQL
 sudo -E apt-get -q -y install mysql-server
+#todo: secure settings for the MySQL DB should be determined and set up here
 sudo mysql -u root mysql < ./config/mysql-setup.sql
 
 # copy source DB
-unzip ./latestbuild.zip ~
-
 # substitute staging host for localhost where found in sql dump
-sed -ie 's/tpb.waaark.dev/the.peak.beyond/g' ~/latestbuild/sql/tpb_waaark_dev.sql
-mysql < ~/latestbuild/sql/tpb_waaark_dev.sql
+sed -ie 's/tpb.waaark.dev/the.peak.beyond/g' /tmp/tpb/latestbuild/sql/tpb_waaark_dev.sql
+mysql < /tmp/tpb/latestbuild/sql/tpb_waaark_dev.sql
 
 # configure MySQL
 sudo chown -R tpb:www-data /var/www/html
@@ -74,7 +76,7 @@ sudo mv /etc/apache2/apache2.conf /etc/apache2/apache2.conf.original
 sudo cp ./config/apache/apache2.conf /etc/apache2/apache2.conf
 
 # move WP files to apache serving directory
-sudo cp -r ~/latestbuild/www/* /var/www/html
+sudo cp -r /tmp/tpb/latestbuild/www/* /var/www/html
 
 # modify configuration WP configuration
 # not using this now because we're still running as the root user
@@ -87,14 +89,14 @@ sudo apt install -y -q chromium-browser unclutter xdotool
 # set up thermal printer
 
 # needs java runtime
-sudo apt-get install default-jre
+sudo apt-get -y -q install default-jre
 
 # add TPB kiosk launch task
 # todo: configure launch user profile stuff
 
 # install teamViewer
-wget https://download.teamviewer.com/download/teamviewer_i386.deb -O ~/teamviewer.deb
-sudo -E apt-get -q -y install ~/teamviewer.deb
+wget https://download.teamviewer.com/download/teamviewer_i386.deb -O /tmp/tpb/teamviewer.deb
+sudo -E apt-get -q -y install /tmp/tpb/teamviewer.deb
 
 # update TeamViewer startup config to wait for network to boot
 sed -i "4 a After=time-sync.target" /etc/systemd/system/teamviewerd.service
