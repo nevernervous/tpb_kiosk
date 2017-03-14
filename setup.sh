@@ -31,7 +31,7 @@ sudo apt-get install -y -q apache2
 
 # copy apache config into place
 sudo mv /etc/apache2/apache2.conf /etc/apache2/apache2.conf.old
-sudo cp ./config/apache2.conf /etc/apache2/apache2.conf
+sudo cp ./config/apache/apache2.conf /etc/apache2/apache2.conf
 sudo systemctl restart apache2
 
 # enable rewrite for wordpress
