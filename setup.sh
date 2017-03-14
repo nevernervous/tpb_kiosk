@@ -41,7 +41,8 @@ sudo a2enmod rewrite
 
 # install MySQL
 sudo apt-get install mysql-server
-sudo mysql_secure_installation
+# todo: secure settings for the MySQL DB should be determined and set up here
+mysql -u root -e 'CREATE DATABASE the_peak_beyond;'
 
 # copy source DB
 unzip ./latestbuild.zip ~
@@ -72,6 +73,15 @@ sudo a2ensite tpb
 sudo mv /etc/apache2/apache2.conf /etc/apache2/apache2.conf.original
 sudo cp ./config/apache/apache2.conf /etc/apache2/apache2.conf
 
+# move WP files to apache serving directory
+sudo cp -r ~/latestbuild/www/* /var/www/html
+
+# modify configuration WP configuration
+# not using this now because we're still running as the root user
+# sed -ie "s/define('DB_USER', 'root');/define('DB_USER', 'tpb');/g" /var/www/html/wp-config.php
+# sed -ie "s/define('DB_PASSWORD', '');/define('DB_PASSWORD', 'tpbDB2017');/g" /var/www/html/wp-config.php
+
+
 # install teamViewer
 wget https://download.teamviewer.com/download/teamviewer_i386.deb -O ~/teamviewer.deb
 sudo apt install ~/teamviewer.deb
@@ -82,8 +92,6 @@ sed -i "4 a After=network-online.target" /etc/systemd/system/teamviewerd.service
 sudo service teamviewerd reload
 sudo service teamviewerd restart
 
-# move WP files to apache serving directory
-sudo cp -r ./latestbuild/www/* /var/www/html
 
 # install browser for kiosk and other useful things
 sudo apt install chromium-browser unclutter xdotool
