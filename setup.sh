@@ -51,6 +51,9 @@ sudo chown -R tpb:www-data /var/www/html
 sudo find /var/www/html -type d -exec chmod g+s {} \;
 sudo chmod g+w /var/www/html/wp-content
 
+# set up host to be 'the.peak.beyond' cause that's easy and kinda neat
+sudo sed "2 a 127.0.1.11    the.peak.beyond" /etc/hosts
+
 # install php
 sudo apt-get install php phpmyadmin libapache2-mod-php php-mcrypt php-mysql php-curl php-gd php-mbstring php-gettext php-xml php-xmlrpc
 sudo phpenmod mcrypt
