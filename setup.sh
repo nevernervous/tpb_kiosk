@@ -51,7 +51,7 @@ sudo mysql -u root mysql < ./config/mysql-setup.sql
 # copy source DB
 # substitute staging host for localhost where found in sql dump
 sed -ie 's/tpb.waaark.dev/the.peak.beyond/g' /tmp/tpb/latestbuild/sql/tpb_waaark_dev.sql
-mysql < /tmp/tpb/latestbuild/sql/tpb_waaark_dev.sql
+mysql -u tpb --password='tpb2017' < /tmp/tpb/latestbuild/sql/tpb_waaark_dev.sql
 
 # configure MySQL
 sudo chown -R tpb:www-data /var/www/html
