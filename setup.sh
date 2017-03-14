@@ -41,9 +41,8 @@ sudo a2enmod rewrite
 # sudo ufw allow in "Apache Full"
 
 # install MySQL
-sudo apt-get install -y -q mysql-server
-# todo: secure settings for the MySQL DB should be determined and set up here
-mysql -u root -e 'CREATE DATABASE the_peak_beyond;'
+sudo -E apt-get -q -y install mysql-server
+sudo mysql -u root mysql < ./config/mysql-setup.sql
 
 # copy source DB
 unzip ./latestbuild.zip ~
@@ -82,9 +81,6 @@ sudo cp -r ~/latestbuild/www/* /var/www/html
 # sed -ie "s/define('DB_USER', 'root');/define('DB_USER', 'tpb');/g" /var/www/html/wp-config.php
 # sed -ie "s/define('DB_PASSWORD', '');/define('DB_PASSWORD', 'tpbDB2017');/g" /var/www/html/wp-config.php
 
-
-
-
 # install browser for kiosk and other useful things
 sudo apt install -y -q chromium-browser unclutter xdotool
 
@@ -98,7 +94,7 @@ sudo apt-get install default-jre
 
 # install teamViewer
 wget https://download.teamviewer.com/download/teamviewer_i386.deb -O ~/teamviewer.deb
-sudo apt install -y -q ~/teamviewer.deb
+sudo -E apt-get -q -y install ~/teamviewer.deb
 
 # update TeamViewer startup config to wait for network to boot
 sed -i "4 a After=time-sync.target" /etc/systemd/system/teamviewerd.service
