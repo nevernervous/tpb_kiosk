@@ -4,7 +4,7 @@
 export DEBIAN_FRONTEND=noninteractive;
 
 # move build files to disk
-unzip -o ./latestbuild.zip -d /tmp/tpb/
+unzip -o -qq ./latestbuild.zip -d /tmp/tpb/
 
 sudo apt update -y -q
 sudo apt upgrade -y -q
@@ -94,12 +94,13 @@ sudo apt-get -y -q install default-jre
 # add TPB kiosk launch task
 # todo: configure launch user profile stuff
 
-# install teamViewer
-wget https://download.teamviewer.com/download/teamviewer_i386.deb -O /tmp/tpb/teamviewer.deb
-sudo -E apt-get -q -y install /tmp/tpb/teamviewer.deb
-
-# update TeamViewer startup config to wait for network to boot
-sed -i "4 a After=time-sync.target" /etc/systemd/system/teamviewerd.service
-sed -i "4 a After=network-online.target" /etc/systemd/system/teamviewerd.service;
-sudo service teamviewerd reload
-sudo service teamviewerd restart
+#todo: install and configure teamviewer
+## install teamViewer
+#wget https://download.teamviewer.com/download/teamviewer_i386.deb -O /tmp/tpb/teamviewer.deb
+#sudo -E apt-get -q -y install /tmp/tpb/teamviewer.deb
+#
+## update TeamViewer startup config to wait for network to boot
+#sed -i "4 a After=time-sync.target" /etc/systemd/system/teamviewerd.service
+#sed -i "4 a After=network-online.target" /etc/systemd/system/teamviewerd.service;
+#sudo service teamviewerd reload
+#sudo service teamviewerd restart
