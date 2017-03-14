@@ -43,7 +43,7 @@ sudo apt-get install mysql-server
 sudo mysql_secure_installation
 
 # install php
-sudo apt-get install php libapache2-mod-php php-mcrypt php-mysql php-curl php-gd php-mbstring php-mcrypt php-xml php-xmlrpc
+sudo apt-get install php phpmyadmin libapache2-mod-php php-mcrypt php-mysql php-curl php-gd php-mbstring php-gettext php-xml php-xmlrpc
 
 # configure MySQL
 
