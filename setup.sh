@@ -3,6 +3,7 @@ sudo apt update
 sudo apt upgrade
 
 # TODO Set debian noninteractive package management
+export DEBIAN_FRONTEND=noninteractive;
 
 # setup TPB admin and kiosk users
 admin_user_not_exists=$(id -u tpb > /dev/null 2>&1; echo $?)
@@ -36,7 +37,7 @@ sudo systemctl restart apache2
 sudo a2enmod rewrite
 
 # modify firewall to allow traffic thru Apache on 80 and 443 (todo: is this necessary?)
-sudo ufw allow in "Apache Full"
+# sudo ufw allow in "Apache Full"
 
 # install MySQL
 sudo apt-get install mysql-server
@@ -44,6 +45,9 @@ sudo mysql_secure_installation
 
 # copy source DB
 unzip ./latestbuild.zip ~
+
+# substitute staging host for localhost where found in sql dump
+sed -ie 's/tpb.waaark.dev/the.peak.beyond/g' ~/latestbuild/sql/tpb_waaark_dev.sql
 mysql < ~/latestbuild/sql/tpb_waaark_dev.sql
 
 # configure MySQL
@@ -52,7 +56,7 @@ sudo find /var/www/html -type d -exec chmod g+s {} \;
 sudo chmod g+w /var/www/html/wp-content
 
 # set up host to be 'the.peak.beyond' cause that's easy and kinda neat
-sudo sed "2 a 127.0.1.11    the.peak.beyond" /etc/hosts
+sudo sed -i "2 a 127.0.1.11    the.peak.beyond" /etc/hosts
 
 # install php
 sudo apt-get install php phpmyadmin libapache2-mod-php php-mcrypt php-mysql php-curl php-gd php-mbstring php-gettext php-xml php-xmlrpc
@@ -60,17 +64,21 @@ sudo phpenmod mcrypt
 sudo phpenmod mbstring
 sudo systemctl restart apache2
 
-# configure php server
-sudo mv /etc/apache2/mods-enabled/dir.conf /etc/apache2/mods-enabled/dir.conf.old
-sudo cp ./config/dir.conf /etc/apache2/mods-enabled/dir.conf
+# configure apache
+sudo mv /etc/apache2/mods-enabled/dir.conf /etc/apache2/mods-enabled/dir.conf.original
+sudo cp ./config/apache/dir.conf /etc/apache2/mods-enabled/dir.conf
+sudo cp ./config/apache/tpb.conf /etc/apache2/sites-available/tpb.conf
+sudo a2ensite tpb
+sudo mv /etc/apache2/apache2.conf /etc/apache2/apache2.conf.original
+sudo cp ./config/apache/apache2.conf /etc/apache2/apache2.conf
 
 # install teamViewer
 wget https://download.teamviewer.com/download/teamviewer_i386.deb -O ~/teamviewer.deb
 sudo apt install ~/teamviewer.deb
 
 # update TeamViewer startup config to wait for network to boot
-sed "4 a After=time-sync.target" /etc/systemd/system/teamviewerd.service
-sed "4 a After=network-online.target" /etc/systemd/system/teamviewerd.service;
+sed -i "4 a After=time-sync.target" /etc/systemd/system/teamviewerd.service
+sed -i "4 a After=network-online.target" /etc/systemd/system/teamviewerd.service;
 sudo service teamviewerd reload
 sudo service teamviewerd restart
 
@@ -81,6 +89,7 @@ sudo cp -r ./latestbuild/www/* /var/www/html
 sudo apt install chromium-browser unclutter xdotool
 
 # set up thermal printer
+
 # needs java runtime
 sudo apt-get install default-jre
 
