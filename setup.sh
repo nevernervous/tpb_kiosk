@@ -52,7 +52,7 @@ sudo find /var/www/html -type d -exec chmod g+s {} \;
 sudo chmod g+w /var/www/html/wp-content
 
 # install php
-sudo apt-get install php libapache2-mod-php php-mcrypt php-mysql php-curl php-gd php-mbstring php-mcrypt php-xml php-xmlrpc
+sudo apt-get install php phpmyadmin libapache2-mod-php php-mcrypt php-mysql php-curl php-gd php-mbstring php-gettext php-xml php-xmlrpc
 
 # configure php server
 sudo mv /etc/apache2/mods-enabled/dir.conf /etc/apache2/mods-enabled/dir.conf.old
