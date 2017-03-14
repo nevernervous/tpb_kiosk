@@ -79,9 +79,8 @@ sudo cp ./config/apache/apache2.conf /etc/apache2/apache2.conf
 sudo cp -r /tmp/tpb/latestbuild/www/* /var/www/html
 
 # modify configuration WP configuration
-# not using this now because we're still running as the root user
-# sed -ie "s/define('DB_USER', 'root');/define('DB_USER', 'tpb');/g" /var/www/html/wp-config.php
-# sed -ie "s/define('DB_PASSWORD', '');/define('DB_PASSWORD', 'tpbDB2017');/g" /var/www/html/wp-config.php
+ sed -ie "s/define('DB_USER', 'root');/define('DB_USER', 'tpb');/g" /var/www/html/wp-config.php
+ sed -ie "s/define('DB_PASSWORD', '');/define('DB_PASSWORD', 'tpb2017');/g" /var/www/html/wp-config.php
 
 # install browser for kiosk and other useful things
 sudo apt install -y -q chromium-browser unclutter xdotool
