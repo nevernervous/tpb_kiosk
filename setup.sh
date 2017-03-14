@@ -42,11 +42,21 @@ sudo ufw allow in "Apache Full"
 sudo apt-get install mysql-server
 sudo mysql_secure_installation
 
+# copy source DB
+mv ./latestbuild/sql/tpb_waaark_dev.sql ~/tpb_import.sql
+mysql < ~/tpb_import.sql
+
+# configure MySQL
+sudo chown -R tpb:www-data /var/www/html
+sudo find /var/www/html -type d -exec chmod g+s {} \;
+sudo chmod g+w /var/www/html/wp-content
+
 # install php
 sudo apt-get install php libapache2-mod-php php-mcrypt php-mysql php-curl php-gd php-mbstring php-mcrypt php-xml php-xmlrpc
 
-# configure MySQL
-
+# configure php server
+sudo mv /etc/apache2/mods-enabled/dir.conf /etc/apache2/mods-enabled/dir.conf.old
+sudo cp ./config/dir.conf /etc/apache2/mods-enabled/dir.conf
 
 # install teamViewer
 wget https://download.teamviewer.com/download/teamviewer_i386.deb -O ~/teamviewer.deb
@@ -58,12 +68,8 @@ sed "4 a After=network-online.target" /etc/systemd/system/teamviewerd.service;
 sudo service teamviewerd reload
 sudo service teamviewerd restart
 
-# copy source DB
-mv ./latestbuild/sql/tpb_waaark_dev.sql ~/tpb_import.sql
-mysql < ~/tpb_import.sql
-
 # move WP files to apache serving directory
-sudo cp -r ./latestbuild/www/ /var/
+sudo cp -r ./latestbuild/www/* /var/www/html
 
 # install browser for kiosk and other useful things
 sudo apt install chromium-browser unclutter xdotool
