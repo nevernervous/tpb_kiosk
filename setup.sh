@@ -4,7 +4,7 @@
 export DEBIAN_FRONTEND=noninteractive;
 
 # move build files to disk
-unzip -o ./tpb/latestbuild.zip -d /tmp/tpb/
+unzip -o ./latestbuild.zip -d /tmp/tpb/
 
 sudo apt update -y -q
 sudo apt upgrade -y -q
