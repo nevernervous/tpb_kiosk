@@ -51,7 +51,7 @@ sudo mysql -u root mysql < ./config/mysql-setup.sql
 # copy source DB
 # substitute staging host for localhost where found in sql dump
 sed -ie 's/tpb.waaark.dev/the.peak.beyond/g' /tmp/tpb/latestbuild/sql/tpb_waaark_dev.sql
-mysql -u tpb --password='tpb2017' < /tmp/tpb/latestbuild/sql/tpb_waaark_dev.sql
+mysql -u tpb --password='tpb2017' the_peak_beyond < /tmp/tpb/latestbuild/sql/tpb_waaark_dev.sql
 
 # configure MySQL
 sudo chown -R tpb:www-data /var/www/html
@@ -76,11 +76,11 @@ sudo mv /etc/apache2/apache2.conf /etc/apache2/apache2.conf.original
 sudo cp ./config/apache/apache2.conf /etc/apache2/apache2.conf
 
 # move WP files to apache serving directory
-sudo cp -r /tmp/tpb/latestbuild/www/* /var/www/html
+sudo cp -r /tmp/tpb/latestbuild/www/ /var/www/html
 
 # modify configuration WP configuration
- sed -ie "s/define('DB_USER', 'root');/define('DB_USER', 'tpb');/g" /var/www/html/wp-config.php
- sed -ie "s/define('DB_PASSWORD', '');/define('DB_PASSWORD', 'tpb2017');/g" /var/www/html/wp-config.php
+sed -ie "s/define('DB_USER', 'root');/define('DB_USER', 'tpb');/g" /var/www/html/wp-config.php
+sed -ie "s/define('DB_PASSWORD', '');/define('DB_PASSWORD', 'tpb2017');/g" /var/www/html/wp-config.php
 
 # install browser for kiosk and other useful things
 sudo apt install -y -q chromium-browser unclutter xdotool
