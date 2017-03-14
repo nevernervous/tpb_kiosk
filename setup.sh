@@ -42,7 +42,6 @@ sudo ufw allow in "Apache Full"
 sudo apt-get install mysql-server
 sudo mysql_secure_installation
 
-
 # copy source DB
 unzip ./latestbuild.zip ~
 mysql < ~/latestbuild/sql/tpb_waaark_dev.sql
@@ -77,6 +76,10 @@ sudo cp -r ./latestbuild/www/* /var/www/html
 
 # install browser for kiosk and other useful things
 sudo apt install chromium-browser unclutter xdotool
+
+# set up thermal printer
+# needs java runtime
+sudo apt-get install default-jre
 
 # add TPB kiosk launch task
 # todo: configure launch user profile stuff
