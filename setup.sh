@@ -42,9 +42,10 @@ sudo ufw allow in "Apache Full"
 sudo apt-get install mysql-server
 sudo mysql_secure_installation
 
+
 # copy source DB
-mv ./latestbuild/sql/tpb_waaark_dev.sql ~/tpb_import.sql
-mysql < ~/tpb_import.sql
+unzip ./latestbuild.zip ~
+mysql < ~/latestbuild/sql/tpb_waaark_dev.sql
 
 # configure MySQL
 sudo chown -R tpb:www-data /var/www/html
