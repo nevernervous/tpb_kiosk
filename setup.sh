@@ -131,8 +131,8 @@ printf "\n\n\tTPB: setting up thermal printer...\n\n"
 ##
 # set up thermal printer
 ##
-# needs java runtime
-sudo apt-get -y -qq install default-jre
+# package requirements for printer
+sudo apt-get -y -qq install openjdk-8-jdk ant nsis makeself
 
 ##
 # install and configure teamViewer
