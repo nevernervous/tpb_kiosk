@@ -113,11 +113,11 @@ sudo mkdir -p /etc/lightdm/
 sudo touch lightdm.conf
 sudo sed -i '$ a [SeatDefaults]\nautologin-user=kiosk\nautologin-user-timeout=0\nuser-session=ubuntu\ngreeter-session=unity-greeter\n' /etc/lightdm/lightdm.conf
 sudo mkdir -p /etc/lightdm/lightdm.conf.d
-touch /etc/lightdm/lightdm.conf.d/50-myconfig.conf
+sudo touch /etc/lightdm/lightdm.conf.d/50-myconfig.conf
 sudo sed -i "$ a [SeatDefaults]\nautologin-user=kiosk\n" /etc/lightdm/lightdm.conf.d/50-myconfig.conf
 # configure boot-to-browser
 sudo mkdir /home/kiosk/.config/autostart
-touch /home/kiosk/.config/autostart/kiosk.desktop
+sudo touch /home/kiosk/.config/autostart/kiosk.desktop
 sudo sed -i "$ a [Desktop Entry]\nType=Application\nName=Kiosk\nExec=/home/kiosk/kiosk.sh\nX-GNOME-Autostart-enabled=true" /home/kiosk/.config/autostart/kiosk.desktop
 # install browser boot script
 sudo rm /home/kiosk/kiosk.sh
