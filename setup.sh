@@ -4,13 +4,13 @@ printf "\n\n\t\tTPB KIOSK INSTALL\n"
 # Don't prompt for input from user during package installation / mgmt
 export DEBIAN_FRONTEND=noninteractive;
 
-printf "\n\n\t\tTPB:\n removing extra packages...\n\n"
+printf "\n\n\t\tTPB: removing extra packages...\n\n"
 # Ubuntu GNOME comes with some stuff we don't need
 sudo apt-get -y -qq remove --purge libreoffice*
 sudo apt-get -y -qq clean
 sudo apt-get -y -qq autoremove
 
-printf "\n\n\t\tTPB:\n copying build to disk...\n\n"
+printf "\n\n\t\tTPB: copying build to disk...\n\n"
 
 # copy build files to disk
 unzip -o -qq ./latestbuild.zip -d /tmp/tpb/
@@ -22,7 +22,7 @@ sudo cp -r /tmp/tpb/latestbuild/www/* /var/www/html
 # copy .htaccess to apache dir
 sudo cp ./config/.htaccess /var/www/html
 
-printf "\n\n\t\tTPB:\n updating system packages...\n\n"
+printf "\n\n\tTPB: updating system packages...\n\n"
 sudo apt-get -y -qq update
 sudo apt-get -y -qq upgrade
 sudo apt-get -y -qq autoremove
@@ -30,12 +30,12 @@ sudo apt-get -y -qq autoremove
 # install Apache
 sudo apt-get -y -qq install apache2
 
-printf "\n\n\t\tTPB:\n creating users...\n\n"
+printf "\n\n\tTPB: creating users...\n\n"
 sudo adduser "tpb" --gecos ""
 sudo adduser "tpb" sudo
 sudo adduser --disabled-password --gecos "" "kiosk"
 
-printf "\n\n\t\tTPB:\n updating apache config...\n\n"
+printf "\n\n\tTPB: updating apache config...\n\n"
 # copy apache config into place
 sudo mv /etc/apache2/apache2.conf /etc/apache2/apache2.conf.old
 sudo cp ./config/apache/apache2.conf /etc/apache2/apache2.conf
@@ -46,30 +46,30 @@ sudo service apache reload
 
 # modify firewall to allow traffic thru Apache on 80 and 443 (todo: is this necessary?)
 # sudo ufw allow in "Apache Full"
-printf "\n\n\t\tTPB:\n setting up MySQL DB for WordPress...\n\n"
+printf "\n\n\tTPB: setting up MySQL DB for WordPress...\n\n"
 # install MySQL
 sudo -E apt-get -qq -y install mysql-server
 #todo: secure settings for the MySQL DB should be determined and set up here
 sudo mysql -u root mysql < ./config/mysql-setup.sql
 
 # copy source DB
-printf "\n\n\t\tTPB:\n importing TPB DB from dump...\n\n"
+printf "\n\n\tTPB: importing TPB DB from dump...\n\n"
 # substitute staging host for localhost where found in sql dump
 sed -ie 's/tpb.waaark.dev/the.peak.beyond/g' /tmp/tpb/latestbuild/sql/tpb_waaark_dev.sql
 mysql -u tpb --password='tpb2017' the_peak_beyond < /tmp/tpb/latestbuild/sql/tpb_waaark_dev.sql
 
-printf "\n\n\t\tTPB:\n configuring local url `the.peak.beyond`...\n\n"
+printf "\n\n\tTPB: configuring local url `the.peak.beyond`...\n\n"
 # set up host to be 'the.peak.beyond' cause that's easy and kinda neat
 sudo sed -i "2 a 127.0.1.11    the.peak.beyond" /etc/hosts
 
-printf "\n\n\t\tTPB:\n installing php...\n\n"
+printf "\n\n\tTPB: installing php...\n\n"
 # install php
 sudo apt-get install -y -qq php phpmyadmin libapache2-mod-php php-mcrypt php-mysql php-curl php-gd php-mbstring php-gettext php-xml php-xmlrpc
 sudo phpenmod mcrypt
 sudo phpenmod mbstring
 sudo systemctl restart apache2
 
-printf "\n\n\t\tTPB:\n adding TPB site to apache...\n\n"
+printf "\n\n\tTPB: adding TPB site to apache...\n\n"
 # configure apache
 sudo mv /etc/apache2/mods-enabled/dir.conf /etc/apache2/mods-enabled/dir.conf.original
 sudo cp ./config/apache/dir.conf /etc/apache2/mods-enabled/dir.conf
@@ -79,23 +79,23 @@ sudo service apache2 reload
 sudo mv /etc/apache2/apache2.conf /etc/apache2/apache2.conf.original
 sudo cp ./config/apache/apache2.conf /etc/apache2/apache2.conf
 
-printf "\n\n\t\tTPB:\n updating WP configuration with new DB settings...\n\n"
+printf "\n\n\tTPB: updating WP configuration with new DB settings...\n\n"
 # modify WP configuration
 sudo sed -ie "s/define('DB_USER', 'root');/define('DB_USER', 'tpb');/g" /var/www/html/wp-config.php
 sudo sed -ie "s/define('DB_PASSWORD', '');/define('DB_PASSWORD', 'tpb2017');/g" /var/www/html/wp-config.php
 
-printf "\n\n\t\tTPB:\n updating DB settings...\n\n"
+printf "\n\n\tTPB: updating DB settings...\n\n"
 # configure MySQL permissions
 sudo chown -R tpb:www-data /var/www/html
 sudo find /var/www/html -type d -exec chmod g+s {} \;
 sudo chmod g+w /var/www/html/wp-content
 sudo chmod -R 777 /var/www/html/wp-content #for WP Rocket
 
-printf "\n\n\t\tTPB:\n installing browser etc...\n\n"
+printf "\n\n\tTPB: installing browser etc...\n\n"
 # install browser for kiosk and other useful things
 sudo apt-get -qq -y install -y chromium-browser unclutter xdotool
 
-printf "\n\n\t\tTPB:\n setting up multitouch settings...\n\n"
+printf "\n\n\tTPB: setting up multitouch settings...\n\n"
 # install multitouch
 sudo apt-get -qq -y install geis-tools
 sudo apt-get -qq -y  install touchegg
@@ -104,7 +104,7 @@ sudo chown tpb /home/tpb/.xprofile
 sudo cp ./config/.xprofile /home/kiosk/.xprofile
 sudo chown kiosk /home/kiosk/.xprofile
 
-printf "\n\n\t\tTPB:\n configuring kiosk user auto-login...\n\n"
+printf "\n\n\tTPB: configuring kiosk user auto-login...\n\n"
 # auto login in GDM display manager
 sudo sed -i 's/#  AutomaticLoginEnable = true/AutomaticLoginEnable = true/g' /etc/gdm3/custom.conf
 sudo sed -i 's/#  AutomaticLogin = user1/AutomaticLogin = kiosk/g' /etc/gdm3/custom.conf
@@ -126,7 +126,7 @@ sudo cp ./kiosk.sh /home/kiosk/kiosk.sh
 sudo chmod u+x /home/kiosk/kiosk.sh
 sudo chown kiosk /home/kiosk/kiosk.sh
 
-printf "\n\n\t\tTPB:\n setting up thermal printer...\n\n"
+printf "\n\n\tTPB: setting up thermal printer...\n\n"
 
 ##
 # set up thermal printer
@@ -137,7 +137,7 @@ sudo apt-get -y -qq install default-jre
 ##
 # install and configure teamViewer
 ##
-printf "\n\n\t\tTPB:\n installing team...\n\n"
+printf "\n\n\tTPB: installing team...\n\n"
 
 wget https://download.teamviewer.com/download/teamviewer_i386.deb -O /tmp/tpb/teamviewer.deb
 sudo -E apt-get -qq -y install /tmp/tpb/teamviewer.deb
