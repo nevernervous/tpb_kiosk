@@ -90,6 +90,14 @@ sudo chmod -R 777 /var/www/html/wp-content #for WP Rocket
 # install browser for kiosk and other useful things
 sudo apt install -y -q chromium-browser unclutter xdotool
 
+# install multitouch
+sudo apt-get install geis-tools
+sudo apt install touchegg
+sudo cp ./config/.xprofile /home/tpb
+sudo chown tpb /home/tpb/.xprofile
+sudo cp ./config/.xprofile /home/kiosk
+sudo chown kiosk /home/kiosk/.xprofile
+
 ## set up thermal printer
 
 # needs java runtime
