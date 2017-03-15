@@ -1,31 +1,25 @@
 #!/usr/bin/env bash
-
-# Don't prompt for input from user during package installations
+# Don't prompt for input from user during package installation / mgmt
 export DEBIAN_FRONTEND=noninteractive;
 
-# move build files to disk
+# Ubuntu GNOME comes with some stuff we don't need
+sudo apt-get remove --purge libreoffice*
+sudo apt-get clean
+sudo apt-get autoremove
+
+# copy build files to disk
 unzip -o -qq ./latestbuild.zip -d /tmp/tpb/
 
-sudo apt update -y -q
-sudo apt upgrade -y -q
+# copy WP files to apache serving directory
+mkdir -p /var/www/html
+sudo cp -r /tmp/tpb/latestbuild/www/* /var/www/html
 
-# setup TPB admin and kiosk users
-#admin_user_not_exists=$(id -u tpb > /dev/null 2>&1; echo $?)
-#if ${admin_user_not_exists};
-#    then
-#        echo "creating admin user"
-#        echo "TPB2dFuture" | passwd "tpb" --stdin
-#    else
-#        echo "admin user already exists"
-#fi
+# copy .htaccess to apache dir
+sudo cp ./config/.htaccess /var/www/html
 
-#kiosk_user_not_exists=$(id -u kiosk > /dev/null 2>&1; echo $?)
-#if ${kiosk_user_not_exists};
-#    then
-#        echo "creating kiosk user"
-#    else
-#        echo "kiosk user already exists"
-#fi
+sudo apt update -y -qq
+sudo apt upgrade -y -qq
+sudo apt autoremove -y -qq
 
 sudo adduser "tpb" --gecos ""
 sudo adduser "tpb" sudo
@@ -60,7 +54,7 @@ mysql -u tpb --password='tpb2017' the_peak_beyond < /tmp/tpb/latestbuild/sql/tpb
 sudo sed -i "2 a 127.0.1.11    the.peak.beyond" /etc/hosts
 
 # install php
-sudo apt-get install -y -q php phpmyadmin libapache2-mod-php php-mcrypt php-mysql php-curl php-gd php-mbstring php-gettext php-xml php-xmlrpc
+sudo apt-get install -y -qq php phpmyadmin libapache2-mod-php php-mcrypt php-mysql php-curl php-gd php-mbstring php-gettext php-xml php-xmlrpc
 sudo phpenmod mcrypt
 sudo phpenmod mbstring
 sudo systemctl restart apache2
@@ -74,15 +68,11 @@ sudo service apache2 reload
 sudo mv /etc/apache2/apache2.conf /etc/apache2/apache2.conf.original
 sudo cp ./config/apache/apache2.conf /etc/apache2/apache2.conf
 
-# move WP files to apache serving directory
-sudo cp -r /tmp/tpb/latestbuild/www/* /var/www/html
 
-# move .htaccess to apache dir
-sudo cp ./config/.htaccess /var/www/html
 
 # modify WP configuration
-sed -ie "s/define('DB_USER', 'root');/define('DB_USER', 'tpb');/g" /var/www/html/wp-config.php
-sed -ie "s/define('DB_PASSWORD', '');/define('DB_PASSWORD', 'tpb2017');/g" /var/www/html/wp-config.php
+sudo sed -ie "s/define('DB_USER', 'root');/define('DB_USER', 'tpb');/g" /var/www/html/wp-config.php
+sudo sed -ie "s/define('DB_PASSWORD', '');/define('DB_PASSWORD', 'tpb2017');/g" /var/www/html/wp-config.php
 
 # configure MySQL permissions
 sudo chown -R tpb:www-data /var/www/html
@@ -91,11 +81,11 @@ sudo chmod g+w /var/www/html/wp-content
 sudo chmod -R 777 /var/www/html/wp-content #for WP Rocket
 
 # install browser for kiosk and other useful things
-sudo apt install -y -q chromium-browser unclutter xdotool
+sudo apt-get install -y -qq chromium-browser unclutter xdotool
 
 # install multitouch
-sudo apt-get -y -q install geis-tools
-sudo apt-get -y -q install touchegg
+sudo apt-get -y -qq install geis-tools
+sudo apt-get -y -qq install touchegg
 sudo cp ./config/.xprofile /home/tpb
 sudo chown tpb /home/tpb/.xprofile
 sudo cp ./config/.xprofile /home/kiosk/.xprofile
@@ -106,7 +96,7 @@ sudo sed -i 's/#  AutomaticLoginEnable = true/AutomaticLoginEnable = true/g' /et
 sudo sed -i 's/#  AutomaticLogin = user1/AutomaticLogin = kiosk/g' /etc/gdm3/custom.conf
 
 sudo groupadd nopasswdlogin
-sudo sed -i '1 a auth sufficient pam_succeed_if.so user ingroup nopasswdlogin' /etc/gdm/custom.conf
+sudo sed -i '1 a auth sufficient pam_succeed_if.so user ingroup nopasswdlogin' /etc/pam.d/gdm-password
 
 # add kiosk user to no password required group
 sudo usermod -a -G nopasswdlogin kiosk
