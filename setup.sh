@@ -80,7 +80,7 @@ sudo cp -r /tmp/tpb/latestbuild/www/ /var/www/html
 # move .htaccess to apache dir
 sudo cp ./config/.htaccess /var/www/html
 
-# modify configuration WP configuration
+# modify WP configuration
 sed -ie "s/define('DB_USER', 'root');/define('DB_USER', 'tpb');/g" /var/www/html/wp-config.php
 sed -ie "s/define('DB_PASSWORD', '');/define('DB_PASSWORD', 'tpb2017');/g" /var/www/html/wp-config.php
 
@@ -101,23 +101,20 @@ sudo chown tpb /home/tpb/.xprofile
 sudo cp ./config/.xprofile /home/kiosk/.xprofile
 sudo chown kiosk /home/kiosk/.xprofile
 
-## set up thermal printer
+# auto login in GDM display manager
+sudo sed -i 's/#  AutomaticLoginEnable = true/AutomaticLoginEnable = true/g' /etc/gdm3/custom.conf
+sudo sed -i 's/#  AutomaticLogin = user1/AutomaticLogin = kiosk/g' /etc/gdm3/custom.conf
 
+sudo groupadd nopasswdlogin
+sudo sed -i '0 a auth sufficient pam_succeed_if.so user ingroup nopasswdlogin' /etc/gdm/custom.conf
 
-# needs java runtime
-sudo apt-get -y -q install default-jre
-
-# add TPB kiosk launch task
-# todo: configure launch user profile stuff
-sudo mkdir -p /etc/lightdm/
-sudo cp ./config/lightdm/lightdm.conf /etc/lightdm/lightdm.conf
-
-sudo mkdir -p /etc/lightdm/lightdm.conf.d
-sudo cp ./config/lightdm/50-myconfig.conf /etc/lightdm/lightdm.conf.d/50-myconfig.conf
+# add kiosk user to no password required group
+sudo usermod -a -G nopasswdlogin kiosk
+sudo passwd -d kiosk
 
 # configure boot-to-browser
 sudo mkdir -p /home/kiosk/.config/autostart
-sudo cp ./config/lightdm/kiosk.desktop /home/kiosk/.config/autostart/kiosk.desktop
+sudo cp ./config/gdm/kiosk.desktop /home/kiosk/.config/autostart/kiosk.desktop
 
 # install browser boot script
 sudo rm /home/kiosk/kiosk.sh
@@ -125,8 +122,15 @@ sudo cp ./kiosk.sh /home/kiosk/kiosk.sh
 sudo chmod u+x /home/kiosk/kiosk.sh
 sudo chown kiosk /home/kiosk/kiosk.sh
 
-#todo: install and configure teamviewer
-## install teamViewer
+##
+# set up thermal printer
+##
+# needs java runtime
+sudo apt-get -y -q install default-jre
+
+##
+# install and configure teamViewer
+##
 #wget https://download.teamviewer.com/download/teamviewer_i386.deb -O /tmp/tpb/teamviewer.deb
 #sudo -E apt-get -q -y install /tmp/tpb/teamviewer.deb
 #
