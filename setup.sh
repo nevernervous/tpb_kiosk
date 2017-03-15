@@ -69,7 +69,6 @@ sudo mv /etc/apache2/apache2.conf /etc/apache2/apache2.conf.original
 sudo cp ./config/apache/apache2.conf /etc/apache2/apache2.conf
 
 
-
 # modify WP configuration
 sudo sed -ie "s/define('DB_USER', 'root');/define('DB_USER', 'tpb');/g" /var/www/html/wp-config.php
 sudo sed -ie "s/define('DB_PASSWORD', '');/define('DB_PASSWORD', 'tpb2017');/g" /var/www/html/wp-config.php
@@ -116,13 +115,13 @@ sudo chown kiosk /home/kiosk/kiosk.sh
 # set up thermal printer
 ##
 # needs java runtime
-sudo apt-get -y -q install default-jre
+sudo apt-get -y -qq install default-jre
 
 ##
 # install and configure teamViewer
 ##
 wget https://download.teamviewer.com/download/teamviewer_i386.deb -O /tmp/tpb/teamviewer.deb
-sudo -E apt-get -q -y install /tmp/tpb/teamviewer.deb
+sudo -E apt-get -qq -y install /tmp/tpb/teamviewer.deb
 #
 ## update TeamViewer startup config to wait for network to boot
 #sed -i "4 a After=time-sync.target" /etc/systemd/system/teamviewerd.service
