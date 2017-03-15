@@ -42,6 +42,7 @@ sudo cp ./config/apache/apache2.conf /etc/apache2/apache2.conf
 sudo systemctl restart apache2
 # enable rewrite for wordpress
 sudo a2enmod rewrite
+printf "\n\n\tTPB: reloading apache...\n\n"
 sudo service apache reload
 
 # modify firewall to allow traffic thru Apache on 80 and 443 (todo: is this necessary?)
@@ -67,6 +68,7 @@ printf "\n\n\tTPB: installing php...\n\n"
 sudo apt-get install -y -qq php phpmyadmin libapache2-mod-php php-mcrypt php-mysql php-curl php-gd php-mbstring php-gettext php-xml php-xmlrpc
 sudo phpenmod mcrypt
 sudo phpenmod mbstring
+printf "\n\n\tTPB: reloading apache...\n\n"
 sudo systemctl restart apache2
 
 printf "\n\n\tTPB: adding TPB site to apache...\n\n"
@@ -76,6 +78,7 @@ sudo cp ./config/apache/dir.conf /etc/apache2/mods-enabled/dir.conf
 sudo cp ./config/apache/tpb.conf /etc/apache2/sites-available/tpb.conf
 sudo a2ensite tpb
 sudo a2dissite 000-default
+printf "\n\n\tTPB: reloading apache...\n\n"
 sudo service apache2 reload
 sudo mv /etc/apache2/apache2.conf /etc/apache2/apache2.conf.original
 sudo cp ./config/apache/apache2.conf /etc/apache2/apache2.conf
@@ -138,7 +141,7 @@ sudo apt-get -y -qq install openjdk-8-jdk ant nsis makeself
 ##
 # install and configure teamViewer
 ##
-printf "\n\n\tTPB: installing team...\n\n"
+printf "\n\n\tTPB: installing TeamViewer...\n\n"
 
 wget https://download.teamviewer.com/download/teamviewer_i386.deb -O /tmp/tpb/teamviewer.deb
 sudo -E apt-get -qq -y install /tmp/tpb/teamviewer.deb
