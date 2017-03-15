@@ -110,15 +110,15 @@ sudo apt-get -y -q install default-jre
 # add TPB kiosk launch task
 # todo: configure launch user profile stuff
 sudo mkdir -p /etc/lightdm/
-sudo touch /etc/lightdm/lightdm.conf
-sudo sed -i '$ a [SeatDefaults]\nautologin-user=kiosk\nautologin-user-timeout=0\nuser-session=ubuntu\ngreeter-session=unity-greeter\n' /etc/lightdm/lightdm.conf
+sudo cp ./config/lightdm/lightdm.conf /etc/lightdm/lightdm.conf
+
 sudo mkdir -p /etc/lightdm/lightdm.conf.d
-sudo touch /etc/lightdm/lightdm.conf.d/50-myconfig.conf
-sudo sed -i "$ a [SeatDefaults]\nautologin-user=kiosk\n" /etc/lightdm/lightdm.conf.d/50-myconfig.conf
+sudo cp ./config/lightdm/50-myconfig.conf /etc/lightdm/lightdm.conf.d/50-myconfig.conf
+
 # configure boot-to-browser
-sudo mkdir /home/kiosk/.config/autostart
-sudo touch /home/kiosk/.config/autostart/kiosk.desktop
-sudo sed -i "$ a [Desktop Entry]\nType=Application\nName=Kiosk\nExec=/home/kiosk/kiosk.sh\nX-GNOME-Autostart-enabled=true" /home/kiosk/.config/autostart/kiosk.desktop
+sudo mkdir -p /home/kiosk/.config/autostart
+sudo cp ./config/lightdm/kiosk.desktop /home/kiosk/.config/autostart/kiosk.desktop
+
 # install browser boot script
 sudo rm /home/kiosk/kiosk.sh
 sudo cp ./kiosk.sh /home/kiosk/kiosk.sh
