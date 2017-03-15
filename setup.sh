@@ -75,7 +75,7 @@ sudo mv /etc/apache2/apache2.conf /etc/apache2/apache2.conf.original
 sudo cp ./config/apache/apache2.conf /etc/apache2/apache2.conf
 
 # move WP files to apache serving directory
-sudo cp -r /tmp/tpb/latestbuild/www/ /var/www/html
+sudo cp -r /tmp/tpb/latestbuild/www/* /var/www/html
 
 # move .htaccess to apache dir
 sudo cp ./config/.htaccess /var/www/html
@@ -106,7 +106,7 @@ sudo sed -i 's/#  AutomaticLoginEnable = true/AutomaticLoginEnable = true/g' /et
 sudo sed -i 's/#  AutomaticLogin = user1/AutomaticLogin = kiosk/g' /etc/gdm3/custom.conf
 
 sudo groupadd nopasswdlogin
-sudo sed -i '0 a auth sufficient pam_succeed_if.so user ingroup nopasswdlogin' /etc/gdm/custom.conf
+sudo sed -i '1 a auth sufficient pam_succeed_if.so user ingroup nopasswdlogin' /etc/gdm/custom.conf
 
 # add kiosk user to no password required group
 sudo usermod -a -G nopasswdlogin kiosk
