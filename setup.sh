@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
-printf "\n\n\t\tTPB KIOSK INSTALL\n"
+printf "\n***************************\n\t\tTPB KIOSK INSTALL\n***************************\n"
 
 # Don't prompt for input from user during package installation / mgmt
 export DEBIAN_FRONTEND=noninteractive;
 
-printf "\n\n\t\tTPB: removing extra packages...\n\n"
+printf "\n\n\tTPB: removing extra packages...\n\n"
 # Ubuntu GNOME comes with some stuff we don't need
 sudo apt-get -y -qq remove --purge libreoffice*
 sudo apt-get -y -qq clean
 sudo apt-get -y -qq autoremove
 
-printf "\n\n\t\tTPB: copying build to disk...\n\n"
+printf "\n\n\tTPB: copying build to disk...\n\n"
 
 # copy build files to disk
 unzip -o -qq ./latestbuild.zip -d /tmp/tpb/
@@ -75,6 +75,7 @@ sudo mv /etc/apache2/mods-enabled/dir.conf /etc/apache2/mods-enabled/dir.conf.or
 sudo cp ./config/apache/dir.conf /etc/apache2/mods-enabled/dir.conf
 sudo cp ./config/apache/tpb.conf /etc/apache2/sites-available/tpb.conf
 sudo a2ensite tpb
+sudo a2dissite 000-default
 sudo service apache2 reload
 sudo mv /etc/apache2/apache2.conf /etc/apache2/apache2.conf.original
 sudo cp ./config/apache/apache2.conf /etc/apache2/apache2.conf
