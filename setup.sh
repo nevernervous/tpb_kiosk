@@ -131,8 +131,8 @@ sudo apt-get -y -q install default-jre
 ##
 # install and configure teamViewer
 ##
-#wget https://download.teamviewer.com/download/teamviewer_i386.deb -O /tmp/tpb/teamviewer.deb
-#sudo -E apt-get -q -y install /tmp/tpb/teamviewer.deb
+wget https://download.teamviewer.com/download/teamviewer_i386.deb -O /tmp/tpb/teamviewer.deb
+sudo -E apt-get -q -y install /tmp/tpb/teamviewer.deb
 #
 ## update TeamViewer startup config to wait for network to boot
 #sed -i "4 a After=time-sync.target" /etc/systemd/system/teamviewerd.service
