@@ -58,7 +58,7 @@ printf "\n\n\tTPB: importing TPB DB from dump...\n\n"
 sed -ie 's/tpb.waaark.dev/the.peak.beyond/g' /tmp/tpb/latestbuild/sql/tpb_waaark_dev.sql
 mysql -u tpb --password='tpb2017' the_peak_beyond < /tmp/tpb/latestbuild/sql/tpb_waaark_dev.sql
 
-printf "\n\n\tTPB: configuring local url `the.peak.beyond`...\n\n"
+printf "\n\n\tTPB: configuring local url \`the.peak.beyond\`...\n\n"
 # set up host to be 'the.peak.beyond' cause that's easy and kinda neat
 sudo sed -i "2 a 127.0.1.11    the.peak.beyond" /etc/hosts
 
