@@ -133,16 +133,22 @@ sudo cp ./config/gdm/kiosk.desktop /home/kiosk/.config/autostart/kiosk.desktop
 # install browser boot script
 sudo rm /home/kiosk/kiosk.sh
 sudo cp ./kiosk.sh /home/kiosk/kiosk.sh
-sudo chown kiosk /home/kiosk/kiosk.sh
 sudo chmod 744 /home/kiosk/kiosk.sh
 
-printf "\n\n\tTPB: setting up thermal printer...\n\n"
+# make sure everything in kiosk home is owned by kiosk
+sudo chown kiosk:kiosk ~kiosk
+
 
 ##
 # set up thermal printer
 ##
+printf "\n\n\tTPB: setting up thermal printer...\n\n"
 # package requirements for printer
 sudo apt-get -y -qq install openjdk-8-jdk ant nsis makeself
+sudo cp ./drivers/printer/qz-tray-2.0.3.run ~/qz.run
+sudo chmod +x ~/qz.run
+sudo ~/qz.run
+
 
 ##
 # install and configure teamViewer
