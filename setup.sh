@@ -10,25 +10,27 @@ sudo apt update -y -q
 sudo apt upgrade -y -q
 
 # setup TPB admin and kiosk users
-admin_user_not_exists=$(id -u tpb > /dev/null 2>&1; echo $?)
-if ${admin_user_not_exists};
-    then
-        echo "creating admin user"
-        sudo adduser "tpb" --gecos ""
-        sudo adduser "tpb" sudo
-        echo "TPB2dFuture" | passwd "tpb" --stdin
-    else
-        echo "admin user already exists"
-fi
+#admin_user_not_exists=$(id -u tpb > /dev/null 2>&1; echo $?)
+#if ${admin_user_not_exists};
+#    then
+#        echo "creating admin user"
+#        echo "TPB2dFuture" | passwd "tpb" --stdin
+#    else
+#        echo "admin user already exists"
+#fi
 
-kiosk_user_not_exists=$(id -u kiosk > /dev/null 2>&1; echo $?)
-if ${kiosk_user_not_exists};
-    then
-        echo "creating kiosk user"
-        sudo adduser --disabled-password --gecos "" "kiosk"
-    else
-        echo "kiosk user already exists"
-fi
+#kiosk_user_not_exists=$(id -u kiosk > /dev/null 2>&1; echo $?)
+#if ${kiosk_user_not_exists};
+#    then
+#        echo "creating kiosk user"
+#    else
+#        echo "kiosk user already exists"
+#fi
+
+sudo adduser "tpb" --gecos ""
+sudo adduser "tpb" sudo
+sudo adduser --disabled-password --gecos "" "kiosk"
+
 # install Apache
 sudo apt-get install -y -q apache2
 
@@ -68,6 +70,7 @@ sudo mv /etc/apache2/mods-enabled/dir.conf /etc/apache2/mods-enabled/dir.conf.or
 sudo cp ./config/apache/dir.conf /etc/apache2/mods-enabled/dir.conf
 sudo cp ./config/apache/tpb.conf /etc/apache2/sites-available/tpb.conf
 sudo a2ensite tpb
+sudo service apache2 reload
 sudo mv /etc/apache2/apache2.conf /etc/apache2/apache2.conf.original
 sudo cp ./config/apache/apache2.conf /etc/apache2/apache2.conf
 
@@ -91,11 +94,11 @@ sudo chmod -R 777 /var/www/html/wp-content #for WP Rocket
 sudo apt install -y -q chromium-browser unclutter xdotool
 
 # install multitouch
-sudo apt-get install geis-tools
-sudo apt install touchegg
+sudo apt-get -y -q install geis-tools
+sudo apt-get -y -q install touchegg
 sudo cp ./config/.xprofile /home/tpb
 sudo chown tpb /home/tpb/.xprofile
-sudo cp ./config/.xprofile /home/kiosk
+sudo cp ./config/.xprofile /home/kiosk/.xprofile
 sudo chown kiosk /home/kiosk/.xprofile
 
 ## set up thermal printer
