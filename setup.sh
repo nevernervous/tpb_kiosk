@@ -101,14 +101,20 @@ sudo apt-get -qq -y install -y chromium-browser unclutter xdotool
 
 printf "\n\n\tTPB: setting up multitouch settings...\n\n"
 # install multitouch
-sudo apt-get -qq -y install geis-tools
-sudo apt-get -qq -y  install touchegg
+sudo apt-get -qq -y install geis-tools touchegg
 sudo cp ./config/.xprofile /home/tpb
 sudo chown tpb /home/tpb/.xprofile
+
 sudo cp ./config/.xprofile /home/kiosk/.xprofile
 sudo chown kiosk /home/kiosk/.xprofile
 
+xhost +SI:localuser:kiosk
+
 printf "\n\n\tTPB: configuring kiosk user auto-login...\n\n"
+
+# install missing requirements for Intel graphics drivers
+sudo apt-get -qq -y install xserver-xorg-legacy gdm3
+
 # auto login in GDM display manager
 sudo sed -i 's/#  AutomaticLoginEnable = true/AutomaticLoginEnable = true/g' /etc/gdm3/custom.conf
 sudo sed -i 's/#  AutomaticLogin = user1/AutomaticLogin = kiosk/g' /etc/gdm3/custom.conf
@@ -127,8 +133,8 @@ sudo cp ./config/gdm/kiosk.desktop /home/kiosk/.config/autostart/kiosk.desktop
 # install browser boot script
 sudo rm /home/kiosk/kiosk.sh
 sudo cp ./kiosk.sh /home/kiosk/kiosk.sh
-sudo chmod u+x /home/kiosk/kiosk.sh
 sudo chown kiosk /home/kiosk/kiosk.sh
+sudo chmod 744 /home/kiosk/kiosk.sh
 
 printf "\n\n\tTPB: setting up thermal printer...\n\n"
 
@@ -151,3 +157,5 @@ sudo -E apt-get -qq -y install /tmp/tpb/teamviewer.deb
 #sed -i "4 a After=network-online.target" /etc/systemd/system/teamviewerd.service;
 #sudo service teamviewerd reload
 #sudo service teamviewerd restart
+
+printf "\n***************************\n\t\tTPB KIOSK INSTALL COMPLETE!\n***************************\n"
