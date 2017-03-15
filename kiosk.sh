@@ -11,7 +11,7 @@ sed -i 's/"exited_cleanly":false/"exited_cleanly":true/' /home/kiosk/.config/chr
 sed -i 's/"exit_type":"Crashed"/"exit_type":"Normal"/' /home/kiosk/.config/chromium/Default/Preferences
 
 # Run Chromium and open tabs
-/usr/bin/chromium-browser --window-size=1920,1080 --kiosk --incognito --window-position=0,0 http://the.peak.beyond &
+/usr/bin/chromium-browser --kiosk --incognito  --disable-pinch --overscroll-history-navigation=0 http://the.peak.beyond &
 
 # Start the kiosk loop. This keystroke changes the Chromium tab
 # To have just anti-idle, use this line instead:
