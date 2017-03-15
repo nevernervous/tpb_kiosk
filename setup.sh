@@ -11,7 +11,7 @@ sudo apt-get autoremove -y -qq
 unzip -o -qq ./latestbuild.zip -d /tmp/tpb/
 
 # copy WP files to apache serving directory
-mkdir -p /var/www/html
+sudo mkdir -p /var/www/html
 sudo cp -r /tmp/tpb/latestbuild/www/* /var/www/html
 
 # copy .htaccess to apache dir
