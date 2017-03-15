@@ -85,6 +85,7 @@ sed -ie "s/define('DB_PASSWORD', '');/define('DB_PASSWORD', 'tpb2017');/g" /var/
 sudo chown -R tpb:www-data /var/www/html
 sudo find /var/www/html -type d -exec chmod g+s {} \;
 sudo chmod g+w /var/www/html/wp-content
+sudo chmod -R 777 /var/www/html/wp-content #for WP Rocket
 
 # install browser for kiosk and other useful things
 sudo apt install -y -q chromium-browser unclutter xdotool
