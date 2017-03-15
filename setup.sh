@@ -3,9 +3,9 @@
 export DEBIAN_FRONTEND=noninteractive;
 
 # Ubuntu GNOME comes with some stuff we don't need
-sudo apt-get remove --purge libreoffice*
-sudo apt-get clean
-sudo apt-get autoremove
+sudo apt-get remove -y -qq --purge libreoffice*
+sudo apt-get clean -y -qq
+sudo apt-get autoremove -y -qq
 
 # copy build files to disk
 unzip -o -qq ./latestbuild.zip -d /tmp/tpb/
