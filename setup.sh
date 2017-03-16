@@ -43,7 +43,7 @@ sudo systemctl restart apache2
 # enable rewrite for wordpress
 sudo a2enmod rewrite
 printf "\n\tTPB: reloading apache...\n\n"
-sudo service apache reload
+sudo service apache2 reload
 
 # modify firewall to allow traffic thru Apache on 80 and 443 (todo: is this necessary?)
 # sudo ufw allow in "Apache Full"
@@ -88,6 +88,8 @@ printf "\n\tTPB: updating WP configuration with new DB settings...\n\n"
 sudo sed -ie "s/define('DB_USER', 'root');/define('DB_USER', 'tpb');/g" /var/www/html/wp-config.php
 sudo sed -ie "s/define('DB_PASSWORD', '');/define('DB_PASSWORD', 'tpb2017');/g" /var/www/html/wp-config.php
 
+sudo service apache2 start
+
 printf "\n\tTPB: updating DB settings...\n\n"
 # configure MySQL permissions
 sudo chown -R tpb:www-data /var/www/html
@@ -116,8 +118,9 @@ printf "\n\tTPB: configuring kiosk user auto-login...\n\n"
 sudo apt-get -qq -y install xserver-xorg-legacy gdm3
 
 # auto login in GDM display manager
-sudo sed -i 's/#  AutomaticLoginEnable = true/AutomaticLoginEnable = true/g' /etc/gdm3/custom.conf
-sudo sed -i 's/#  AutomaticLogin = user1/AutomaticLogin = kiosk/g' /etc/gdm3/custom.conf
+sudo sed -i 's/#  TimedLoginEnable = true/TimedLoginEnable = true/g' /etc/gdm3/custom.conf
+sudo sed -i 's/#  TimedLogin = user1/TimedLogin = kiosk/g' /etc/gdm3/custom.conf
+sudo sed -i 's/#  TimedLoginDelay = 10/TimedLoginDelay = 4/g' /etc/gdm3/custom.conf
 
 sudo groupadd nopasswdlogin
 sudo sed -i '1 a auth sufficient pam_succeed_if.so user ingroup nopasswdlogin' /etc/pam.d/gdm-password
@@ -163,17 +166,21 @@ printf "\n\tTPB: installing TeamViewer...\n\n"
 
 wget https://download.teamviewer.com/download/teamviewer_i386.deb -O /tmp/tpb/teamviewer.deb
 sudo -E apt-get -qq -y install /tmp/tpb/teamviewer.deb
-cp ./config/teamviewer/teamviewerd.service /etc/systemd/system/teamviererd.service
+# sudo cp ./config/teamviewer/teamviewerd.service /etc/systemd/system/teamviererd.service
+# sudo initctl reload-configuration
 
-printf "\n\tTPB: Please open TeamViewer, accept license, and set up your account, then quit.\n\n"
+printf "\n\tTPB: Please open TeamViewer, accept license and set up your account, \n
+make sure to click the 'Start TeamViewer with system' button and the two below it, \n
+then *quit* TeamViewer to finish setup.\n\n"
 
 teamviewer
 
 ## update TeamViewer startup config to wait for network to boot
-#sed -i "4 a After=time-sync.target" /etc/systemd/system/teamviewerd.service
-#sed -i "4 a After=network-online.target" /etc/systemd/system/teamviewerd.service;
+sudo sed -i "4 a After=time-sync.target" /etc/systemd/system/teamviewerd.service
+sudo sed -i "4 a After=network-online.target" /etc/systemd/system/teamviewerd.service;
+sudo systemctl daemon-reload
 sudo service teamviewerd reload
 sudo service teamviewerd restart
 
-printf "\n\t***************************\n\t\tTPB KIOSK INSTALL COMPLETE!\n***************************\n"
+printf "\n\t***************************\n\t\tTPB KIOSK INSTALL COMPLETE!\n\t***************************\n"
 
