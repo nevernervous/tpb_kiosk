@@ -53,14 +53,14 @@ sudo -E apt-get -qq -y install mysql-server
 #todo: secure settings for the MySQL DB should be determined and set up here
 sudo mysql -u root mysql < ./config/mysql-setup.sql
 
-# copy source DB
 printf "\n\tTPB: importing TPB DB from dump...\n\n"
 # substitute staging host for localhost where found in sql dump
 sed -ie 's/tpb.waaark.dev/the.peak.beyond/g' /tmp/tpb/latestbuild/sql/tpb_waaark_dev.sql
+# copy source DB
 mysql -u tpb --password='tpb2017' the_peak_beyond < /tmp/tpb/latestbuild/sql/tpb_waaark_dev.sql
 
-printf "\n\tTPB: configuring local url \`the.peak.beyond\`...\n\n"
 # set up host to be 'the.peak.beyond' cause that's easy and kinda neat
+printf "\n\tTPB: configuring local url \`the.peak.beyond\`...\n\n"
 sudo sed -i "2 a 127.0.1.11    the.peak.beyond" /etc/hosts
 
 printf "\n\tTPB: installing php...\n\n"
