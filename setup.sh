@@ -21,7 +21,9 @@ sudo apt-get -y -qq autoremove
 printf "\n\tTPB: copying build to disk...\n\n"
 
 # copy build files to disk
+sudo mkdir -p /tmp/tpb/
 unzip -o -qq ./latestbuild.zip -d /tmp/tpb/
+cp -r ./drivers /tmp/tpb/
 
 # copy WP files to apache serving directory
 sudo mkdir -p /var/www/html
@@ -159,14 +161,14 @@ printf "\n\tTPB: setting up thermal printer...\n\n"
 # package requirements for printer
 sudo apt-get -y -qq install openjdk-8-jdk
 sudo apt-get -y -qq install ant nsis makeself libnss3-tools
-sudo cp ./drivers/printer/qz-tray-2.0.3.run ~/qz.run
+sudo cp /tmp/tpb/drivers/printer/qz-tray-2.0.3.run ~/qz.run
 sudo chmod +x ~/qz.run
 sudo ~/qz.run
 
 # install printer drivers from OCOMInc.com
 # using linux drivers for printer type: OCPP 809
-sudo chmod +x ./drivers/printer/install64
-sudo ./drivers/printer/install64
+sudo chmod +x /tmp/tpb/drivers/printer/install64
+sudo /tmp/tpb/drivers/printer/install64
 
 # install printer certificate
 certutil -d sql:$HOME/.pki/nssdb -A -t TC -n  "QZ Industries, LLC" -i /opt/qz-tray/auth/qz-tray.crt
