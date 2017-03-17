@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
-printf "\n\t***************************\n\t\tTPB KIOSK INSTALL\n\t***************************\n"
+
+sudo printf "\n\t***************************\n\t\tTPB KIOSK INSTALL\n\t***************************\n" } || {
+if sudo -n true 2>/dev/null; then
+    echo "Access granted."
+else
+    echo "Access denied... bad password? \n\tExiting now."
+    exit
+fi
 
 # Don't prompt for input from user during package installation / mgmt
 export DEBIAN_FRONTEND=noninteractive;
@@ -147,7 +154,7 @@ sudo chown -R kiosk:kiosk ~kiosk
 ##
 printf "\n\tTPB: setting up thermal printer...\n\n"
 # package requirements for printer
-sudo apt-get -y -qq install openjdk-8-jdk ant nsis makeself certutil
+sudo apt-get -y -qq install openjdk-8-jdk ant nsis makeself libnss3-tools
 sudo cp ./drivers/printer/qz-tray-2.0.3.run ~/qz.run
 sudo chmod +x ~/qz.run
 sudo ~/qz.run
