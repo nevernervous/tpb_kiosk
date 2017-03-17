@@ -186,11 +186,12 @@ printf "\n\tTPB: Please open TeamViewer, accept license and set up your account,
 make sure to click the 'Start TeamViewer with system' button and the two below it, \n
 then *quit* TeamViewer to finish setup.\n\n"
 
-teamviewer
+sudo teamviewer daemon enable
 
-## update TeamViewer startup config to wait for network to boot
-sudo sed -i "4 a After=time-sync.target" /etc/systemd/system/teamviewerd.service
-sudo sed -i "4 a After=network-online.target" /etc/systemd/system/teamviewerd.service;
+#
+### update TeamViewer startup config to wait for network to boot
+#sudo sed -i "4 a After=time-sync.target" /etc/systemd/system/teamviewerd.service
+#sudo sed -i "4 a After=network-online.target" /etc/systemd/system/teamviewerd.service;
 
 sudo systemctl enable teamviewerd.service
 sudo systemctl daemon-reload
