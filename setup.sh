@@ -148,7 +148,7 @@ sudo ln -sf /home/kiosk/.config/autostart/kiosk.desktop /home/kiosk/desktop/kios
 
 # install browser boot script
 sudo rm /home/kiosk/kiosk.sh
-sudo cp ./kiosk.sh /home/kiosk/kiosk.sh
+sudo cp ./scripts/kiosk.sh /home/kiosk/kiosk.sh
 sudo chmod 744 /home/kiosk/kiosk.sh
 
 # make sure everything in kiosk home is owned by kiosk
