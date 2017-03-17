@@ -78,6 +78,7 @@ sudo cp ./config/apache/dir.conf /etc/apache2/mods-enabled/dir.conf
 sudo cp ./config/apache/tpb.conf /etc/apache2/sites-available/tpb.conf
 sudo a2ensite tpb
 sudo a2dissite 000-default
+
 printf "\n\tTPB: reloading apache...\n\n"
 sudo service apache2 reload
 sudo mv /etc/apache2/apache2.conf /etc/apache2/apache2.conf.original
@@ -178,9 +179,11 @@ teamviewer
 ## update TeamViewer startup config to wait for network to boot
 sudo sed -i "4 a After=time-sync.target" /etc/systemd/system/teamviewerd.service
 sudo sed -i "4 a After=network-online.target" /etc/systemd/system/teamviewerd.service;
+
+sudo systemctl enable teamviewerd.service
 sudo systemctl daemon-reload
-sudo service teamviewerd reload
-sudo service teamviewerd restart
+sudo systemctl teamviewerd reload
+sudo systemctl teamviewerd restart
 
 printf "\n\t***************************\n\t\tTPB KIOSK INSTALL COMPLETE!\n\t***************************\n"
 
