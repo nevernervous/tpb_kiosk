@@ -13,7 +13,7 @@ sed -i 's/"exit_type":"Crashed"/"exit_type":"Normal"/' /home/kiosk/.config/chrom
 # Run TeamViewer in foreground for persistent connectivity
 /usr/bin/teamviewer &
 # wait three seconds for TV to boot up, so that it stays behind Chromium
-sleep 3
+sleep 5
 
 # Run Chromium and open tabs
 /usr/bin/chromium-browser --kiosk --incognito  --disable-pinch --overscroll-history-navigation=0 http://the.peak.beyond &
