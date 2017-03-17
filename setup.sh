@@ -147,7 +147,7 @@ sudo chown -R kiosk:kiosk ~kiosk
 ##
 printf "\n\tTPB: setting up thermal printer...\n\n"
 # package requirements for printer
-sudo apt-get -y -qq install openjdk-8-jdk ant nsis makeself
+sudo apt-get -y -qq install openjdk-8-jdk ant nsis makeself certutil
 sudo cp ./drivers/printer/qz-tray-2.0.3.run ~/qz.run
 sudo chmod +x ~/qz.run
 sudo ~/qz.run
