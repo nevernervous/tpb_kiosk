@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 
-sudo printf "\n\t***************************\n\t\tTPB KIOSK INSTALL\n\t***************************\n" } || {
+sudo printf "\n\t***************************\n\t\tTPB KIOSK INSTALL\n\t***************************\n"
+
 if sudo -n true 2>/dev/null; then
-    echo "Access granted."
+    echo "\n\tTPB: Access granted."
 else
-    echo "Access denied... bad password? \n\tExiting now."
+    echo "\n\tTPB: Access denied... bad password? \n\tExiting now."
     exit
 fi
 
@@ -140,6 +141,8 @@ sudo passwd -d kiosk
 # configure boot-to-browser
 sudo mkdir -p /home/kiosk/.config/autostart
 sudo cp ./config/gdm/kiosk.desktop /home/kiosk/.config/autostart/kiosk.desktop
+sudo chmod +x /home/kiosk/.config/autostart/kiosk.desktop
+sudo ln -sf /home/kiosk/.config/autostart/kiosk.desktop /home/kiosk/desktop/kiosk.desktop
 
 # install browser boot script
 sudo rm /home/kiosk/kiosk.sh
