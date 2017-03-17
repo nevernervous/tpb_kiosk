@@ -154,7 +154,8 @@ sudo chown -R kiosk:kiosk ~kiosk
 ##
 printf "\n\tTPB: setting up thermal printer...\n\n"
 # package requirements for printer
-sudo apt-get -y -qq install openjdk-8-jdk ant nsis makeself libnss3-tools
+sudo apt-get -y -qq install openjdk-8-jdk
+sudo apt-get -y -qq install ant nsis makeself libnss3-tools
 sudo cp ./drivers/printer/qz-tray-2.0.3.run ~/qz.run
 sudo chmod +x ~/qz.run
 sudo ~/qz.run
@@ -166,7 +167,6 @@ sudo ./drivers/printer/install64
 
 # install printer certificate
 certutil -d sql:$HOME/.pki/nssdb -A -t TC -n  "QZ Industries, LLC" -i /opt/qz-tray/auth/qz-tray.crt
-
 ##
 # install and configure teamViewer
 ##
@@ -189,8 +189,6 @@ sudo sed -i "4 a After=network-online.target" /etc/systemd/system/teamviewerd.se
 
 sudo systemctl enable teamviewerd.service
 sudo systemctl daemon-reload
-sudo systemctl teamviewerd reload
-sudo systemctl teamviewerd restart
+sudo systemctl restart teamviewerd
 
 printf "\n\t***************************\n\t\tTPB KIOSK INSTALL COMPLETE!\n\t***************************\n"
-
