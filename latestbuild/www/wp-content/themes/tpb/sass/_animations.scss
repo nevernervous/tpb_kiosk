@@ -1,0 +1,131 @@
+/* =============================================================================
+   =ANIMATIONS
+   ========================================================================== */
+
+@include keyframes( 'area-pulse' ) {
+	0% {
+		transform: scale(1);
+		opacity: 0;
+	}
+	20% {
+		transform: scale(1.1);
+		opacity: 1;
+	}
+	50% {
+		transform: scale(1.3);
+		opacity: 0;
+	}
+	100% {
+		transform: scale(1);
+		opacity: 0;
+	}
+}
+
+@include keyframes( 'line-move' ) {
+	0% {
+		stroke-dashoffset: 0;
+	}
+	100% {
+		stroke-dashoffset: -10;
+	}
+}
+
+@include keyframes( 'arrow-pulse' ) {
+	0% {
+		transform: translateY(0);
+		opacity: 0.2;
+	}
+	30% {
+		transform: translateY(10px);
+		opacity: 0.4;
+	}
+	60% {
+		transform: translateY(20px);
+		opacity: 0;
+	}
+	60.0001% {
+		transform: translateY(-10px);
+		opacity: 0;
+	}
+	85% {
+		transform: translateY(-10px);
+		opacity: 0;
+	}
+	100% {
+		transform: translateY(0);
+		opacity: 0.2;
+	}
+}
+@include keyframes( 'arrow-pulse-left' ) {
+	0% {
+		transform: translateX(0);
+		opacity: 0.2;
+	}
+	30% {
+		transform: translateX(-10px);
+		opacity: 0.4;
+	}
+	60% {
+		transform: translateX(-20px);
+		opacity: 0;
+	}
+	60.0001% {
+		transform: translateX(10px);
+		opacity: 0;
+	}
+	85% {
+		transform: translateX(10px);
+		opacity: 0;
+	}
+	100% {
+		transform: translateX(0);
+		opacity: 0.2;
+	}
+}
+
+@include keyframes( 'separator-pulse' ) {
+	0% {
+		opacity: 1;
+	}
+	50% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
+}
+
+@include keyframes( 'animated-background' ) {
+	0% {
+		background: #1d1a39;
+	}
+	25% {
+		background: #271a39;
+	}
+	50% {
+		background: #322039;
+	}
+	75% {
+		background: #1f3b3d;
+	}
+	100% {
+		background: #1d1a39;
+	}
+}
+@include keyframes( 'animated-fill' ) {
+	0% {
+		fill: #1d1a39;
+	}
+	25% {
+		fill: #271a39;
+	}
+	50% {
+		fill: #322039;
+	}
+	75% {
+		fill: #1f3b3d;
+	}
+	100% {
+		fill: #1d1a39;
+	}
+}

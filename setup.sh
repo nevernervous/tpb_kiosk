@@ -22,7 +22,8 @@ printf "\n\tTPB: copying build to disk...\n\n"
 
 # copy build files to disk
 sudo mkdir -p /tmp/tpb/
-unzip -o -qq ./latestbuild.zip -d /tmp/tpb/
+#unzip -o -qq ./latestbuild.zip -d /tmp/tpb/
+rsync -avh ./latestbuild /tmp/tpb/
 cp -r ./drivers /tmp/tpb/
 
 # copy WP files to apache serving directory
