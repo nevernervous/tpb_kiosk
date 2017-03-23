@@ -1,0 +1,685 @@
+{
+    "key": "group_5853f0fc4bcd6",
+    "title": "Product",
+    "fields": [
+        {
+            "layouts": [
+                {
+                    "key": "586bb21041b5b",
+                    "name": "highlights",
+                    "label": "Highlights",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "default_value": "",
+                            "maxlength": 30,
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "key": "field_586be0a1ad233",
+                            "label": "Title",
+                            "name": "title",
+                            "type": "text",
+                            "instructions": "This section changes the title of chosen tab, i.e. \"Highlights\" or \"Flavor\", \"Attributes\", etc.",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            }
+                        },
+                        {
+                            "default_value": "fa-newspaper-o",
+                            "maxlength": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "key": "field_586be0a8ad234",
+                            "label": "Icon",
+                            "name": "icon",
+                            "type": "text",
+                            "instructions": "Font Awesome Icons key, find it here: http:\/\/fontawesome.io\/icons\/",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            }
+                        },
+                        {
+                            "default_value": "",
+                            "new_lines": "wpautop",
+                            "maxlength": 400,
+                            "placeholder": "",
+                            "rows": "",
+                            "key": "field_586bb2c9b118c",
+                            "label": "Text",
+                            "name": "text",
+                            "type": "textarea",
+                            "instructions": "This field changes the main text information on the \"highlights\" tab for a product.  If this field is left blank the default information will be automatically inserted from PotGuide.com.  The front-end result can be seen highlighted green in this image:  <br><br>\r\n\r\n<img  src=\"http:\/\/www.empathyistheway.com\/tpb\/highlights-text.png\"><\/img>",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            }
+                        },
+                        {
+                            "sub_fields": [
+                                {
+                                    "default_value": "",
+                                    "maxlength": 5,
+                                    "placeholder": "",
+                                    "prepend": "",
+                                    "append": "",
+                                    "key": "field_586cc9cb03eca",
+                                    "label": "Label",
+                                    "name": "label",
+                                    "type": "text",
+                                    "instructions": "Change this field to alter the title of the graph, i.e. \"THC\" or \"CBD\".<br><br>\r\n\r\n<img  src=\"http:\/\/www.empathyistheway.com\/tpb\/graphs-title.png\"><\/img>",
+                                    "required": 0,
+                                    "conditional_logic": 0,
+                                    "wrapper": {
+                                        "width": "",
+                                        "class": "",
+                                        "id": ""
+                                    }
+                                },
+                                {
+                                    "default_value": "",
+                                    "maxlength": 12,
+                                    "placeholder": "",
+                                    "prepend": "",
+                                    "append": "",
+                                    "key": "field_586cc9d603ecb",
+                                    "label": "Value",
+                                    "name": "value",
+                                    "type": "text",
+                                    "instructions": "Change this field to alter the displayed value of the graph, i.e. \"19.8%\".<br><br>\r\n\r\n<img  src=\"http:\/\/www.empathyistheway.com\/tpb\/graphs-value.png\"><\/img>",
+                                    "required": 0,
+                                    "conditional_logic": 0,
+                                    "wrapper": {
+                                        "width": "",
+                                        "class": "",
+                                        "id": ""
+                                    }
+                                },
+                                {
+                                    "default_value": "",
+                                    "maxlength": "",
+                                    "placeholder": "",
+                                    "prepend": "",
+                                    "append": "",
+                                    "key": "field_586cc9a703ec9",
+                                    "label": "Percent",
+                                    "name": "percent",
+                                    "type": "text",
+                                    "instructions": "Change this field to alter the circular graph display.  Numbers should be from 0 to 1, for example \"0.5\" would demonstrate \"50%\".<br><br>\r\n\r\n<img  src=\"http:\/\/www.empathyistheway.com\/tpb\/graphs-circle.png\"><\/img>",
+                                    "required": 0,
+                                    "conditional_logic": 0,
+                                    "wrapper": {
+                                        "width": "",
+                                        "class": "",
+                                        "id": ""
+                                    }
+                                }
+                            ],
+                            "min": 0,
+                            "max": 0,
+                            "layout": "block",
+                            "button_label": "Add Graph",
+                            "collapsed": "",
+                            "key": "field_586cc97c03ec8",
+                            "label": "Graphs",
+                            "name": "graphs",
+                            "type": "repeater",
+                            "instructions": "This section changes the graphical displays for THC and CBD content.  The referenced front-end section can be seen highlighted green in the following image. The \"THC\" and \"CBD\" titles, as well as those percentages should be changed in the corresponding fields below. <br><br>\r\n\r\n<img  src=\"http:\/\/www.empathyistheway.com\/tpb\/graphs.png\"><\/img>",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            }
+                        },
+                        {
+                            "default_value": "",
+                            "maxlength": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "key": "field_586cc9de03ecc",
+                            "label": "Video",
+                            "name": "video",
+                            "type": "text",
+                            "instructions": "Enter video URL from Youtube or Vimeo. Ex : https:\/\/www.youtube.com\/watch?v=EigAuKCD_wY\r\n\r\nThe resulting front-end change can be seen highlighted green in this image.<br><br>\r\n<img  src=\"http:\/\/www.empathyistheway.com\/tpb\/video.png\"><\/img>",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            }
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
+                {
+                    "key": "586bb49bb118e",
+                    "name": "text",
+                    "label": "Text",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "default_value": "",
+                            "maxlength": 23,
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "key": "field_586be0b0ad235",
+                            "label": "Title",
+                            "name": "title",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            }
+                        },
+                        {
+                            "default_value": "fa-file-text",
+                            "maxlength": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "key": "field_586be0b5ad236",
+                            "label": "Icon",
+                            "name": "icon",
+                            "type": "text",
+                            "instructions": "Font Awesome Icons key, find it here: http:\/\/fontawesome.io\/icons\/",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            }
+                        },
+                        {
+                            "default_value": "",
+                            "new_lines": "wpautop",
+                            "maxlength": 800,
+                            "placeholder": "",
+                            "rows": "",
+                            "key": "field_586bb4a1b118f",
+                            "label": "Text",
+                            "name": "text",
+                            "type": "textarea",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            }
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
+                {
+                    "key": "589daa24ef33b",
+                    "name": "flavor",
+                    "label": "Flavor",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "default_value": "",
+                            "maxlength": 23,
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "key": "field_589daa24ef33c",
+                            "label": "Title",
+                            "name": "title",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            }
+                        },
+                        {
+                            "default_value": "fa-file-text",
+                            "maxlength": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "key": "field_589daa24ef33d",
+                            "label": "Icon",
+                            "name": "icon",
+                            "type": "text",
+                            "instructions": "Font Awesome Icons key, find it here: http:\/\/fontawesome.io\/icons\/",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            }
+                        },
+                        {
+                            "default_value": "",
+                            "new_lines": "br",
+                            "maxlength": 350,
+                            "placeholder": "",
+                            "rows": "",
+                            "key": "field_589daa24ef33e",
+                            "label": "Aroma",
+                            "name": "aroma",
+                            "type": "textarea",
+                            "instructions": "This field changes the text information under the \"Aroma\" title on the \"Flavor\" tab.  If this field is left blank the default information will be automatically inserted from PotGuide.com.  The front-end result can be seen highlighted green in this image:  <br><br>\r\n\r\n<img  src=\"http:\/\/www.empathyistheway.com\/tpb\/aroma-text.png\"><\/img>",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            }
+                        },
+                        {
+                            "default_value": "",
+                            "new_lines": "br",
+                            "maxlength": 350,
+                            "placeholder": "",
+                            "rows": "",
+                            "key": "field_589daa52ef33f",
+                            "label": "Flavor",
+                            "name": "flavor",
+                            "type": "textarea",
+                            "instructions": "This field changes the text information under the \"Flavor\" title on the \"Flavor\" tab.  If this field is left blank the default information will be automatically inserted from PotGuide.com.  The front-end result can be seen highlighted green in this image:  <br><br>\r\n\r\n<img  src=\"http:\/\/www.empathyistheway.com\/tpb\/flavor-text.png\"><\/img>",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            }
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
+                {
+                    "key": "586bb4abb1190",
+                    "name": "attributes",
+                    "label": "Attributes",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "default_value": "",
+                            "maxlength": 30,
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "key": "field_586be0c9ad237",
+                            "label": "Title",
+                            "name": "title",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            }
+                        },
+                        {
+                            "default_value": "fa-bar-chart",
+                            "maxlength": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "key": "field_586be0cead238",
+                            "label": "Icon",
+                            "name": "icon",
+                            "type": "text",
+                            "instructions": "Font Awesome Icons key, find it here: http:\/\/fontawesome.io\/icons\/",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            }
+                        },
+                        {
+                            "sub_fields": [
+                                {
+                                    "default_value": "",
+                                    "maxlength": 10,
+                                    "placeholder": "",
+                                    "prepend": "",
+                                    "append": "",
+                                    "key": "field_586d09497f571",
+                                    "label": "Title",
+                                    "name": "title",
+                                    "type": "text",
+                                    "instructions": "",
+                                    "required": 0,
+                                    "conditional_logic": 0,
+                                    "wrapper": {
+                                        "width": "",
+                                        "class": "",
+                                        "id": ""
+                                    }
+                                },
+                                {
+                                    "sub_fields": [
+                                        {
+                                            "default_value": "",
+                                            "maxlength": 15,
+                                            "placeholder": "",
+                                            "prepend": "",
+                                            "append": "",
+                                            "key": "field_586d09547f572",
+                                            "label": "Label",
+                                            "name": "label",
+                                            "type": "text",
+                                            "instructions": "",
+                                            "required": 0,
+                                            "conditional_logic": 0,
+                                            "wrapper": {
+                                                "width": "",
+                                                "class": "",
+                                                "id": ""
+                                            }
+                                        },
+                                        {
+                                            "multiple": 0,
+                                            "allow_null": 0,
+                                            "choices": {
+                                                "green": "Green",
+                                                "red": "Red",
+                                                "blue": "Blue"
+                                            },
+                                            "default_value": [],
+                                            "ui": 0,
+                                            "ajax": 0,
+                                            "placeholder": "",
+                                            "return_format": "value",
+                                            "key": "field_586d09827f574",
+                                            "label": "Color",
+                                            "name": "color",
+                                            "type": "select",
+                                            "instructions": "",
+                                            "required": 0,
+                                            "conditional_logic": 0,
+                                            "wrapper": {
+                                                "width": "",
+                                                "class": "",
+                                                "id": ""
+                                            }
+                                        },
+                                        {
+                                            "default_value": "",
+                                            "maxlength": "",
+                                            "placeholder": "",
+                                            "prepend": "",
+                                            "append": "",
+                                            "key": "field_586d09587f573",
+                                            "label": "Percent",
+                                            "name": "percent",
+                                            "type": "text",
+                                            "instructions": "From 0 to 1. Ex: 0.5",
+                                            "required": 0,
+                                            "conditional_logic": 0,
+                                            "wrapper": {
+                                                "width": "",
+                                                "class": "",
+                                                "id": ""
+                                            }
+                                        }
+                                    ],
+                                    "min": 0,
+                                    "max": 6,
+                                    "layout": "table",
+                                    "button_label": "Add Attribute",
+                                    "collapsed": "",
+                                    "key": "field_586d092f7f570",
+                                    "label": "Attributes",
+                                    "name": "attributes",
+                                    "type": "repeater",
+                                    "instructions": "",
+                                    "required": 0,
+                                    "conditional_logic": 0,
+                                    "wrapper": {
+                                        "width": "",
+                                        "class": "",
+                                        "id": ""
+                                    }
+                                }
+                            ],
+                            "min": 0,
+                            "max": 4,
+                            "layout": "table",
+                            "button_label": "Add Group",
+                            "collapsed": "",
+                            "key": "field_586d09197f56f",
+                            "label": "Groups",
+                            "name": "groups",
+                            "type": "repeater",
+                            "instructions": "Use these sections to edit the attributes associated with the product, shown on the front-end on the \"Attributes\" tab. <br><br>\r\n\r\n<img  src=\"http:\/\/www.empathyistheway.com\/tpb\/attributes.png\"><\/img>",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            }
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
+                {
+                    "key": "586e064c0eb9d",
+                    "name": "reviews",
+                    "label": "Reviews",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "default_value": "",
+                            "maxlength": 30,
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "key": "field_586e0ea798007",
+                            "label": "Title",
+                            "name": "title",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            }
+                        },
+                        {
+                            "default_value": "fa-comments",
+                            "maxlength": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "key": "field_586e0eaf98008",
+                            "label": "Icon",
+                            "name": "icon",
+                            "type": "text",
+                            "instructions": "Font Awesome Icons key, find it here: http:\/\/fontawesome.io\/icons\/",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            }
+                        },
+                        {
+                            "sub_fields": [
+                                {
+                                    "default_value": "",
+                                    "maxlength": 21,
+                                    "placeholder": "",
+                                    "prepend": "",
+                                    "append": "",
+                                    "key": "field_586e06770eb9f",
+                                    "label": "Name",
+                                    "name": "name",
+                                    "type": "text",
+                                    "instructions": "",
+                                    "required": 0,
+                                    "conditional_logic": 0,
+                                    "wrapper": {
+                                        "width": "",
+                                        "class": "",
+                                        "id": ""
+                                    }
+                                },
+                                {
+                                    "return_format": "array",
+                                    "preview_size": "thumbnail",
+                                    "library": "all",
+                                    "min_width": "",
+                                    "min_height": "",
+                                    "min_size": "",
+                                    "max_width": "",
+                                    "max_height": "",
+                                    "max_size": "",
+                                    "mime_types": "",
+                                    "key": "field_586e067f0eba0",
+                                    "label": "Photo",
+                                    "name": "photo",
+                                    "type": "image",
+                                    "instructions": "Square jpg, size: 80x80",
+                                    "required": 0,
+                                    "conditional_logic": 0,
+                                    "wrapper": {
+                                        "width": "",
+                                        "class": "",
+                                        "id": ""
+                                    }
+                                },
+                                {
+                                    "default_value": "",
+                                    "min": 1,
+                                    "max": 5,
+                                    "step": 1,
+                                    "placeholder": "",
+                                    "prepend": "",
+                                    "append": "",
+                                    "key": "field_586e068b0eba1",
+                                    "label": "Rating",
+                                    "name": "note",
+                                    "type": "number",
+                                    "instructions": "",
+                                    "required": 0,
+                                    "conditional_logic": 0,
+                                    "wrapper": {
+                                        "width": "",
+                                        "class": "",
+                                        "id": ""
+                                    }
+                                },
+                                {
+                                    "default_value": "",
+                                    "new_lines": "wpautop",
+                                    "maxlength": 260,
+                                    "placeholder": "",
+                                    "rows": 5,
+                                    "key": "field_586e06bf0eba2",
+                                    "label": "Text",
+                                    "name": "text",
+                                    "type": "textarea",
+                                    "instructions": "",
+                                    "required": 0,
+                                    "conditional_logic": 0,
+                                    "wrapper": {
+                                        "width": "",
+                                        "class": "",
+                                        "id": ""
+                                    }
+                                }
+                            ],
+                            "min": 0,
+                            "max": 0,
+                            "layout": "table",
+                            "button_label": "Add Review",
+                            "collapsed": "",
+                            "key": "field_586e066b0eb9e",
+                            "label": "Reviews",
+                            "name": "reviews",
+                            "type": "repeater",
+                            "instructions": "Add in the name, photo, rating and text of each review in this section.  The resulting front-end changes will be seen in the highlighted green area in this image.<br><br>\r\n<img  src=\"http:\/\/www.empathyistheway.com\/tpb\/reviews.png\"><\/img>",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            }
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                }
+            ],
+            "min": "",
+            "max": "",
+            "button_label": "Add Tab",
+            "key": "field_586bb209b118a",
+            "label": "Tabs",
+            "name": "tabs",
+            "type": "flexible_content",
+            "instructions": "Each of these sections represents the tabs at the bottom of an individual product page on the front-end.  Any content that you edit here will change that section on the front-end.  If a field is left blank the default information will be automatically inserted from PotGuide.com.  The tabs referenced can be seen in this image, and the content affected exists inside each tab:\r\n<br><br>\r\n<img  src=\"http:\/\/www.empathyistheway.com\/tpb\/tabs.png\"><\/img>",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            }
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "product"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": 1,
+    "description": "",
+    "modified": 1489478970
+}

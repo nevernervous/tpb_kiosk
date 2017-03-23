@@ -1,0 +1,10 @@
+/**
+ * All of the CSS for your admin-specific functionality should be
+ * included in this file.
+ */
+
+.loader .spinner {
+	float: left;
+	margin-top: 0;
+	margin-left: 0;
+}

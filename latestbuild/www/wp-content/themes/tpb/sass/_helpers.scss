@@ -1,0 +1,46 @@
+/* =============================================================================
+   =HELPERS
+   ========================================================================== */
+
+.hidden {
+    display: none !important;
+
+    visibility: hidden;
+}
+
+.sr-only {
+	overflow: hidden;
+	margin: -1px;
+	padding: 0;
+	position: absolute;
+	width: 1px;
+	height: 1px;
+
+	border: 0;
+	clip: rect(0, 0, 0, 0);
+}
+
+.clearfix:before, .clearfix:after {
+	display: table;
+    content: "";
+}
+.clearfix:after {
+	clear: both;
+}
+
+@mixin placeholder($color:#ccc, $size:14px, $font:arial) {
+	&::-webkit-input-placeholder { color: $color; font: #{$size}/1 #{$font}; @include opacity(1); }
+	&::-moz-placeholder { color: $color; font: #{$size}/1 #{$font}; @include opacity(1); }
+	&:-ms-input-placeholder { color: $color; font: #{$size}/1 #{$font}; @include opacity(1); }
+	&:-moz-placeholder { color: $color; font: #{$size}/1 #{$font}; @include opacity(1); }
+	&.placeheld { color: $color; font: #{$size}/1 #{$font}; @include opacity(1); }
+}
+
+
+@mixin placeholder($color:rgba($white, 0.2), $size:44px, $line-heght:80px, $font:$raleway) {
+	&::-webkit-input-placeholder { color: $color; font: 200 #{$size}/$line-heght #{$font}; @include opacity(1); }
+	&::-moz-placeholder { color: $color; font: 200 #{$size}/$line-heght #{$font}; @include opacity(1); }
+	&:-ms-input-placeholder { color: $color; font: 200 #{$size}/$line-heght #{$font}; @include opacity(1); }
+	&:-moz-placeholder { color: $color; font: 200 #{$size}/$line-heght #{$font}; @include opacity(1); }
+	&.placeheld { color: $color; font: 200 #{$size}/$line-heght #{$font}; @include opacity(1); }
+}
