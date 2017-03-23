@@ -23,8 +23,8 @@ printf "\n\tTPB: copying build to disk...\n\n"
 # copy build files to disk
 sudo mkdir -p /tmp/tpb/
 #unzip -o -qq ./latestbuild.zip -d /tmp/tpb/
-rsync -avh ./latestbuild /tmp/tpb/
-cp -r ./drivers /tmp/tpb/
+sudo rsync -avh ./latestbuild /tmp/tpb/
+sudo cp -r ./drivers /tmp/tpb/
 
 # copy WP files to apache serving directory
 sudo mkdir -p /var/www/html
@@ -66,9 +66,9 @@ sudo mysql -u root mysql < ./config/mysql-setup.sql
 
 printf "\n\tTPB: importing TPB DB from dump...\n\n"
 # substitute staging host for localhost where found in sql dump
-sed -ie 's/tpb.waaark.dev/the.peak.beyond/g' /tmp/tpb/latestbuild/sql/tpb_waaark_dev.sql
+sudo sed -ie 's/tpb.waaark.dev/the.peak.beyond/g' /tmp/tpb/latestbuild/sql/tpb_waaark_dev.sql
 # copy source DB
-mysql -u tpb --password='tpb2017' the_peak_beyond < /tmp/tpb/latestbuild/sql/tpb_waaark_dev.sql
+sudo mysql -u tpb --password='tpb2017' the_peak_beyond < /tmp/tpb/latestbuild/sql/tpb_waaark_dev.sql
 
 # set up host to be 'the.peak.beyond' cause that's easy and kinda neat
 printf "\n\tTPB: configuring local url \`the.peak.beyond\`...\n\n"
@@ -76,7 +76,7 @@ sudo sed -i "2 a 127.0.1.11    the.peak.beyond" /etc/hosts
 
 printf "\n\tTPB: installing php...\n\n"
 # install php
-sudo apt-get install -y -qq php phpmyadmin libapache2-mod-php php-mcrypt php-mysql php-curl php-gd php-mbstring php-gettext php-xml php-xmlrpc
+sudo apt-get install -y -qq php libapache2-mod-php php-mcrypt php-mysql php-curl php-gd php-mbstring php-gettext php-xml php-xmlrpc
 sudo phpenmod mcrypt
 sudo phpenmod mbstring
 printf "\n\tTPB: reloading apache...\n\n"
@@ -122,7 +122,7 @@ sudo chown tpb /home/tpb/.xprofile
 sudo cp ./config/.xprofile /home/kiosk/.xprofile
 sudo chown kiosk /home/kiosk/.xprofile
 
-xhost +SI:localuser:kiosk
+sudo xhost +SI:localuser:kiosk
 
 printf "\n\tTPB: configuring kiosk user auto-login...\n\n"
 
@@ -145,12 +145,15 @@ sudo passwd -d kiosk
 sudo mkdir -p /home/kiosk/.config/autostart
 sudo cp ./config/gdm/kiosk.desktop /home/kiosk/.config/autostart/kiosk.desktop
 sudo chmod +x /home/kiosk/.config/autostart/kiosk.desktop
-sudo ln -sf /home/kiosk/.config/autostart/kiosk.desktop /home/kiosk/desktop/kiosk.desktop
+# add shortcut to desktop
+sudo mkdir -p /home/kiosk/Desktop
+sudo chown kiosk:kiosk /home/kiosk/Desktop
+sudo ln -sf /home/kiosk/.config/autostart/kiosk.desktop /home/kiosk/Desktop/kiosk.desktop
 
 # install browser boot script
 sudo rm /home/kiosk/kiosk.sh
 sudo cp ./scripts/kiosk.sh /home/kiosk/kiosk.sh
-sudo chmod 744 /home/kiosk/kiosk.sh
+sudo chmod 755 /home/kiosk/kiosk.sh
 
 # make sure everything in kiosk home is owned by kiosk
 sudo chown -R kiosk:kiosk ~kiosk
@@ -172,13 +175,20 @@ sudo chmod +x /tmp/tpb/drivers/printer/install64
 sudo /tmp/tpb/drivers/printer/install64
 
 # install printer certificate
-certutil -d sql:$HOME/.pki/nssdb -A -t TC -n  "QZ Industries, LLC" -i /opt/qz-tray/auth/qz-tray.crt
+sudo certutil -d sql:$HOME/.pki/nssdb -A -t TC -n  "QZ Industries, LLC" -i /opt/qz-tray/auth/qz-tray.crt
 ##
 # install and configure teamViewer
 ##
 printf "\n\tTPB: installing TeamViewer...\n\n"
 
-wget https://download.teamviewer.com/download/teamviewer_i386.deb -O /tmp/tpb/teamviewer.deb
+# use downloaded copy of TW
+if [ -f teamviewer_i386.deb ]; then 
+  sudo cp -p teamviewer.deb /tmp/tpb/teamviewer.deb
+fi
+# download otherwise
+if [ ! -f /tmp/tpb/teamviewer.deb ]; then 
+  sudo wget https://download.teamviewer.com/download/teamviewer_i386.deb -O /tmp/tpb/teamviewer.deb
+fi 
 sudo -E apt-get -qq -y install /tmp/tpb/teamviewer.deb
 # sudo cp ./config/teamviewer/teamviewerd.service /etc/systemd/system/teamviererd.service
 # sudo initctl reload-configuration
