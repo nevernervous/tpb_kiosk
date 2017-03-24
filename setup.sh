@@ -183,7 +183,7 @@ printf "\n\tTPB: installing TeamViewer...\n\n"
 
 # use downloaded copy of TW
 if [ -f teamviewer_i386.deb ]; then 
-  sudo cp -p teamviewer.deb /tmp/tpb/teamviewer.deb
+  sudo cp -p teamviewer_i386.deb /tmp/tpb/teamviewer.deb
 fi
 # download otherwise
 if [ ! -f /tmp/tpb/teamviewer.deb ]; then 
@@ -208,4 +208,10 @@ sudo systemctl enable teamviewerd.service
 sudo systemctl daemon-reload
 sudo systemctl restart teamviewerd
 
+
+# run sync setup
+echo "setup kiosk sync"
+sudo ./scripts/sync-setup.sh
+
 printf "\n\t***************************\n\t\tTPB KIOSK INSTALL COMPLETE!\n\t***************************\n"
+

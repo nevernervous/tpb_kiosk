@@ -13,9 +13,21 @@
 #   files location on the server
 SITE=site1
 
+# define where the script will reside
+DIR=/tmp/tpb
+
 # if we got a name as an argument, use it instead
 if [ "$1" != "" ]; then
 	SITE="$1"
+fi
+
+# if there is a config file, read from it
+if [ -f $DIR/site.txt ]; then
+	SITE=`cat $DIR/site.txt`;
+fi
+
+if [ $SITE == "" ]; then
+	echo "can't detect site name. exit..."; exit 0;
 fi
 
 echo "CUSTOMER NAME: $SITE"
@@ -24,7 +36,7 @@ echo "CUSTOMER NAME: $SITE"
 # sync files 
 # ----------------------------------------------------------
 # ! this will delete local files
-echo "sync files"
+echo "sync files from $SITE.thepeakbeyond.com"
 rsync -avh --progress --delete $SITE@$SITE.thepeakbeyond.com:/var/www/$SITE/ /var/www/html/
 
 # permissions
