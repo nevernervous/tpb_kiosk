@@ -55,6 +55,8 @@
 
 	</div><!-- .global-container -->
 
+	<div class="touch-feedback"></div>
+
 	<?php wp_footer(); ?>
 
 	<?php if ( $urls = tpb_get_objects() ): ?>

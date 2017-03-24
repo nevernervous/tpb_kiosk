@@ -5,6 +5,7 @@
 var site = (function() {
 	var activeObject = false;
 	var recognitionDelay = 1000;
+	var virtualKeyboard = false;
 
 	/**
 	 * Init
@@ -24,6 +25,9 @@ var site = (function() {
 				media : {}
 			}
 		});
+
+		// Update files asynchronously
+		updateFiles();
 	}
 
 
@@ -59,7 +63,11 @@ var site = (function() {
 		$('body').on(userEvent, 'label', checkInput);
 		$('body').on(userEvent, '.btn-submit', submitForm);
 		$('body').on(userEvent, '.input-text', inputTextFocus);
-		$('body').on(userEvent, '#osk-container li', keyboardLiTouch);
+
+		$('body').on(userEvent, touchFeedback);
+
+		if (virtualKeyboard)
+			$('body').on(userEvent, '#osk-container li', keyboardLiTouch);
 
 		$('.site-sidebar').on('stateactive stateinactive stateinfo statecheckout', switchSidebar);
 		$('.site-sidebar .sidebar-areas').on('touchstart touchmove touchend', touchesHandler);
@@ -612,14 +620,16 @@ var site = (function() {
 		setTimeout(introScreen, 500, newScreen);
 
 		// Virtual keyboard
-		if (newScreen.hasClass('screen-checkout')) {
-			$('.site-main .input-text').onScreenKeyboard({
-		        'rewireReturn': 'Continue'
-			});
-		}
+		if (virtualKeyboard) {
+			if (newScreen.hasClass('screen-checkout')) {
+				$('.site-main .input-text').onScreenKeyboard({
+			        'rewireReturn': 'Continue'
+				});
+			}
 
-		// Hide keyboard
-		$('#osk-container:visible .osk-hide').click();
+			// Hide keyboard
+			$('#osk-container:visible .osk-hide').click();
+		}
 
 		// Slider
 		slider.init();
@@ -1910,6 +1920,63 @@ var site = (function() {
 
 
 	/**
+	 * Touch feedback
+	 */
+	var touchFeedback = function(e) {
+		var feedback = $('.touch-feedback');
+
+		// Get touch coordinates
+		var x = e.touches[e.touches.length-1].pageX;
+		var y = e.touches[e.touches.length-1].pageY;
+
+		feedback.css({top: y, left: x});
+
+		// Animate
+		var tl = new TimelineLite();
+		tl.pause();
+
+		tl.fromTo(
+			feedback,
+			0.4,
+			{
+				scale: 0
+			},
+			{
+				scale: 1
+			},
+			0
+		);
+
+		tl.fromTo(
+			feedback,
+			0.20,
+			{
+				alpha: 1
+			},
+			{
+				alpha: 0
+			},
+			0.20
+		);
+
+		tl.play();
+		// TweenMax.fromTo(
+		// 	feedback,
+		// 	0.3,
+		// 	{
+		// 		alpha: 1,
+		// 		scale: 0
+		// 	},
+		// 	{
+		// 		alpha: 0,
+		// 		scale: 1,
+		// 		ease: Linear.easeNone
+		// 	}
+		// );
+	}
+
+
+	/**
 	 * Touch scroll
 	 */
 	var touchScroll = function(e) {
@@ -2141,6 +2208,7 @@ var site = (function() {
 		tl.play();
 	}
 
+
 	/**
 	 * Reset session
 	 */
@@ -2151,7 +2219,6 @@ var site = (function() {
 				'action': 'tpb_reset_session'
 			},
 			function(response) {
-				//console.debug(response);
 				response = jQuery.parseJSON(response);
 
 				if (response.success == 1) {
@@ -2164,9 +2231,24 @@ var site = (function() {
 	}
 
 
+	/**
+	 * Update files
+	 */
+	var updateFiles = function() {
+		$.post(
+			WRK.ajax_url,
+			{
+				'action': 'tpb_update_files'
+			},
+			function(response) {
+				console.debug(response);
+			}
+		);
+	}
+
 
 	/**
-	 * Reset session
+	 * Switch screen tabs
 	 */
 	var switchScreenTabs = function() {
 		if (switchTabWait)
