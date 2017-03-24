@@ -56,15 +56,15 @@ DB_USER=`cat $FILE | grep DB_USER | sed "s/'/ /g" | awk '{print $4}'`
 DB_PASSWORD=`cat $FILE | grep DB_PASSWORD | sed "s/'/ /g" | awk '{print $4}'`
 DB_HOST=`cat $FILE | grep DB_HOST | sed "s/'/ /g" | awk '{print $4}'`
 
-echo $DB_NAME
-echo $DB_USER
-echo $DB_PASSWORD
-echo $DB_HOST
+#echo $DB_NAME
+#echo $DB_USER
+#echo $DB_PASSWORD
+#echo $DB_HOST
 
 # get the db on the web server, then copy it across
 echo "Get DB from server:"
 CMD="cd; mysqldump -q -h $DB_HOST -u $DB_USER -p$DB_PASSWORD $DB_NAME > $DB_NAME.sql && gzip -f $DB_NAME.sql"
-echo $CMD
+#echo $CMD
 ssh $SITE@$SITE.thepeakbeyond.com $CMD
 scp $SITE@$SITE.thepeakbeyond.com:~/$DB_NAME.sql.gz .
 ls -lh $DB_NAME.sql.gz
