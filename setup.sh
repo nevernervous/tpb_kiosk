@@ -3,9 +3,9 @@
 sudo printf "\n\t***************************\n\t\tTPB KIOSK INSTALL\n\t***************************\n"
 
 if sudo -n true 2>/dev/null; then
-    echo "\n\tTPB: Access granted."
+    printf "\n\tTPB: Access granted."
 else
-    echo "\n\tTPB: Access denied... bad password? \n\tExiting now."
+    printf "\n\tTPB: Access denied... bad password? \n\tExiting now."
     exit
 fi
 
@@ -18,9 +18,20 @@ sudo apt-get -y -qq remove --purge libreoffice*
 sudo apt-get -y -qq clean
 sudo apt-get -y -qq autoremove
 
+printf "\n\tTPB: updating system packages...\n\n"
+sudo apt-get -y -qq update
+sudo apt-get -y -qq upgrade
+sudo apt-get -y -qq autoremove
+
+# install some required packages
+apt-get install curl unzip
+
 printf "\n\tTPB: copying build to disk...\n\n"
 
 # copy build files to disk
+# clean-up old install if present
+sudo rm -rf /tmp/tpb/
+# create new dir and copy files
 sudo mkdir -p /tmp/tpb/
 #unzip -o -qq ./latestbuild.zip -d /tmp/tpb/
 sudo rsync -avh ./latestbuild /tmp/tpb/
@@ -32,11 +43,6 @@ sudo cp -r /tmp/tpb/latestbuild/www/* /var/www/html
 
 # copy .htaccess to apache dir
 sudo cp ./config/.htaccess /var/www/html
-
-printf "\n\tTPB: updating system packages...\n\n"
-sudo apt-get -y -qq update
-sudo apt-get -y -qq upgrade
-sudo apt-get -y -qq autoremove
 
 # install Apache
 sudo apt-get -y -qq install apache2
