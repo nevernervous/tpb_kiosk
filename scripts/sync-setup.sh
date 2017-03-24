@@ -1,3 +1,5 @@
+#!/bin/bash -e
+
 # sync
 echo "=========== Kiosk Sync setup ==========="
 DIR=/tmp/tpb
@@ -21,9 +23,12 @@ if [ ! -f "$HOME/.ssh/id_rsa" ]; then
     ssh-keygen -t rsa
 fi
     echo
-    echo "if you need to add the ssh key to the server, run this command:"
+    echo "if adding the ssh key on the web server is necessary"
+    echo "run this command on the web server (as root):"
     KEY=`cat $HOME/.ssh/id_rsa.pub`
+    echo 
     echo "echo '$KEY' >> /home/$SITE/.ssh/authorized_keys"
+    echo 
 
 # copy sync script
 if [ ! -f $DIR/sync.sh ]; then
@@ -31,12 +36,13 @@ if [ ! -f $DIR/sync.sh ]; then
 fi
 
 # install crontab 
+echo "installing crontab"
 if (! (crontab -l | grep -q sync.sh)); then
 	(crontab -l ; echo "0 3 * * * /tmp/tpb/sync.sh $SITE")| crontab -
 fi
 
 # allow www-data to run sync without asking for a password
-echo "check sudoers file"
+echo "checking sudoers file"
 if ( ! grep -q www-data /etc/sudoers ); then
     echo 'www-data ALL=(ALL) NOPASSWD: /tmp/tpb/sync.sh' >> /etc/sudoers
 fi

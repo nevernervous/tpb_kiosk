@@ -210,8 +210,8 @@ sudo systemctl restart teamviewerd
 
 
 # run sync setup
-echo "setup kiosk sync"
-sudo ./scripts/sync-setup.sh
+cd scripts
+./sync-setup.sh
 
 printf "\n\t***************************\n\t\tTPB KIOSK INSTALL COMPLETE!\n\t***************************\n"
 
