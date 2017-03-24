@@ -46,9 +46,8 @@ chown -R www-data: /var/www/html
 # get db
 # ----------------------------------------------------------
 # read db config from: 
-echo "Read server config:"
 FILE=/var/www/html/wp-config.php
-echo $FILE
+echo "Read server config:"
 
 # print original values
 DB_NAME=`cat $FILE | grep DB_NAME | sed "s/'/ /g" | awk '{print $4}'`
@@ -63,11 +62,12 @@ DB_HOST=`cat $FILE | grep DB_HOST | sed "s/'/ /g" | awk '{print $4}'`
 
 # get the db on the web server, then copy it across
 echo "Get DB from server:"
+
 CMD="cd; mysqldump -q -h $DB_HOST -u $DB_USER -p$DB_PASSWORD $DB_NAME > $DB_NAME.sql && gzip -f $DB_NAME.sql"
 #echo $CMD
 ssh $SITE@$SITE.thepeakbeyond.com $CMD
-scp $SITE@$SITE.thepeakbeyond.com:~/$DB_NAME.sql.gz .
-ls -lh $DB_NAME.sql.gz
+scp $SITE@$SITE.thepeakbeyond.com:~/$DB_NAME.sql.gz $DIR/
+ls -lh $DIR/$DB_NAME.sql.gz
 
 # ! make sure we have a good file at this point
 
@@ -75,7 +75,7 @@ ls -lh $DB_NAME.sql.gz
 # import db
 # ----------------------------------------------------------
 echo "Import DB:"
-zcat $DB_NAME.sql.gz | mysql -h localhost -u tpb --password='tpb2017' the_peak_beyond
+zcat $DIR/$DB_NAME.sql.gz | mysql -h localhost -u tpb --password='tpb2017' the_peak_beyond
 
 # ----------------------------------------------------------
 # update wp config
