@@ -10,10 +10,22 @@ if [ -f "$DIR/site.txt" ]; then
     echo "read $SITE name from $DIR/site.txt"
 fi
 
+# ask user for site name
+while true; do 
 if [ "$SITE" == "" ]; then 
     echo "input site name and press Enter"
     read SITE
-    echo $SITE > $DIR/site.txt
+    if [ "$SITE" != "" ]; then 
+        echo $SITE > $DIR/site.txt
+        break;
+    fi
+fi
+done
+
+# exit if we don't have a site name at this point
+if [ "$SITE" == "" ]; then 
+    echo "site name empty. exit..."
+    exit 0
 fi
 
 echo "setting up sync for site $SITE"

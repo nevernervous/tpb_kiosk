@@ -26,11 +26,28 @@ if [ -f $DIR/site.txt ]; then
 	SITE=`cat $DIR/site.txt`;
 fi
 
-if [ $SITE == "" ]; then
+if [ "$SITE" == "" ]; then
 	echo "can't detect site name. exit..."; exit 0;
 fi
 
 echo "CUSTOMER NAME: $SITE"
+
+# ----------------------------------------------------------
+# check if an update is needed
+# ----------------------------------------------------------
+URL="http://$SITE.thepeakbeyond.com/last.php"
+
+touch $DIR/last.txt
+local=`cat $DIR/last.txt`
+remote=`curl -s $URL`
+
+if [ "$local" == "$remote" ]; then
+    echo "no update required. exit..."
+    exit 0
+else
+    echo "update required $local != $remote"
+fi
+
 
 # ----------------------------------------------------------
 # sync files 
@@ -98,4 +115,6 @@ echo "NEW CONFIG:"
 cat $FILE | grep 'DB_[N|U|H|P]\|WP_[H|S]'
 
 
+# write down hash of latest update
+echo $remote > $DIR/last.txt
 echo "Done"
