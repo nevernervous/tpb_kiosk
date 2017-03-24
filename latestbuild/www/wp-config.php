@@ -19,6 +19,11 @@ define('WP_CACHE', true); // Added by WP Rocket
  * @package WordPress
  */
 
+# hardcode site url
+# do not remove - these are needed later for the sync script
+#define('WP_HOME','http://example.com');
+#define('WP_SITEURL','http://example.com');
+
 // ** MySQL settings - You can get this info from your web host ** //
 /** The name of the database for WordPress */
 define('DB_NAME', 'the_peak_beyond');
