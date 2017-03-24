@@ -155,7 +155,7 @@
 	* Register stuffs and remove useless metabox
 	*/
 	function tpb_init() {
-		tpb_load_customs();
+		
 	}
 	add_action( 'init', 'tpb_init', 0 );
 
@@ -342,6 +342,22 @@
     add_action( 'wp_ajax_nopriv_tpb_reset_session', 'tpb_ajax_reset_session' );
 
 
+    /**
+     * Ajax update files
+     */
+    function tpb_ajax_update_files() {
+    	$result = shell_exec( 'echo test');
+
+        echo json_encode( array(
+            'result' => $result
+        ) );
+
+    	die();
+    }
+    add_action( 'wp_ajax_tpb_update_files', 'tpb_ajax_update_files' );
+    add_action( 'wp_ajax_nopriv_tpb_update_files', 'tpb_ajax_update_files' );
+
+
    	/**
    	 * Clean cache on post save
    	 */
@@ -381,19 +397,6 @@
 /* =============================================================================
    HELPERS
    ========================================================================== */
-
-	/**
-	 * Load php files in inc/custom
-	 */
-	function tpb_load_customs() {
-		$dir = STYLESHEETPATH . '/inc/custom/';
-		$files = scandir( $dir );
-
-		foreach( $files as $file ) {
-			if ( substr( $file, -3, 3 ) == 'php' )
-				require_once( $dir . $file );
-		}
-	}
 
 
 	/**
