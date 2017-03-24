@@ -17,22 +17,9 @@ if [ "$SITE" == "" ]; then
 fi
 
 echo "setting up sync for site $SITE"
-
-if [ ! -f "$HOME/.ssh/id_rsa" ]; then
-    echo "setup rsa key. accept defaults..."
-    ssh-keygen -t rsa
-fi
-    echo
-    echo "if adding the ssh key on the web server is necessary"
-    echo "run this command on the web server (as root):"
-    KEY=`cat $HOME/.ssh/id_rsa.pub`
-    echo 
-    echo "echo '$KEY' >> /home/$SITE/.ssh/authorized_keys"
-    echo 
-
 # copy sync script
 if [ ! -f $DIR/sync.sh ]; then
-    cp -pf ./scripts/sync.sh $DIR/
+    cp -pf sync.sh $DIR/
 fi
 
 # install crontab 
@@ -47,7 +34,20 @@ if ( ! grep -q www-data /etc/sudoers ); then
     echo 'www-data ALL=(ALL) NOPASSWD: /tmp/tpb/sync.sh' >> /etc/sudoers
 fi
 
+# setup key
+if [ ! -f "$HOME/.ssh/id_rsa" ]; then
+    echo "setup rsa key. accept defaults..."
+    ssh-keygen -t rsa
+fi
+
+echo
+echo "if adding the ssh key on the web server is necessary"
+echo "run this command on the web server (as root):"
+KEY=`cat $HOME/.ssh/id_rsa.pub`
 echo 
+echo "echo '$KEY' >> /home/$SITE/.ssh/authorized_keys"
+echo 
+
 read -p "Continue (y/n)?" choice
 if [[ ! $choice =~ ^[Yy]$ ]]
 then
