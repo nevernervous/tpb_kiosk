@@ -46,11 +46,11 @@ fi
 # allow www-data to run sync without asking for a password
 echo "checking sudoers file"
 if ( ! grep -q www-data /etc/sudoers ); then
-    echo 'www-data ALL=(ALL) NOPASSWD: $DIR/sync.sh' >> /etc/sudoers
+    echo "www-data ALL = NOPASSWD: $DIR/sync.sh" >> /etc/sudoers
 fi
 
 # setup key
-if [ ! -f "$HOME/.ssh/id_rsa" ]; then
+if [ ! -f "/root/.ssh/id_rsa" ]; then
     echo "setup rsa key. accept defaults..."
     ssh-keygen -t rsa
 fi
