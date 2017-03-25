@@ -41,7 +41,7 @@ fi
 echo "check crontab"
 if ( ! crontab -l | grep -q sync.sh ); then
     echo "install new crontab"
-	echo "0 3 * * * $DIR/sync.sh $SITE" | crontab -
+	echo "0 3 * * * $DIR/sync.sh" | crontab -
 fi
 
 # allow www-data to run sync without asking for a password
