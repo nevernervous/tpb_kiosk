@@ -37,6 +37,14 @@ fi
 echo "create user: $SITE"
 adduser $SITE
 
+# ssh stuff
+echo "create ssh placeholder"
+mkdir /home/$SITE/.ssh
+chmod 700 /home/$SITE/.ssh
+touch /home/$SITE/.ssh/authorized_keys
+chmod 600 /home/$SITE/.ssh/authorized_keys
+chown -R $SITE:$SITE /home/$SITE/.ssh
+
 # -- website --
 # create document root
 echo "create /var/www/$SITE website document root"
