@@ -3,6 +3,7 @@
 # sync
 echo "=========== Kiosk Sync setup ==========="
 DIR=/var/tmp/tpb
+mkdir -p $DIR
 
 # read site name
 if [ -f "$DIR/site.txt" ]; then

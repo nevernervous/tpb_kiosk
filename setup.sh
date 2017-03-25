@@ -31,6 +31,7 @@ printf "\n\tTPB: copying build to disk...\n\n"
 # copy build files to disk
 # clean-up old install if present
 sudo rm -rf /tmp/tpb/
+sudo rm -rf /var/tmp/tpb/
 # create new dir and copy files
 sudo mkdir -p /tmp/tpb/
 #unzip -o -qq ./latestbuild.zip -d /tmp/tpb/
