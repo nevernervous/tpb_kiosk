@@ -1,0 +1,91 @@
+==== GENERAL ====
+
+there is a web server on AWS that hosts multiple instances of wordpress. one for each customer. 
+each instance has its on subdomain on .thepeakbeyond.com.
+
+for example if the customer name is apex, then the customer instance of wordpress will be on:
+apex.thepeakbeyond.com
+
+since there is one instance of wordpress on AWS and one (or multiple) kiosks for a store,
+a sync process is necessary.
+
+the sync process works as following:
+    - for each wordpress instance there is a /last.php script that will show when the last modification was made
+    - the sync script on the kiosk will check periodically for changes on the main WP instance
+    - if changes are detected, the sync script will do:
+        - sync all files from the server to the kiosk
+        - export and import the full database from the web server to the kiosk
+        - update the local config of wp
+
+the sync process relies on ssh keys to be setup on the kiosk that are accepted by the server.
+
+
+for both the server and the kiosk, the install scripts are in the tpb-install repo.
+
+==== WEB SERVER ====
+
+the webserver is on a permanent IP: 34.208.129.6
+
+- DNS setup for customer
+    each customer will require a subdomain. in goDaddy, create an A record:
+    sudomain.thepeakbeyond.com  34.208.129.6
+
+    when a customer is decommissioned, simply remove the subdomain from goDaddy.
+
+- customer setup
+    each customer will require subdomain (setup in previous step DNS) and a WordPress instance.
+    with the subdomain from the previous step, setup a new WP instance for each customer:
+
+    - in the repo, navigate to server directory
+    - run customer-add.sh script and follow the setup steps
+    
+- customer delete
+
+    - in the repo, navigate to server directory
+    - run customer-add.sh script and follow the instructions
+    
+    !! WARNING - running this script will delete all files and the database for the customer.
+
+
+- databases
+    all databases for wordpress are hosted outside the web server on an RDS instance.
+    this makes for a more secure and reliable setup.
+
+- add ssh key for the kiosk
+    during the setup phase of a kiosk, there will be a prompt to add an ssh key to the server. 
+    this step is very important, otherwise the sync process will not work.
+    
+    to add the ssh key for the kiosk:
+        - ssh to the web server
+            ssh -i linux-access.pem ubuntu@34.208.129.6
+        - become root
+            sudo su -
+        - run the command you copied from the kiosk:
+            echo 'ssh-rsa LONG_RSA_STRING_KEY' >> /home/site1/.ssh/authorized_keys
+        - press 'y' on the kiosk to continue the setup process
+        
+
+- ssh access 
+    ssh is running on two ports
+    22    - for regular access - this is restricted to certain IPs and is controlled by AWS Security Groups
+    37922 - for sync process - this is on a custom port and is open to the world. 
+            the motivation to put the sync on a custom port is that it will allow kiosks coming from dynamic IPs to operate
+             properly, even if the IP changes. 
+             All while keeping the SSH port hidden, so automated scans will not detect it, 
+             thus preventing bruteforce/hack attempts.
+
+    To add a new IP to the AWS Security groups:
+        - login to AWS
+        - go to EC2 -> Security Group
+        - select 'remote-access'
+        - in the bottom panel select 'Inbound'
+        - click 'Edit'
+        - 'Add Rule' -> SSH
+        - Source -> 'My IP'
+        - Save
+
+
+==== KIOSK SETUP ====
+- run the setup.sh script in the repo, it will take care of setting things up, including sync process.
+
+
