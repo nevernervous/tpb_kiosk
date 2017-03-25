@@ -86,6 +86,8 @@ the webserver is on a permanent IP: 34.208.129.6
 
 
 ==== KIOSK SETUP ====
+- become root:
+    sudo su -
 - run the setup.sh script in the repo, it will take care of setting things up, including sync process.
-
-
+    cd WHERE-FILES-ARE
+    ./setup.sh
