@@ -24,7 +24,7 @@ sudo apt-get -y -qq upgrade
 sudo apt-get -y -qq autoremove
 
 # install some required packages
-apt-get install curl unzip
+sudo apt-get -y -qq install curl unzip
 
 printf "\n\tTPB: copying build to disk...\n\n"
 
