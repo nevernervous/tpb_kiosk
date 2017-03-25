@@ -36,8 +36,17 @@ the webserver is on a permanent IP: 34.208.129.6
     each customer will require subdomain (setup in previous step DNS) and a WordPress instance.
     with the subdomain from the previous step, setup a new WP instance for each customer:
 
+    - ssh to the server:
+        ssh -i linux-access.pem ubuntu@34.208.129.6
+    if needed, make the key secure: 
+        chmod 600 linux-access.pem
+
+    - become root
+        sudo su -
     - in the repo, navigate to server directory
+        cd kiosk/tpb-install/server
     - run customer-add.sh script and follow the setup steps
+        ./customer-add.sh
     
 - customer delete
 

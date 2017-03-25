@@ -2,7 +2,7 @@
 
 # sync
 echo "=========== Kiosk Sync setup ==========="
-DIR=/tmp/tpb
+DIR=/var/tmp/tpb
 
 # read site name
 if [ -f "$DIR/site.txt" ]; then
@@ -39,13 +39,13 @@ fi
 # install crontab 
 echo "installing crontab"
 if (! (crontab -l | grep -q sync.sh)); then
-	(crontab -l ; echo "0 3 * * * /tmp/tpb/sync.sh $SITE")| crontab -
+	(crontab -l ; echo "0 3 * * * $DIR/sync.sh $SITE")| crontab -
 fi
 
 # allow www-data to run sync without asking for a password
 echo "checking sudoers file"
 if ( ! grep -q www-data /etc/sudoers ); then
-    echo 'www-data ALL=(ALL) NOPASSWD: /tmp/tpb/sync.sh' >> /etc/sudoers
+    echo 'www-data ALL=(ALL) NOPASSWD: $DIR/sync.sh' >> /etc/sudoers
 fi
 
 # setup key
