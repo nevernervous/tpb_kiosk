@@ -14,7 +14,7 @@
 SITE=site1
 
 # define where the script will reside
-DIR=/tmp/tpb
+DIR=/var/tmp/tpb
 
 # if we got a name as an argument, use it instead
 if [ "$1" != "" ]; then
