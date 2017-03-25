@@ -38,19 +38,25 @@ if [ ! -f $DIR/sync.sh ]; then
 fi
 
 # install crontab 
-echo "installing crontab"
-if (! (crontab -l | grep -q sync.sh)); then
-	(crontab -l ; echo "0 3 * * * $DIR/sync.sh $SITE")| crontab -
+echo "check crontab"
+if ( ! crontab -l | grep -q sync.sh ); then
+    echo "install new crontab"
+	echo "0 3 * * * $DIR/sync.sh $SITE" | crontab -
 fi
 
 # allow www-data to run sync without asking for a password
 echo "checking sudoers file"
 if ( ! grep -q www-data /etc/sudoers ); then
+    echo "add script to sudoers"
     echo "www-data ALL = NOPASSWD: $DIR/sync.sh" >> /etc/sudoers
 fi
 
 # setup key
-if [ ! -f "/root/.ssh/id_rsa" ]; then
+if [ ! -f /root/.ssh/id_rsa ]; then
+    echo "setup rsa key. accept defaults..."
+    ssh-keygen -t rsa
+fi
+if [ ! -f /root/.ssh/id_rsa.pub ]; then
     echo "setup rsa key. accept defaults..."
     ssh-keygen -t rsa
 fi
