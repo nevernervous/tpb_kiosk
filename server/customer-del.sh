@@ -68,6 +68,7 @@ deluser www-data $SITE
 
 # delete linux  user
 userdel -r $SITE
+groupdel $SITE
 
 echo "Done"
 
