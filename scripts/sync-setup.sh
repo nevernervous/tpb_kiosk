@@ -11,16 +11,18 @@ if [ -f "$DIR/site.txt" ]; then
 fi
 
 # ask user for site name
-while true; do 
-if [ "$SITE" == "" ]; then 
-    echo "input site name and press Enter"
-    read SITE
-    if [ "$SITE" != "" ]; then 
-        echo $SITE > $DIR/site.txt
-        break;
-    fi
+if [ "$SITE" == "" ]; then
+    while true; do 
+        if [ "$SITE" == "" ]; then 
+            echo "input site name and press Enter"
+            read SITE
+            if [ "$SITE" != "" ]; then 
+                echo $SITE > $DIR/site.txt
+                break;
+            fi
+        fi
+    done
 fi
-done
 
 # exit if we don't have a site name at this point
 if [ "$SITE" == "" ]; then 
@@ -51,6 +53,12 @@ if [ ! -f "$HOME/.ssh/id_rsa" ]; then
     echo "setup rsa key. accept defaults..."
     ssh-keygen -t rsa
 fi
+
+# setup ssh on a different port
+echo "configure ssh to use custom port"
+echo "Host 34.208.129.6 *.thepeakbeyond.com"  > /root/.ssh/config
+echo "    port 37922"                        >> /root/.ssh/config
+
 
 echo
 echo "if adding the ssh key on the web server is necessary"
