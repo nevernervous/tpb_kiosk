@@ -141,8 +141,9 @@ setfacl -Rdm g:editors:rwx /var/www/$SITE
 chmod 770 /var/www/$SITE
 
 # give www-data group read permissions
-echo "update group"
-usermod -aG $SITE www-data
+#echo "update group"
+#usermod -aG $SITE www-data
+# www-data will use the editors group to access the files
 
 # -- apply changes --
 # enable site in apache
