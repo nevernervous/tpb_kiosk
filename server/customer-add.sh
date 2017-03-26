@@ -132,9 +132,13 @@ cat $FILE | grep 'DB_[N|U|H|P]'
 
 # apply file permissions
 echo "apply permissions"
-chmod 770 /var/www/$SITE
-#chown -R $SITE:$SITE /var/www/$SITE
+# modify permissions to include editors group
 chown -R $SITE:editors /var/www/$SITE
+find /var/www/$SITE -type d -exec chmod 775 {} \;
+find /var/www/$SITE -type d -exec chmod g+s {} \;
+find /var/www/$SITE -type f -exec chmod 664 {} \;
+setfacl -Rdm g:editors:rwx /var/www/$SITE
+chmod 770 /var/www/$SITE
 
 # give www-data group read permissions
 echo "update group"
