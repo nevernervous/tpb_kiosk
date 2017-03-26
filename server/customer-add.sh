@@ -132,8 +132,9 @@ cat $FILE | grep 'DB_[N|U|H|P]'
 
 # apply file permissions
 echo "apply permissions"
-chmod 750 /var/www/$SITE
-chown -R $SITE:$SITE /var/www/$SITE
+chmod 770 /var/www/$SITE
+#chown -R $SITE:$SITE /var/www/$SITE
+chown -R $SITE:editors /var/www/$SITE
 
 # give www-data group read permissions
 echo "update group"
