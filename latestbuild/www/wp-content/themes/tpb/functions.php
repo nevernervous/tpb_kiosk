@@ -155,7 +155,7 @@
 	* Register stuffs and remove useless metabox
 	*/
 	function tpb_init() {
-		
+
 	}
 	add_action( 'init', 'tpb_init', 0 );
 
@@ -346,7 +346,7 @@
      * Ajax update files
      */
     function tpb_ajax_update_files() {
-    	$result = shell_exec( 'echo test');
+    	$result = shell_exec( 'sudo /var/tmp/tpb/sync.sh');
 
         echo json_encode( array(
             'result' => $result
