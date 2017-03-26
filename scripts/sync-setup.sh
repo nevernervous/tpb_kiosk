@@ -8,6 +8,7 @@ mkdir -p $DIR
 # update script (and keep permissions)
 if [ -f sync.sh ]; then
     cat sync.sh > $DIR/sync.sh
+    chmod +x $DIR/sync.sh
 fi
 
 # read site name
