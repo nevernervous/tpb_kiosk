@@ -1,9 +1,15 @@
-#!/bin/bash -e
+#!/bin/bash
 
 # sync
 echo "=========== Kiosk Sync setup ==========="
 DIR=/var/tmp/tpb
 mkdir -p $DIR
+
+# update script (and keep permissions)
+if [ -f sync.sh ]; then
+    cat sync.sh > $DIR/sync.sh
+    chmod +x $DIR/sync.sh
+fi
 
 # read site name
 if [ -f "$DIR/site.txt" ]; then
@@ -44,11 +50,18 @@ if ( ! crontab -l | grep -q sync.sh ); then
 	echo "0 3 * * * $DIR/sync.sh" | crontab -
 fi
 
-# allow www-data to run sync without asking for a password
+# setup users and permissions for sync and editing
+addgroup sync
+# add users to sync group
+for n in www-data tpb kiosk; do 
+    usermod -aG sync $n
+done
+
+# allow sync to run sync without asking for a password
 echo "checking sudoers file"
-if ( ! grep -q www-data /etc/sudoers ); then
+if ( ! grep -q '%sync' /etc/sudoers ); then
     echo "add script to sudoers"
-    echo "www-data ALL = NOPASSWD: $DIR/sync.sh" >> /etc/sudoers
+    echo "%sync ALL = NOPASSWD: $DIR/sync.sh" >> /etc/sudoers
 fi
 
 # setup key
@@ -80,7 +93,6 @@ if [[ ! $choice =~ ^[Yy]$ ]]
 then
     echo 'exit...'; exit 0; 
 fi
-
 
 echo "run sync"
 $DIR/sync.sh $SITE

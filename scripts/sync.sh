@@ -16,11 +16,6 @@ SITE=site1
 # define where the script will reside
 DIR=/var/tmp/tpb
 
-# if we got a name as an argument, use it instead
-if [ "$1" != "" ]; then
-	SITE="$1"
-fi
-
 # if there is a config file, read from it
 if [ -f $DIR/site.txt ]; then
 	SITE=`cat $DIR/site.txt`;
@@ -35,19 +30,22 @@ echo "CUSTOMER NAME: $SITE"
 # ----------------------------------------------------------
 # check if an update is needed
 # ----------------------------------------------------------
-URL="http://$SITE.thepeakbeyond.com/last.php"
+# check if we need to do a lite update, unless 'now' is specified as a keyword
+if [ "$1" != "now" ]; then
 
-touch $DIR/last.txt
-local=`cat $DIR/last.txt`
-remote=`curl -s $URL`
+    URL="http://$SITE.thepeakbeyond.com/last.php"
 
-if [ "$local" == "$remote" ]; then
-    echo "no update required. exit..."
-    exit 0
-else
-    echo "update required $local != $remote"
+    touch $DIR/last.txt
+    local=`cat $DIR/last.txt`
+    remote=`curl -s $URL`
+
+    if [ "$local" == "$remote" ]; then
+        echo "no update required. exit..."
+        exit 0
+    else
+        echo "update required $local != $remote"
+    fi
 fi
-
 
 # ----------------------------------------------------------
 # sync files 
@@ -57,7 +55,17 @@ echo "sync files from $SITE.thepeakbeyond.com"
 rsync -avh --progress --delete $SITE@$SITE.thepeakbeyond.com:/var/www/$SITE/ /var/www/html/
 
 # permissions
-chown -R www-data: /var/www/html
+# make sync group also be able to modify local files 
+echo "update permissions"
+chown -R www-data:sync /var/www/html
+find /var/www/html -type d -exec chmod 775 {} \;
+find /var/www/html -type f -exec chmod 664 {} \;
+
+# make sure the /var/www/html files always have the right permissions
+setfacl -Rdm u:www-data:rw /var/www/html
+setfacl -Rdm g:sync:rwx    /var/www/html
+find /var/www/html -type d -exec chmod g+s {} \;
+
 
 # ----------------------------------------------------------
 # get db
