@@ -66,8 +66,9 @@ var site = (function() {
 
 		$('body').on(userEvent, touchFeedback);
 
-		if (virtualKeyboard)
-			$('body').on(userEvent, '#osk-container li', keyboardLiTouch);
+		// Causes bug on linux/chromium install
+		// if (virtualKeyboard)
+		// 	$('body').on(userEvent, '#osk-container li', keyboardLiTouch);
 
 		$('.site-sidebar').on('stateactive stateinactive stateinfo statecheckout', switchSidebar);
 		$('.site-sidebar .sidebar-areas').on('touchstart touchmove touchend', touchesHandler);
@@ -1384,9 +1385,18 @@ var site = (function() {
 		}
 
 		if (e.type == 'object_recognized' && activeObject === false) {
-			// New object placed on screen
-			activeObject = e.detail.pattern;
-			objectOn();
+			console.debug('New objet recognized ('+e.detail.pattern+'), waiting for init in '+recognitionDelay+'ms');
+
+			clearTimeout(objectOnTimeout);
+			objectOnTimeout = undefined;
+
+			// New object placed on screen, prepare to do corresponding actions after delay
+			objectOnTimeout = setTimeout(function() {
+				activeObject = e.detail.pattern;
+				objectOn();
+				objectOnTimeout = undefined;
+				console.debug('New objet inited ('+e.detail.pattern+')');
+			}, recognitionDelay );
 
 			clearTimeout(objectOffTimeout);
 			objectOffTimeout = undefined;
@@ -1394,16 +1404,27 @@ var site = (function() {
 			// Active object has been replaced on screen within timeout
 			clearTimeout(objectOffTimeout);
 			objectOffTimeout = undefined;
+
+			console.debug('Active objet recognized again ('+e.detail.pattern+'), doing nothing');
 		} else if (e.type == 'no_object_recognized' && e.detail.touch_map.length == 0 && activeObject !== false && objectOffTimeout == undefined) {
+			console.debug('Objet pulled off, waiting for clearing screen in '+recognitionDelay+'ms');
+
 			// Object has been removed, prepare to do corresponding actions after delay
 			objectOffTimeout = setTimeout(function() {
 				activeObject = false;
 				objectOff();
 				objectOffTimeout = undefined;
+
+				console.debug('Objet off');
 			}, recognitionDelay );
+		} else if (e.type == 'no_object_recognized' && objectOffTimeout == undefined && objectOnTimeout != undefined) {
+			clearTimeout(objectOnTimeout);
+			objectOnTimeout = undefined;
+
+			console.debug('No object recognized, clear object initialization');
 		}
 	}
-	var objectOffTimeout = undefined;
+	var objectOffTimeout = objectOnTimeout = undefined;
 
 
 	/**
