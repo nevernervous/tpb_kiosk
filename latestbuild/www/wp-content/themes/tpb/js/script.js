@@ -4,7 +4,7 @@
 
 var site = (function() {
 	var activeObject = false;
-	var recognitionDelay = 800;
+	var recognitionDelay = 0;
 	var virtualKeyboard = true;
 
 	/**
