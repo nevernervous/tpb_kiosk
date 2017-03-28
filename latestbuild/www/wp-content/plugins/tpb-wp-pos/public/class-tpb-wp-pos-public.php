@@ -187,8 +187,10 @@ class Tpb_Wp_Pos_Public {
 		foreach($order as $o) {
 			$prints.='Product: '.$o['title'].' ('.$o['sku'].')'.'\n';
 			$text.='Product: '.$o['title'].' ('.$o['sku'].')'.'<br>';
+			$text.='Size: '.$o['unit'].'<br>';
 			$prints.='Quantity: '.$o['qty'].'\n';
 			$text.='Quantity: '.$o['qty'].'<br>' ;
+			
 			$prints.='Cost: '.$o['total_price'].'\n\n';
 			$text.='Cost: '.$o['total_price'].'<br>' .'<br>' ;
 			$total+=intval($o['total_price']);
