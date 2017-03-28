@@ -1,5 +1,5 @@
 A_DISTANCE = 17.1;
-MARGIN = 4.7;
+MARGIN = 6;
 
 // get the (flawed) screenPixel To MillimeterX value.
 var calibration = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
@@ -18,7 +18,7 @@ function _classify_distance(dst){
 
 	if (A_DISTANCE == null) {
 		A_DISTANCE = 37;
-		console.log("You're using an undefined A_DISTANCE, we set it to ", A_DISTANCE, " but you probably don't want that.")
+		//console.log("You're using an undefined A_DISTANCE, we set it to ", A_DISTANCE, " but you probably don't want that.")
 	}
 
 	const b_distance = A_DISTANCE * Math.sqrt(2);
@@ -28,7 +28,7 @@ function _classify_distance(dst){
 
 	if (MARGIN == null){
 		MARGIN = 7;
-		console.log("You're using an undefined A_DISTANCE, we set it to ", A_DISTANCE, " but you probably don't want that.")
+		//console.log("You're using an undefined A_DISTANCE, we set it to ", A_DISTANCE, " but you probably don't want that.")
 	}
 
 	// Return early for out of bounds.
@@ -41,13 +41,13 @@ function _classify_distance(dst){
 	if (dst > (d_distance - MARGIN) && dst < (d_distance + MARGIN)){   return 'D' }
 	if (dst > (e_distance - MARGIN) && dst < (e_distance + MARGIN)){   return 'E' }
 
-	console.warn("Distance was not in any bound", dst);
+	//console.warn("Distance was not in any bound", dst);
 	return ''
 }
 
 
 if(typeof(classify_distance) == "undefined"){
-	console.log("Using default distance classification, which may not be what you want if a better classifier is available");
+	//console.log("Using default distance classification, which may not be what you want if a better classifier is available");
 	classify_distance = _classify_distance
 }
 
@@ -92,14 +92,14 @@ var process_touches = function(evt){
 			}
 		}
 	}
-	console.log('touch_map', touch_map, 'distances', distances, 'vertices', vertices);
+	//console.log('touch_map', touch_map, 'distances', distances, 'vertices', vertices);
 
 	let obj_key = [];
 	for(let key in vertices){
 		obj_key.push(vertices[key])
 	}
 	obj_key = obj_key.sort().join("");
-	console.log('obj key', obj_key, obj_key.length);
+	//console.log('obj key', obj_key, obj_key.length);
 
 	if (OBJECTS.hasOwnProperty(obj_key)){
 			var event = new CustomEvent('object_recognized', {detail: {
@@ -111,8 +111,8 @@ var process_touches = function(evt){
 				'touch_map': touch_map
 			}});
 
-			console.log('marker target: ', evt.target);
-			console.log('marker event: ', event);
+			//console.log('marker target: ', evt.target);
+			//console.log('marker event: ', event);
 
 			evt.target.dispatchEvent(event)
 	} else {
