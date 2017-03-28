@@ -40,7 +40,7 @@ var site = (function() {
 			userEvent = 'click';
 
 		$('.screen-intro').on(userEvent, hideScreenIntro);
-		$('body').on(userEvent, '.btn-cart-back, .btn-checkout-back, .btn-catalogue', showScreenCatalogue);
+		$('body').on(userEvent, '.btn-cart-back, .btn-checkout-back, .btn-catalogue, .link-catalogue', showScreenCatalogue);
 		$('body').on(userEvent+(userEvent=='touchstart'?' touchmove touchend':''), '.link-product', showScreenProduct);
 		$('body').on(userEvent, '.btn-add-to-cart', showScreenAddToCart);
 		$('body').on(userEvent, '.btn-cart-checkout, .toggle-cart', showScreenCheckout);

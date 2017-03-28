@@ -1862,11 +1862,27 @@ img {
 }
 .screen-select .phrase {
   position: absolute;
-  top: 665px;
+  top: 615px;
   left: 12px;
   font-size: 90px;
   font-weight: 200;
   line-height: 1.1;
+}
+.screen-select .phrase small {
+  display: block;
+  margin-top: 20px;
+  font-size: 58px;
+}
+.screen-select .phrase small div {
+  display: inline-block;
+  padding: 25px 40px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 50px;
+  font-size: 50px;
+  line-height: 1;
+}
+.screen-select .phrase small div:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 /* =============================================================================
