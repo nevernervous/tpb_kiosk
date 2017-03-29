@@ -27,7 +27,7 @@ var site = (function() {
 		});
 
 		// Update files asynchronously
-		updateFiles();
+		//updateFiles();
 	}
 
 
