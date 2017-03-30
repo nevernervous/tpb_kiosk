@@ -2153,8 +2153,10 @@ var site = (function() {
 			var field = activeStep.find('[name="user_name"]');
 			var userName = field.val();
 
-			if (userName == '')
+			if (userName == '' || activeStep.find('.btn-checkout-next').hasClass('is-sent'))
 				return;
+
+			activeStep.find('.btn-checkout-next').addClass('is-sent');
 
 			$.post(
 				WRK.ajax_url,
@@ -2175,6 +2177,7 @@ var site = (function() {
 						$(window).trigger('printorder');
 					} else {
 						alert('Error while saving user name, please try again.');
+						activeStep.find('.btn-checkout-next').removeClass('is-sent');
 					}
 
 					$('#osk-container:visible .osk-hide').click();
