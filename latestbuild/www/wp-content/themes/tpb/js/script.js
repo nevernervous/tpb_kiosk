@@ -423,9 +423,13 @@ var site = (function() {
 	var showScreenInactive = function() {
 		// Selectors
 		var screen = $('.screen-inactive');
-		if (!$('.screen-reset').is(':visible'))
+		if (!$('.screen-reset').is(':visible')) {
 			toggleScreenUser(screen);
+
+			resetSessionTimeout = setTimeout(resetSession, inactivityDelay);
+		}
 	}
+	var resetSessionTimeout = null;
 
 
 	/**
@@ -435,6 +439,8 @@ var site = (function() {
 		// Selectors
 		var screen = $('.screen-inactive');
 		toggleScreenUser(screen);
+
+		clearTimeout(resetSessionTimeout);
 	}
 
 
@@ -594,8 +600,8 @@ var site = (function() {
 		if (newScreen.hasClass('screen-product')) {
 			if (newScreen.attr('data-pattern') === activeObject) {
 				$('.sidebar-areas .area-checkout .product-prices').remove();
-				newScreen.find('.product-prices').appendTo($('.sidebar-areas .area-checkout .area-text'));
-				newScreen.find('.product-add-to-cart').remove();
+				newScreen.find('.product-prices').clone().appendTo($('.sidebar-areas .area-checkout .area-text'));
+				// newScreen.find('.product-add-to-cart').remove();
 			}
 		} else {
 			switchTabWait = false;
@@ -1365,6 +1371,8 @@ var site = (function() {
 
 		// Process touches with OOR
 		process_touches(e)
+
+		inactivityHandler();
 
 		e.preventDefault && e.preventDefault();
 		e.stopPropagation && e.stopPropagation();
