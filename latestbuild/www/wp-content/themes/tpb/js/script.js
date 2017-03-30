@@ -64,7 +64,8 @@ var site = (function() {
 		$('body').on(userEvent, '.btn-submit', submitForm);
 		$('body').on(userEvent, '.input-text', inputTextFocus);
 
-		$('body').on(userEvent, touchFeedback);
+		if (userEvent == 'touchstart')
+			$('body').on(userEvent, touchFeedback);
 
 		// Causes bug on linux/chromium install
 		// if (virtualKeyboard)
