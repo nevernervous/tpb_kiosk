@@ -2779,6 +2779,32 @@ img {
   filter: progid:DXImageTransform.Microsoft.Alpha(enabled=false);
   opacity: 1;
 }
+.screen-checkout .form-checkout .btn-checkout-next {
+  margin: 0 auto;
+  overflow: hidden;
+  width: 220px;
+  transition: border 0.3s ease, background 0.3s ease, width 0.3s ease;
+  white-space: nowrap;
+}
+.screen-checkout .form-checkout .btn-checkout-next .text-on,
+.screen-checkout .form-checkout .btn-checkout-next .text-off {
+  display: block;
+  margin: 0 auto;
+}
+.screen-checkout .form-checkout .btn-checkout-next .text-off {
+  display: none;
+}
+.screen-checkout .form-checkout .btn-checkout-next.is-sent {
+  width: 300px;
+  border-color: rgba(255, 255, 255, 0);
+  background-color: rgba(255, 255, 255, 0.2);
+}
+.screen-checkout .form-checkout .btn-checkout-next.is-sent .text-on {
+  display: none;
+}
+.screen-checkout .form-checkout .btn-checkout-next.is-sent .text-off {
+  display: block;
+}
 .screen-checkout .step-thank-you .message {
   display: flex;
   height: 100%;

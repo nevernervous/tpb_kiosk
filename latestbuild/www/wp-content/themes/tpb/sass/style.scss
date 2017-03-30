@@ -2953,6 +2953,42 @@ img {
 			font: 200 44px/80px $raleway;
 			@include placeholder();
 		}
+
+
+		.btn-checkout-next {
+			margin: 0 auto;
+			overflow: hidden;
+			width: 220px;
+
+			transition: border 0.3s ease, background 0.3s ease, width 0.3s ease;
+
+			white-space: nowrap;
+
+			.text-on,
+			.text-off {
+				display: block;
+				margin: 0 auto;
+			}
+
+			.text-off {
+				display: none;
+			}
+
+			&.is-sent {
+				width: 300px;
+
+				border-color: rgba($white, 0);
+				background-color: rgba($white, 0.2);
+
+				.text-on {
+					display: none;
+				}
+
+				.text-off {
+					display: block;
+				}
+			}
+		}
 	}
 
 	.step-thank-you {
