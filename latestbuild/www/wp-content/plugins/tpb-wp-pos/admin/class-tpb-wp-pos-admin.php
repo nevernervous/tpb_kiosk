@@ -61,7 +61,7 @@ class Tpb_Wp_Pos_Admin {
 
         // Scheduled actions
         add_filter( 'cron_schedules', array( $this, 'tpb_cron_schedules' ) );
-        //add_action( 'tpb_cron_sync', array( $this, 'sync_data_light' ) );
+        add_action( 'tpb_cron_sync', array( $this, 'sync_data_light' ) );
         if ( ! wp_next_scheduled( 'tpb_cron_sync' ) ) {
             wp_schedule_event( time(), 'ten_minutes',  'tpb_cron_sync' );
         }
@@ -278,15 +278,26 @@ class Tpb_Wp_Pos_Admin {
             set_transient( 'tpb_sync_chunks', $chunks );
             set_transient( 'tpb_sync_total', $total );
 
-            // Disable all products before importing new ones
-            $wpdb->update(
-                $wpdb->posts,
-                array( 'post_status' => 'trash' ),
-                array( 'post_type' => 'product' ),
-                array( '%s' ),
-                array( '%s' )
-            );
+            // Products to ignore
+            $ids = $wpdb->get_col( $wpdb->prepare(
+                "
+                SELECT      pm.post_id
+                FROM        $wpdb->postmeta pm
+                WHERE       pm.meta_key = %s
+                            AND pm.meta_value LIKE %s
+                ",
+                'sync',
+                '%post_status%'
+            ) );
 
+            // Disable all products before importing new ones
+            $status = $wpdb->query( $wpdb->prepare(
+                "
+                UPDATE $wpdb->posts
+                SET post_status = 'trash'
+                WHERE post_type = 'product' ".
+                    ($ids ? "AND ID NOT IN (" . implode( ',', $ids ) . ")":"")
+            ) );
         }
 
         $total_inserted = 0;
@@ -299,6 +310,7 @@ class Tpb_Wp_Pos_Admin {
         // Parse products
         foreach( $products as $product ) {
             $product_id = $product['record_id'];
+            $post = $products_data[$product_id];
             $post_id = $products_data[$product_id]->ID;
 
             $prices = explode( ',',  $product['prices'] );
@@ -330,6 +342,21 @@ class Tpb_Wp_Pos_Admin {
             // Product already exists
             if ( $post_id ) {
                 $post_data['ID'] = $post_id;
+
+                // Ignore fields from sync
+                if ( $sync_fields = get_field( 'sync', $post_id ) ) {
+                    foreach( $sync_fields as $field ) {
+                        if ( isset( $post_data[$field] ) )
+                            unset( $post_data[$field] );
+                        else if ( isset( $post_data['meta_input'][$field] ) )
+                            unset( $post_data['meta_input'][$field] );
+                    }
+                }
+
+                if ( !isset( $post_data['post_title'] ) || !$post_data['post_title'] )
+                    $post_data['post_title'] = $post->post_title;
+                if ( !isset( $post_data['post_status'] ) || !$post_data['post_status'] )
+                    $post_data['post_status'] = $post->post_status;
 
                 // If product has not been updated since last time, continue
                 if (strtotime( $products_data[$product_id]->post_modified ) > strtotime( $product['last_updated'] ) ) {
@@ -801,6 +828,10 @@ class Tpb_Wp_Pos_Admin {
     public function sync_data_light() {
         global $wpdb;
 
+        $home = get_option( 'home' );
+        if ( strpos( $home, 'the.peak.beyond' ) !== false )
+            return false;
+
         $data_url = get_option( 'tpb_wp_pos_data_url' );
 
         // Get data
@@ -896,7 +927,7 @@ class Tpb_Wp_Pos_Admin {
     		global $wpdb;
 
     		$results = $wpdb->get_results( $wpdb->prepare( "
-		        SELECT p.ID, pm.meta_value, p.post_modified FROM {$wpdb->postmeta} pm
+		        SELECT p.ID, p.post_title, p.post_status, pm.meta_value, p.post_modified FROM {$wpdb->postmeta} pm
 		        LEFT JOIN {$wpdb->posts} p ON p.ID = pm.post_id
 		        WHERE pm.meta_key = '%s'
 		        AND p.post_type = '%s'
