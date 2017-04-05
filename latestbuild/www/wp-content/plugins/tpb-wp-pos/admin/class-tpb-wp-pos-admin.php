@@ -291,13 +291,13 @@ class Tpb_Wp_Pos_Admin {
             ) );
 
             // Disable all products before importing new ones
-            $status = $wpdb->query( $wpdb->prepare(
+            $status = $wpdb->query(
                 "
                 UPDATE $wpdb->posts
                 SET post_status = 'trash'
                 WHERE post_type = 'product' ".
                     ($ids ? "AND ID NOT IN (" . implode( ',', $ids ) . ")":"")
-            ) );
+            );
         }
 
         $total_inserted = 0;
@@ -840,13 +840,25 @@ class Tpb_Wp_Pos_Admin {
 
         $total = count($products);
 
+        // Products to ignore
+        $ids = $wpdb->get_col( $wpdb->prepare(
+            "
+            SELECT      pm.post_id
+            FROM        $wpdb->postmeta pm
+            WHERE       pm.meta_key = %s
+                        AND pm.meta_value LIKE %s
+            ",
+            'sync',
+            '%post_status%'
+        ) );
+
         // Disable all products before importing new ones
-        $wpdb->update(
-            $wpdb->posts,
-            array( 'post_status' => 'trash' ),
-            array( 'post_type' => 'product' ),
-            array( '%s' ),
-            array( '%s' )
+        $status = $wpdb->query(
+            "
+            UPDATE $wpdb->posts
+            SET post_status = 'trash'
+            WHERE post_type = 'product' ".
+                ($ids ? "AND ID NOT IN (" . implode( ',', $ids ) . ")":"")
         );
 
         $total_updated = 0;
@@ -857,6 +869,7 @@ class Tpb_Wp_Pos_Admin {
         // Parse products
         foreach( $products as $product ) {
             $product_id = $product['record_id'];
+            $post = $products_data[$product_id];
             $post_id = $products_data[$product_id]->ID;
 
             // Product doesn't exist, continue
@@ -890,6 +903,21 @@ class Tpb_Wp_Pos_Admin {
                     'sku'           => $product['SKU']
                 )
             );
+
+            // Ignore fields from sync
+            if ( $sync_fields = get_field( 'sync', $post_id ) ) {
+                foreach( $sync_fields as $field ) {
+                    if ( isset( $post_data[$field] ) )
+                        unset( $post_data[$field] );
+                    else if ( isset( $post_data['meta_input'][$field] ) )
+                        unset( $post_data['meta_input'][$field] );
+                }
+            }
+
+            if ( !isset( $post_data['post_title'] ) || !$post_data['post_title'] )
+                $post_data['post_title'] = $post->post_title;
+            if ( !isset( $post_data['post_status'] ) || !$post_data['post_status'] )
+                $post_data['post_status'] = $post->post_status;
 
             // Insert/update post
             $inserted_id = wp_insert_post( $post_data );
