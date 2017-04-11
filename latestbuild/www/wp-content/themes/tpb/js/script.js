@@ -62,7 +62,7 @@ var site = (function() {
 		$('body').on('change', '.list-filter', listFilter);
 		$('body').on(userEvent, 'label', checkInput);
 		$('body').on(userEvent, '.btn-submit', submitForm);
-		$('body').on(userEvent, '.input-text', inputTextFocus);
+		//$('body').on(userEvent, '.input-text', inputTextFocus);
 
 		if (userEvent == 'touchstart')
 			$('body').on(userEvent, touchFeedback);
