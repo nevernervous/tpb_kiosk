@@ -46,12 +46,51 @@
 		);
 	}
 
+	/**
+	 * Ajax sync data light
+	 */
+	function ajaxSyncDataLight(e) {
+
+		if (e != undefined) {
+			e.preventDefault();
+
+			// Selectors
+			var btn = $('#sync-btn-light');
+			var loader = $('<div class="loader"><div class="spinner is-active"></div> <div class="text">Syncing...</div></div>');
+
+			// Add loader
+			btn.after(loader);
+			btn.hide();
+		}
+
+		// Action
+		$.post(
+			ajaxurl,
+			{
+				'action': 'tpb_sync_data_light'
+			},
+			function(response) {
+				// Selectors
+				var btn = $('#sync-btn-light');
+				var loader = btn.next('.loader');
+
+				response = jQuery.parseJSON(response);
+
+				console.debug(response);
+
+				btn.show();
+				loader.remove();
+			}
+		);
+	}
+
 
 	/**
 	 * DOM ready
 	 */
 	$(function() {
 		$('#sync-btn').on('click', ajaxSyncData);
+		$('#sync-btn-light').on('click', ajaxSyncDataLight);
 	});
 
 })( jQuery );

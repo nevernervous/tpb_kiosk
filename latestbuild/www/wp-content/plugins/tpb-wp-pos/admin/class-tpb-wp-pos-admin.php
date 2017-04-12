@@ -58,6 +58,7 @@ class Tpb_Wp_Pos_Admin {
 
         // Ajax actions
         add_action( 'wp_ajax_tpb_sync_data', array( $this, 'ajax_sync_data' ) );
+        add_action( 'wp_ajax_tpb_sync_data_light', array( $this, 'sync_data_light' ) );
 
         // Scheduled actions
         add_filter( 'cron_schedules', array( $this, 'tpb_cron_schedules' ) );
@@ -221,8 +222,9 @@ class Tpb_Wp_Pos_Admin {
 	public function sync_btn_callback()
     {
         printf(
-            '<button id="sync-btn" value="sync" class="button" type="button">%s</button>',
-            __( 'Sync data', 'tpb' )
+            '<button id="sync-btn" value="sync" class="button" type="button">%s</button> <button id="sync-btn-light" value="sync-light" class="button" type="button">%s</button>',
+            __( 'Sync data', 'tpb' ),
+            __( 'Sync data (light)', 'tpb' )
         );
     }
 
@@ -278,32 +280,122 @@ class Tpb_Wp_Pos_Admin {
             set_transient( 'tpb_sync_chunks', $chunks );
             set_transient( 'tpb_sync_total', $total );
 
-            // Products to ignore
-            $ids = $wpdb->get_col( $wpdb->prepare(
-                "
-                SELECT      pm.post_id
-                FROM        $wpdb->postmeta pm
-                WHERE       pm.meta_key = %s
-                            AND pm.meta_value LIKE %s
-                ",
-                'sync',
-                '%post_status%'
-            ) );
-
-            // Disable all products before importing new ones
-            $status = $wpdb->query(
-                "
-                UPDATE $wpdb->posts
-                SET post_status = 'trash'
-                WHERE post_type = 'product' ".
-                    ($ids ? "AND ID NOT IN (" . implode( ',', $ids ) . ")":"")
-            );
+            // Unpublish products before sync
+            $this->unpublish_products();
         }
 
-        $total_inserted = 0;
-        $total_updated = 0;
-        $total_uptodate = 0;
-        $total_errors = 0;
+        // Parse products
+        $this->parse_products( $products, 'full' );
+
+        // Increment done counter
+        $done += count($products);
+        set_transient( 'tpb_sync_done', $done );
+
+        if ( $done == $total ) {
+            // Set categories icons
+            $categories = get_terms( 'product_category' );
+            foreach( $categories as $category ) {
+                $icons = array(
+                    'Flowers' => 'fa-leaf',
+                    'Concentrates' => 'fa-tint',
+                    'Edibles' => 'fa-spoon'
+                );
+
+                update_term_meta( $category->term_id, '_icon', 'field_586fdac0bd5cd' );
+                update_term_meta( $category->term_id, 'icon', (isset($icons[$category->name]) ? $icons[$category->name] : 'fa-leaf') );
+            }
+
+            // Clean cache
+            if ( function_exists( 'rocket_clean_domain' ) )
+                rocket_clean_domain();
+
+            // Delete transient
+            delete_transient( 'tpb_sync_done' );
+            delete_transient( 'tpb_sync_total' );
+            delete_transient( 'tpb_sync_chunks' );
+        }
+
+        // Return results
+        echo json_encode( array(
+            'done'              => $done,
+            'total'             => $total,
+            'products'          => $products,
+        ) );
+
+        die();
+    }
+
+    /**
+     * Sync data light
+     *
+     * @since    1.0.0
+     */
+    public function sync_data_light() {
+        global $wpdb;
+
+        $home = get_option( 'home' );
+        if ( strpos( $home, 'the.peak.beyond' ) !== false )
+            return false;
+
+        $data_url = get_option( 'tpb_wp_pos_data_url' );
+
+        // Get data
+        $data = file_get_contents( $data_url );
+        $products = json_decode( $data, true );
+        $total = count($products);
+
+        // Unpublish products before sync
+        $this->unpublish_products();
+
+        // Parse products
+        $this->parse_products( $products, 'full' );
+
+        // Clean cache
+        if ( function_exists( 'rocket_clean_domain' ) )
+            rocket_clean_domain();
+
+        // Return results
+        echo json_encode( array(
+            'products'          => $products,
+        ) );
+
+        die();
+    }
+
+
+    /**
+     * Unpublish products before sync
+     */
+    private function unpublish_products() {
+        global $wpdb;
+
+        // Products to ignore
+        $ids = $wpdb->get_col( $wpdb->prepare(
+            "
+            SELECT      pm.post_id
+            FROM        $wpdb->postmeta pm
+            WHERE       pm.meta_key = %s
+                        AND pm.meta_value = 1
+            ",
+            'sync_post_status'
+        ) );
+
+        // Disable all products before importing new ones
+        $status = $wpdb->query(
+            "
+            UPDATE $wpdb->posts
+            SET post_status = 'draft'
+            WHERE post_type = 'product' ".
+                ($ids ? "AND ID NOT IN (" . implode( ',', $ids ) . ")":"")
+        );
+
+    }
+
+
+    /**
+     * Parse and handle products during sync
+     */
+   private function parse_products( $products, $type = 'light' ) {
 
         $products_data = $this->get_products_data();
 
@@ -344,14 +436,19 @@ class Tpb_Wp_Pos_Admin {
                 $post_data['ID'] = $post_id;
 
                 // Ignore fields from sync
-                if ( $sync_fields = get_field( 'sync', $post_id ) ) {
-                    foreach( $sync_fields as $field ) {
-                        if ( isset( $post_data[$field] ) )
-                            unset( $post_data[$field] );
-                        else if ( isset( $post_data['meta_input'][$field] ) )
-                            unset( $post_data['meta_input'][$field] );
+                $fields = array( 'post_title', 'post_status', 'in_stock', 'prices', 'default_price', 'brand', 'type', 'sku' );
+
+                    foreach( $fields as $field ) {
+                        $ignore_field = get_field( 'sync_'.$field, $post_id );
+
+                        if ($ignore_field === true) {
+                            if ( isset( $post_data[$field] ) )
+                                unset( $post_data[$field] );
+                            else if ( isset( $post_data['meta_input'][$field] ) )
+                                unset( $post_data['meta_input'][$field] );
+                        }
                     }
-                }
+
 
                 if ( !isset( $post_data['post_title'] ) || !$post_data['post_title'] )
                     $post_data['post_title'] = $post->post_title;
@@ -360,14 +457,16 @@ class Tpb_Wp_Pos_Admin {
 
                 // If product has not been updated since last time, continue
                 if (strtotime( $products_data[$product_id]->post_modified ) > strtotime( $product['last_updated'] ) ) {
-                    $total_uptodate++;
-
                     // Insert/update post
                     $inserted_id = wp_insert_post( $post_data );
 
                     continue;
                 }
             } else {
+
+                if ( $type == 'light' )
+                    continue;
+
                 // ACF tabs
                 $tabs = null;
                 if ( $product['category'] == 'Flowers') {
@@ -702,247 +801,75 @@ class Tpb_Wp_Pos_Admin {
             // Insert/update post
             $inserted_id = wp_insert_post( $post_data );
 
-            // Set category
-            if ( $inserted_id > 0 ) {
-                wp_set_post_terms( $inserted_id, $product['category'], 'product_category' );
-            }
+            if ( $type == 'full' ) {
+                // Set category
+                if ( $inserted_id > 0 ) {
+                    wp_set_post_terms( $inserted_id, $product['category'], 'product_category' );
+                }
 
-            // Set image
-            if ( $product['photo'] ) {
-                $thumbnail_id = get_post_thumbnail_id( $inserted_id );
-                if ( $thumbnail_id )
-                    $photo_update = get_post_meta( $thumbnail_id, 'photo_update', true );
-                else
-                    $photo_update = null;
+                // Set image
+                if ( $product['photo'] ) {
+                    $thumbnail_id = get_post_thumbnail_id( $inserted_id );
+                    if ( $thumbnail_id )
+                        $photo_update = get_post_meta( $thumbnail_id, 'photo_update', true );
+                    else
+                        $photo_update = null;
 
-                // If image has been updated since last time, import it
-                if ( !$photo_update || ($product['photo_update'] && strtotime( $photo_update ) < strtotime( $product['photo_update'] )) ) {
+                    // If image has been updated since last time, import it
+                    if ( !$photo_update || ($product['photo_update'] && strtotime( $photo_update ) < strtotime( $product['photo_update'] )) ) {
 
-                    // Delete previous one
-                    if ( $thumbnail_id ) {
+                        // Delete previous one
+                        if ( $thumbnail_id ) {
+                            wp_delete_attachment( $thumbnail_id );
+                        }
+
+                        // Get the path to the upload directory.
+                        $wp_upload_dir = wp_upload_dir();
+
+                        // $filename should be the path to a file in the upload directory.
+                        $filename = $wp_upload_dir['basedir'].'/import/thumbnail_'.$inserted_id.'.jpg';
+
+                        // Copy image
+                        $copy_result = copy(stripslashes($product['photo']), $filename);
+
+                        // The ID of the post this attachment is for.
+                        $parent_post_id = $inserted_id;
+
+                        // Check the type of file. We'll use this as the 'post_mime_type'.
+                        $filetype = wp_check_filetype( basename( $filename ), null );
+
+                        // Prepare an array of post data for the attachment.
+                        $attachment = array(
+                            'guid'           => $wp_upload_dir['url'] . '/' . basename( $filename ),
+                            'post_mime_type' => $filetype['type'],
+                            'post_title'     => preg_replace( '/\.[^.]+$/', '', basename( $filename ) ),
+                            'post_content'   => '',
+                            'post_status'    => 'inherit'
+                        );
+
+                        // Insert the attachment.
+                        $attach_id = wp_insert_attachment( $attachment, $filename, $parent_post_id );
+
+                        // Make sure that this file is included, as wp_generate_attachment_metadata() depends on it.
+                        require_once( ABSPATH . 'wp-admin/includes/image.php' );
+
+                        // Generate the metadata for the attachment, and update the database record.
+                        $attach_data = wp_generate_attachment_metadata( $attach_id, $filename );
+                        wp_update_attachment_metadata( $attach_id, $attach_data );
+                        update_post_meta( $attach_id, 'photo_update', $product['photo_update'] );
+
+                        set_post_thumbnail( $parent_post_id, $attach_id );
+                    }
+                } else {
+                    if ( $thumbnail_id = has_post_thumbnail( $inserted_id ) ) {
+                        delete_post_meta( $inserted_id, '_thumbnail_id' );
                         wp_delete_attachment( $thumbnail_id );
                     }
-
-                    // Get the path to the upload directory.
-                    $wp_upload_dir = wp_upload_dir();
-
-                    // $filename should be the path to a file in the upload directory.
-                    $filename = $wp_upload_dir['basedir'].'/import/thumbnail_'.$inserted_id.'.jpg';
-
-                    // Copy image
-                    $copy_result = copy(stripslashes($product['photo']), $filename);
-
-                    // The ID of the post this attachment is for.
-                    $parent_post_id = $inserted_id;
-
-                    // Check the type of file. We'll use this as the 'post_mime_type'.
-                    $filetype = wp_check_filetype( basename( $filename ), null );
-
-                    // Prepare an array of post data for the attachment.
-                    $attachment = array(
-                        'guid'           => $wp_upload_dir['url'] . '/' . basename( $filename ),
-                        'post_mime_type' => $filetype['type'],
-                        'post_title'     => preg_replace( '/\.[^.]+$/', '', basename( $filename ) ),
-                        'post_content'   => '',
-                        'post_status'    => 'inherit'
-                    );
-
-                    // Insert the attachment.
-                    $attach_id = wp_insert_attachment( $attachment, $filename, $parent_post_id );
-
-                    // Make sure that this file is included, as wp_generate_attachment_metadata() depends on it.
-                    require_once( ABSPATH . 'wp-admin/includes/image.php' );
-
-                    // Generate the metadata for the attachment, and update the database record.
-                    $attach_data = wp_generate_attachment_metadata( $attach_id, $filename );
-                    wp_update_attachment_metadata( $attach_id, $attach_data );
-                    update_post_meta( $attach_id, 'photo_update', $product['photo_update'] );
-
-                    set_post_thumbnail( $parent_post_id, $attach_id );
-                }
-            } else {
-                if ( $thumbnail_id = has_post_thumbnail( $inserted_id ) ) {
-                    delete_post_meta( $inserted_id, '_thumbnail_id' );
-                    wp_delete_attachment( $thumbnail_id );
                 }
             }
-
-            // Count results
-            if ( $inserted_id > 0 ) {
-                if ( $post_id )
-                    $total_updated++;
-                else
-                    $total_inserted++;
-            } else {
-                $total_errors++;
-            }
         }
-
-        // Increment done counter
-        $done += count($products);
-        set_transient( 'tpb_sync_done', $done );
-
-        if ( $done == $total ) {
-            // Set categories icons
-            $categories = get_terms( 'product_category' );
-            foreach( $categories as $category ) {
-                $icons = array(
-                    'Flowers' => 'fa-leaf',
-                    'Concentrates' => 'fa-tint',
-                    'Edibles' => 'fa-spoon'
-                );
-
-                update_term_meta( $category->term_id, '_icon', 'field_586fdac0bd5cd' );
-                update_term_meta( $category->term_id, 'icon', (isset($icons[$category->name]) ? $icons[$category->name] : 'fa-leaf') );
-            }
-
-            // Clean cache
-            if ( function_exists( 'rocket_clean_domain' ) )
-                rocket_clean_domain();
-
-            // Delete transient
-            delete_transient( 'tpb_sync_done' );
-            delete_transient( 'tpb_sync_total' );
-            delete_transient( 'tpb_sync_chunks' );
-        }
-
-        // Return results
-        echo json_encode( array(
-            'total_inserted'    => $total_inserted,
-            'total_updated'     => $total_updated,
-            'total_uptodate'    => $total_uptodate,
-            'total_errors'      => $total_errors,
-            'done'              => $done,
-            'total'             => $total,
-            'products'          => $products,
-        ) );
-
-        die();
     }
 
-    /**
-     * Sync data light
-     *
-     * @since    1.0.0
-     */
-    public function sync_data_light() {
-        global $wpdb;
-
-        $home = get_option( 'home' );
-        if ( strpos( $home, 'the.peak.beyond' ) !== false )
-            return false;
-
-        $data_url = get_option( 'tpb_wp_pos_data_url' );
-
-        // Get data
-        $data = file_get_contents( $data_url );
-        $products = json_decode( $data, true );
-
-        $total = count($products);
-
-        // Products to ignore
-        $ids = $wpdb->get_col( $wpdb->prepare(
-            "
-            SELECT      pm.post_id
-            FROM        $wpdb->postmeta pm
-            WHERE       pm.meta_key = %s
-                        AND pm.meta_value LIKE %s
-            ",
-            'sync',
-            '%post_status%'
-        ) );
-
-        // Disable all products before importing new ones
-        $status = $wpdb->query(
-            "
-            UPDATE $wpdb->posts
-            SET post_status = 'trash'
-            WHERE post_type = 'product' ".
-                ($ids ? "AND ID NOT IN (" . implode( ',', $ids ) . ")":"")
-        );
-
-        $total_updated = 0;
-        $total_errors = 0;
-
-        $products_data = $this->get_products_data();
-
-        // Parse products
-        foreach( $products as $product ) {
-            $product_id = $product['record_id'];
-            $post = $products_data[$product_id];
-            $post_id = $products_data[$product_id]->ID;
-
-            // Product doesn't exist, continue
-            if ( !$post_id ) {
-                continue;
-            }
-
-            $prices = explode( ',',  $product['prices'] );
-            $formated_prices = array();
-            foreach( $prices as $raw ) {
-                $raw = explode( ':',  $raw );
-                $formated_prices[] = array( 'unit' => $raw[0], 'price' => round($raw[1]) );
-            }
-
-            usort( $formated_prices, 'tpb_prices_usort' );
-
-            // Set datas
-            $post_data = array(
-                'ID'            => $post_id,
-                'post_title'    => stripslashes($product['strain_name']),
-                'post_content'  => print_r( $product, true ),
-                'post_status'   => ( (bool)$product['in_stock'] ? 'publish' : 'trash' ),
-                'post_type'     => 'product',
-                'meta_input'    => array(
-                    'product_id'    => $product_id,
-                    'in_stock'      => $product['in_stock'],
-                    'prices'        => json_encode( $formated_prices ),
-                    'default_price' => $formated_prices[0]['price'],
-                    'brand'         => stripslashes($product['brand']),
-                    'type'          => stripslashes($product['type']),
-                    'sku'           => $product['SKU']
-                )
-            );
-
-            // Ignore fields from sync
-            if ( $sync_fields = get_field( 'sync', $post_id ) ) {
-                foreach( $sync_fields as $field ) {
-                    if ( isset( $post_data[$field] ) )
-                        unset( $post_data[$field] );
-                    else if ( isset( $post_data['meta_input'][$field] ) )
-                        unset( $post_data['meta_input'][$field] );
-                }
-            }
-
-            if ( !isset( $post_data['post_title'] ) || !$post_data['post_title'] )
-                $post_data['post_title'] = $post->post_title;
-            if ( !isset( $post_data['post_status'] ) || !$post_data['post_status'] )
-                $post_data['post_status'] = $post->post_status;
-
-            // Insert/update post
-            $inserted_id = wp_insert_post( $post_data );
-
-            // Count results
-            if ( $inserted_id > 0 ) {
-                $total_updated++;
-            } else {
-                $total_errors++;
-            }
-        }
-
-        // Clean cache
-        if ( function_exists( 'rocket_clean_domain' ) )
-            rocket_clean_domain();
-
-        // Return results
-        echo json_encode( array(
-            'total_updated'     => $total_updated,
-            'total_errors'      => $total_errors,
-            'products'          => $products,
-        ) );
-
-        die();
-    }
 
     /**
      * Get products data
