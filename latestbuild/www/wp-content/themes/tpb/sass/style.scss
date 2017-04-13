@@ -1348,6 +1348,19 @@ img {
 	}
 }
 
+.object-recognition-disabled {
+	.sidebar-head {
+		top: 420px;
+	}
+	.site-sidebar .btn-session {
+		bottom: 480px;
+	}
+
+	.sidebar-areas {
+		display: none !important;
+	}
+}
+
 
 /* =============================================================================
    Main
