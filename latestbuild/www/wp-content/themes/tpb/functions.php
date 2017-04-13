@@ -143,12 +143,14 @@
 	/**
 	 * Admin CSS
 	 */
-	function tpb_admin_css() {
+	function tpb_admin_enqueue_scripts() {
 		if ( !current_user_can( 'activate_plugins' ) ) {
 			wp_enqueue_style( 'admin-style', get_bloginfo( 'template_directory' ) . '/css/hide-admin.css', false, 1, 'all' );
 		}
+
+		wp_enqueue_script( 'admin-script', get_bloginfo( 'template_directory' ) . '/js/script-admin.js', false, 1, true );
 	}
-	add_action( 'admin_print_styles', 'tpb_admin_css' );
+	add_action( 'admin_enqueue_scripts', 'tpb_admin_enqueue_scripts' );
 
 
 	/**

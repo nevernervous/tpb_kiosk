@@ -699,8 +699,27 @@
             "default_value": 0,
             "message": "",
             "ui": 0,
-            "ui_on_text": "",
-            "ui_off_text": "",
+            "ui_on_text": "Checked",
+            "ui_off_text": "Not checked",
+            "key": "field_58ef34c1cf8b5",
+            "label": "Enter all values manually",
+            "name": "sync_all",
+            "type": "true_false",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "toggle-all",
+                "id": ""
+            }
+        },
+        {
+            "default_value": 0,
+            "message": "",
+            "ui": 0,
+            "ui_on_text": "Checked",
+            "ui_off_text": "Not checked",
             "key": "field_58ee5a2588640",
             "label": "Enter \"Status\" value manually",
             "name": "sync_post_status",
@@ -710,7 +729,7 @@
             "conditional_logic": 0,
             "wrapper": {
                 "width": "",
-                "class": "",
+                "class": "toggle-all-child",
                 "id": ""
             }
         },
@@ -729,7 +748,7 @@
             "conditional_logic": 0,
             "wrapper": {
                 "width": "",
-                "class": "",
+                "class": "toggle-all-child",
                 "id": ""
             }
         },
@@ -748,7 +767,7 @@
             "conditional_logic": 0,
             "wrapper": {
                 "width": "",
-                "class": "",
+                "class": "toggle-all-child",
                 "id": ""
             }
         },
@@ -794,7 +813,7 @@
             "conditional_logic": 0,
             "wrapper": {
                 "width": "",
-                "class": "",
+                "class": "toggle-all-child",
                 "id": ""
             }
         },
@@ -840,7 +859,7 @@
             "conditional_logic": 0,
             "wrapper": {
                 "width": "",
-                "class": "",
+                "class": "toggle-all-child",
                 "id": ""
             }
         },
@@ -886,7 +905,7 @@
             "conditional_logic": 0,
             "wrapper": {
                 "width": "",
-                "class": "",
+                "class": "toggle-all-child",
                 "id": ""
             }
         },
@@ -932,7 +951,7 @@
             "conditional_logic": 0,
             "wrapper": {
                 "width": "",
-                "class": "",
+                "class": "toggle-all-child",
                 "id": ""
             }
         },
@@ -978,7 +997,7 @@
             "conditional_logic": 0,
             "wrapper": {
                 "width": "",
-                "class": "",
+                "class": "toggle-all-child",
                 "id": ""
             }
         },
@@ -1027,5 +1046,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1492016507
+    "modified": 1492074092
 }
