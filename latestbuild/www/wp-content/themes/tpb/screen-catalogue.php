@@ -162,7 +162,7 @@
 										$infos = array();
 
 										if ( $prices )
-											$infos[] = '$'.$prices[0]->price.($prices[0]->unit?'<span>/'.$prices[0]->unit.'</span>':'');
+											$infos[] = '$'.number_format($prices[0]->price, 2).($prices[0]->unit?'<span>/'.$prices[0]->unit.'</span>':'');
 										if ( $type )
 											$infos[] = $type;
 									 ?>
