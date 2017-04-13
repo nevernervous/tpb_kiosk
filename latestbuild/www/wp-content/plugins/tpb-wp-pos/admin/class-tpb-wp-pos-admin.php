@@ -441,7 +441,7 @@ class Tpb_Wp_Pos_Admin {
                     foreach( $fields as $field ) {
                         $ignore_field = get_field( 'sync_'.$field, $post_id );
 
-                        if ($ignore_field === true) {
+                         if ($ignore_field === true || $ignore_field == 1) {
                             if ( isset( $post_data[$field] ) )
                                 unset( $post_data[$field] );
                             else if ( isset( $post_data['meta_input'][$field] ) )

@@ -676,3 +676,95 @@
      */
     if ( function_exists( 'acf_add_options_page'  ) )
         acf_add_options_page( 'UI settings' );
+
+
+    /**
+     * Product custom quick edit box
+     */
+	function tpb_product_quick_edit( $column_name, $post_type ) {
+		if ( $post_type != 'product' )
+			return;
+
+	    static $printNonce = true;
+	    if ( $printNonce ) {
+	        $printNonce = false;
+	        wp_nonce_field( plugin_basename( __FILE__ ), 'product_edit_nonce' );
+	    }
+
+	    ?>
+	    <fieldset class="inline-edit-col-right inline-edit-book">
+	    	<div class="inline-edit-group wp-clearfix">
+				<label class="alignleft inline-edit-private">
+					<input name="sync_post_status" type="checkbox" value="1" />
+					<span class="checkbox-title">Enter "Status" value manually</span>
+				</label>
+			</div>
+	    </fieldset>
+	    <?php
+	}
+    add_action( 'bulk_edit_custom_box', 'tpb_product_quick_edit', 10, 2 );
+    add_action( 'quick_edit_custom_box', 'tpb_product_quick_edit', 10, 2 );
+
+
+    /**
+     * Add sync_post_status value in products table
+     */
+    function tpb_post_row_actions( $actions, $post ) {
+    	if ( $post->post_type == 'product' ) {
+	    	$sync_status = get_field( 'sync_post_status', $post->ID );
+
+	    	$actions['hidden'] = '<input type="hidden" name="sync_post_status" value="'.(int)$sync_status.'" />';
+    	}
+
+    	return $actions;
+    }
+    add_filter( 'page_row_actions', 'tpb_post_row_actions', 10, 2 );
+    add_filter( 'post_row_actions', 'tpb_post_row_actions', 10, 2 );
+
+
+	/**
+	 * Save product meta from quick edit box
+	 */
+	function tpb_save_product_meta( $post_id ) {
+	    $slug = 'product';
+	    if ( $slug !== $_POST['post_type'] ) {
+	        return;
+	    }
+	    if ( !current_user_can( 'edit_post', $post_id ) ) {
+	        return;
+	    }
+	    $_POST += array("{$slug}_edit_nonce" => '');
+	    if ( !wp_verify_nonce( $_POST["{$slug}_edit_nonce"],
+	                           plugin_basename( __FILE__ ) ) )
+	    {
+	        return;
+	    }
+
+
+	    if ( isset( $_REQUEST['sync_post_status'] ) ) {
+	        update_post_meta($post_id, 'sync_post_status', 1);
+	    } else {
+	        update_post_meta($post_id, 'sync_post_status', 0);
+	    }
+
+	}
+	add_action( 'save_post', 'tpb_save_product_meta' );
+
+
+	/**
+	 * Save product meta from bulk edit box
+	 */
+	function tpb_save_bulk_edit_product() {
+		$post_ids = ( ! empty( $_POST[ 'post_ids' ] ) ) ? $_POST[ 'post_ids' ] : array();
+		$sync_post_status = $_POST[ 'sync_post_status' ];
+
+		// if everything is in order
+		if ( ! empty( $post_ids ) && is_array( $post_ids ) ) {
+			foreach( $post_ids as $post_id ) {
+				update_post_meta( $post_id, 'sync_post_status', $sync_post_status );
+			}
+		}
+
+		die();
+	}
+    add_action( 'wp_ajax_tpb_save_bulk_edit_product', 'tpb_save_bulk_edit_product' );
