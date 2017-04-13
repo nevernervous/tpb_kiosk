@@ -166,24 +166,19 @@ var site = (function() {
 	var hideScreenIntro = function(e) {
 		var container = $('.site-container');
 		var screen = $('.screen-intro');
+		var newScreen = $('.site-main > .screen');
 		var elements = screen.find('.phrase, .phrase-small');
 		var tips = screen.find('.tip');
 		var background = $('.site-background');
 		var ui = $('.site-ui, .site-main');
 
-		// Get coordinates
-		if (e.pageX != undefined && e.pageY != undefined) {
-			var x = e.pageX;
-			var y = e.pageY;
-		} else {
-			var x = e.touches[0].screenX;
-			var y = e.touches[0].screenY;
-		}
-
 		// Before animation
 		ui.removeClass('is-hidden');
 		screen.css({pointerEvents: 'none'});
 		stopIntroCycle = true;
+
+		if (!newScreen.hasClass('screen-select'))
+			newScreen.css({opacity: 0});
 
 		// Animation
 		var tl = new TimelineLite();
@@ -251,20 +246,43 @@ var site = (function() {
 			1.2
 		);
 
-		tl.fromTo(
-			$('.screen-select .phrase'),
-			1.2,
-			{
-				alpha: 0,
-				x: 25
-			},
-			{
-				alpha: 1,
-				x: 0,
-				ease: Power3.easeOut
-			},
-			1.6
-		);
+		if (newScreen.hasClass('screen-select')) {
+			tl.fromTo(
+				$('.screen-select .phrase'),
+				1.2,
+				{
+					alpha: 0,
+					x: 25
+				},
+				{
+					alpha: 1,
+					x: 0,
+					ease: Power3.easeOut
+				},
+				1.6
+			);
+		} else {
+			tl.fromTo(
+				$('.site-sidebar'),
+				1.2,
+				{
+					alpha: 0
+				},
+				{
+					alpha: 1
+				},
+				1.2
+			);
+
+			tl.call(function() {
+				$('.site-background').addClass('is-blurred');
+				$('.site-sidebar').addClass('is-visible');
+			}, null, null, 1.2);
+
+			tl.call(function() {
+				introScreen(newScreen);
+			}, null, null, 1.6);
+		}
 
 		tl.fromTo(
 			$('.site-topbar'),
@@ -281,8 +299,14 @@ var site = (function() {
 		tl.call(function() {
 			ui.css({opacity: ''});
 			background.css({transform: '', opacity: ''});
-			$('.screen-select .phrase, .site-ui .logo, .site-topbar').css({opacity: ''});
+			$('.site-ui .logo, .site-topbar').css({opacity: ''});
 			screen.remove();
+
+			if (newScreen.hasClass('screen-select')) {
+				$('.screen-select .phrase, .site-ui .logo, .site-topbar').css({opacity: ''});
+			} else {
+				switchTabWait = false;
+			}
 		});
 
 		tl.play();

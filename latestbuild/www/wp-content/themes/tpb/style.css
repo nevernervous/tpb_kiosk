@@ -1535,6 +1535,16 @@ img {
   vertical-align: top;
 }
 
+.object-recognition-disabled .sidebar-head {
+  top: 420px;
+}
+.object-recognition-disabled .site-sidebar .btn-session {
+  bottom: 480px;
+}
+.object-recognition-disabled .sidebar-areas {
+  display: none !important;
+}
+
 /* =============================================================================
    Main
    ========================================================================== */

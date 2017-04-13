@@ -59,6 +59,25 @@
             }
         },
         {
+            "default_value": 1,
+            "message": "",
+            "ui": 1,
+            "ui_on_text": "Enabled",
+            "ui_off_text": "Disabled",
+            "key": "field_58ef74f0e7170",
+            "label": "Object recognition",
+            "name": "object_recognition",
+            "type": "true_false",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
             "message": "<img src=\"\/wp-content\/themes\/tpb\/img\/patterns.jpg\" alt=\"\" \/>",
             "esc_html": 0,
             "new_lines": "wpautop",
@@ -490,5 +509,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1489478973
+    "modified": 1492088079
 }
