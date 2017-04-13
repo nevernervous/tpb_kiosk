@@ -35,7 +35,7 @@
 					<?php $cnt= 0; foreach( $prices as $price ): ?>
 					<li class="option <?php echo ((!isset($_GET['price']) && $cnt==0) || ($_GET['price'] == $cnt)) ? 'is-selected"':''; ?>" data-value="<?php echo $cnt; ?>" data-price="<?php echo $price->price; ?>">
 						<div class="price">
-							$<?php echo $price->price.($price->unit?'<small>/'.$price->unit.'</small>':''); ?>
+							$<?php echo number_format($price->price, 2).($price->unit?'<small>/'.$price->unit.'</small>':''); ?>
 						</div>
 					</li>
 					<?php $cnt++; endforeach; ?>
@@ -78,7 +78,7 @@
 			<div class="btn-user btn-text btn-text-xl btn-add-to-cart btn-submit">
 				<span class="text-on">
 					<span class="qty-price">
-						$<?php echo !isset($_GET['price']) ? $prices[0]->price : $prices[$_GET['price']]->price; ?>
+						$<?php echo !isset($_GET['price']) ? number_format($prices[0]->price, 2) : number_format($prices[$_GET['price']]->price, 2); ?>
 					</span>
 
 					<span class="cta">

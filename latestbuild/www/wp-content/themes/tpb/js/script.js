@@ -1663,6 +1663,12 @@ var site = (function() {
 
 			// Change price
 			var price = unitPrice*qty;
+
+			var formatter = new Intl.NumberFormat('en-US', {
+				minimumFractionDigits: 2,
+			});
+			price = formatter.format(price);
+
 			output.text('$'+price);
 
 			changeCartPrice();
@@ -1674,6 +1680,12 @@ var site = (function() {
 
 			// Change price
 			var price = unitPrice*qty;
+
+			var formatter = new Intl.NumberFormat('en-US', {
+				minimumFractionDigits: 2,
+			});
+			price = formatter.format(price);
+
 			output.text('$'+price);
 		}
 	}
@@ -1695,7 +1707,13 @@ var site = (function() {
 			total += Number($(this).text().replace('$', ''));
 		});
 
-		$('.order-total .total').text('$'+(Math.round(total*100)/100));
+		var price = Math.round(total*100)/100;
+		var formatter = new Intl.NumberFormat('en-US', {
+			minimumFractionDigits: 2,
+		});
+		price = formatter.format(price);
+
+		$('.order-total .total').text('$'+price);
 
 		// Update cart session
 		clearTimeout(updateCartTimeout);

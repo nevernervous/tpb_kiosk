@@ -34,7 +34,7 @@
 			<div class="product-prices <?php echo count($prices) == 1 ? 'prices-simple':'prices-multiple'; ?>">
 				<?php $cnt=0; foreach( $prices as $price ): ?>
 				<div class="price btn-add-to-cart" data-value="<?php echo $cnt; ?>" data-id="<?php the_ID(); ?>">
-					$<?php echo $price->price.($price->unit?'<small>/'.$price->unit.'</small>':''); ?>
+					$<?php echo number_format($price->price, 2).($price->unit?'<small>/'.$price->unit.'</small>':''); ?>
 				</div><!-- .price -->
 				<?php $cnt++; endforeach; ?>
 			</div><!-- .product-prices -->
@@ -306,7 +306,7 @@
 									$infos = array();
 
 									if ( $prices )
-										$infos[] = '$'.$prices[0]->price.($prices[0]->unit?'<span>/'.$prices[0]->unit.'</span>':'');
+										$infos[] = '$'.number_format($prices[0]->price, 2).($prices[0]->unit?'<span>/'.$prices[0]->unit.'</span>':'');
 									if ( $type )
 										$infos[] = $type;
 								 ?>
