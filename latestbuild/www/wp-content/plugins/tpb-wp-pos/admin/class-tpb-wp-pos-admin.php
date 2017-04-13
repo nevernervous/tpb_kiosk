@@ -285,7 +285,8 @@ class Tpb_Wp_Pos_Admin {
         }
 
         // Parse products
-        $this->parse_products( $products, 'full' );
+        $remaining_products = $this->parse_products( $products, 'full' );
+        $this->disable_products( $remaining_products );
 
         // Increment done counter
         $done += count($products);
@@ -348,7 +349,8 @@ class Tpb_Wp_Pos_Admin {
         $this->unpublish_products();
 
         // Parse products
-        $this->parse_products( $products, 'full' );
+        $remaining_products = $this->parse_products( $products );
+        $this->disable_products( $remaining_products );
 
         // Clean cache
         if ( function_exists( 'rocket_clean_domain' ) )
@@ -403,7 +405,10 @@ class Tpb_Wp_Pos_Admin {
         foreach( $products as $product ) {
             $product_id = $product['record_id'];
             $post = $products_data[$product_id];
-            $post_id = $products_data[$product_id]->ID;
+            $post_id = $post->ID;
+
+            // Remove product from list
+            unset($products_data[$product_id]);
 
             $prices = explode( ',',  $product['prices'] );
             $formated_prices = array();
@@ -456,7 +461,7 @@ class Tpb_Wp_Pos_Admin {
                     $post_data['post_status'] = $post->post_status;
 
                 // If product has not been updated since last time, continue
-                if (strtotime( $products_data[$product_id]->post_modified ) > strtotime( $product['last_updated'] ) ) {
+                if (strtotime( $post->post_modified ) > strtotime( $product['last_updated'] ) ) {
                     // Insert/update post
                     $inserted_id = wp_insert_post( $post_data );
 
@@ -868,6 +873,9 @@ class Tpb_Wp_Pos_Admin {
                 }
             }
         }
+
+        // Return remaining products
+        return $products_data;
     }
 
 
@@ -893,6 +901,20 @@ class Tpb_Wp_Pos_Admin {
 		}
 
 		return $this->products_data;
+    }
+
+    /**
+     * Disable products that are no longer in feed
+     *
+     * @since    1.0.0
+     * @access   private
+     */
+    function disable_products( $products ) {
+        foreach( $products as $product ) {
+            $post_id= $product->ID;
+
+            update_post_meta( $post_id, 'sync_post_status', 1 );
+        }
     }
 
     /**
