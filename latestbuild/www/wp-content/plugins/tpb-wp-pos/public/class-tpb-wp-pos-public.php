@@ -113,12 +113,13 @@ class Tpb_Wp_Pos_Public {
      *
 	 * @since    1.0.0
      */
-    public static function send_order() {
+   public static function send_order() {
     	if ( !isset( $_SESSION['cart'] ) || !$_SESSION['cart'] )
     		return false;
 
     	$cart = $_SESSION['cart'];
 		$user =  $_SESSION['user_name'];
+		$phone = $_SESSION['phone'];
     	$order = array();
 
     	foreach ( $cart as $product_id => $amounts ) {
@@ -151,8 +152,8 @@ class Tpb_Wp_Pos_Public {
 		
 		
 		//  MJ Freeway
-		/*
-		$nid = Tpb_Wp_Pos_Public::check_user($user);
+		
+		$nid = Tpb_Wp_Pos_Public::check_user($user, $phone);
 		if($nid !='multiple' && $nid !='none') {
 			$checkout = Tpb_Wp_Pos_Public::mjFreeway($nid, $order);
 		}else {
@@ -161,11 +162,11 @@ class Tpb_Wp_Pos_Public {
 		
 		$file = WP_PLUGIN_DIR."/tpb-wp-pos/log.txt";  
 		file_put_contents($file, $checkout);
-	*/	
+	
 	
 
-		
-	
+	 }	
+	/*
 		 ////  Greenbits Receipt  
 		
 		$receipt = Tpb_Wp_Pos_Public::printReceipt($order, $user);
@@ -178,6 +179,7 @@ class Tpb_Wp_Pos_Public {
 
     	return $result;
     }
+	 */
 	public function printReceipt($order, $customer) {
 		$prints = '###Customer Order###\n\n';
 		$text = '###Customer Order### <br><br>';
@@ -220,20 +222,19 @@ class Tpb_Wp_Pos_Public {
 	
 	
 	
-	public function check_user($name) {
+	public function check_user($name, $phone) {
 		
 		$parts = explode(" ", $name);
 		$lastname = array_pop($parts);
 		$firstname = implode(" ", $parts);
 		
-		 
-		$url = "https://i.gomjfreeway.com/Training77/api/order/patient_list";
+		$url = "https://i.gomjfreeway.com/elementalwellness/api/order/patient_list";
 		$data = array('first_name' =>$firstname, 'last_name'=>$lastname);
 		$data_string = json_encode($data);
 		$access_token_parameters = array(
 				'version' =>'4',
-			  'api_key'  	=>'772808337589b80bdea8e12.48745966',
-			  'api_id'  => '349708323584adb34ed9179.68028223',
+			  'api_key'  	=>'977237471589bc2768d4be7.38775850',
+        'api_id'  => '349708323584adb34ed9179.68028223',
 			  'format' =>'JSON',
 			  'location_nid' =>'45',
 			  'data'=>$data_string
@@ -255,7 +256,9 @@ class Tpb_Wp_Pos_Public {
 			$patients = count($pot['response_details']['patients']);
 			
 			if($success ==1 && $patients ==1) {
-				$r= $pot['response_details']['patients'][0]['nid'];
+				if($phone = preg_replace('/\D+/', '', $pot['response_details']['patients'][0]['phone_mobile']) || $phone = preg_replace('/\D+/', '', $pot['response_details']['patients'][0]['phone_home'])) {
+					$r= $pot['response_details']['patients'][0]['nid'];
+				}
 			}else if($patients>1) {
 				$r= 'multiple';
 			}else {
@@ -264,7 +267,7 @@ class Tpb_Wp_Pos_Public {
 			return $r;
 	}
 	public function mjFreeway($id, $ordr) {
-		$url = "https://i.gomjfreeway.com/Training77/api/order/update_order";
+		$url = "https://i.gomjfreeway.com/elementalwellness/api/order/update_order";
 		$pot='';
 		$oID='';
 		foreach($ordr as $o) {
@@ -280,8 +283,8 @@ class Tpb_Wp_Pos_Public {
 		$ord = json_encode($order);
 		$access_token_parameters = array(
 			  'version' =>'4',
-			  'api_key'  	=>'772808337589b80bdea8e12.48745966',
-			  'api_id'  => '349708323584adb34ed9179.68028223',
+			  'api_key'  	=>'977237471589bc2768d4be7.38775850',
+				'api_id'  => '349708323584adb34ed9179.68028223',
 			  'format' =>'JSON',
 			  'location_nid' =>'45',
 			  'data'=>$ord
@@ -302,9 +305,36 @@ class Tpb_Wp_Pos_Public {
 		$oID= $pot['response_details']['order_id'];
 		
 		}
+		//extract data from the post
+		//$sms = Tpb_Wp_Pos_Public::sendSMS();
+		
 		return print_r($pot, true);
 	}
 	
-	
+	public function sendSMS() {
+		//set POST variables
+		$url = 'http://thepeakbeyond.com/development/sms.php';
+		$fields = array(
+			'num' => ''
+		);
+
+		//url-ify the data for the POST
+		foreach($fields as $key=>$value) { $fields_string .= $key.'='.$value.'&'; }
+		rtrim($fields_string, '&');
+
+		//open connection
+		$ch = curl_init();
+
+		//set the url, number of POST vars, POST data
+		curl_setopt($ch,CURLOPT_URL, $url);
+		curl_setopt($ch,CURLOPT_POST, count($fields));
+		curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
+		
+		//execute post
+		$result = curl_exec($ch);
+
+		//close connection
+		curl_close($ch);
+	}
 	
 }
