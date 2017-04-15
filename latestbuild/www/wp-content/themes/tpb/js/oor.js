@@ -1,5 +1,5 @@
 A_DISTANCE = 17.1;
-MARGIN = 4.7;
+MARGIN = 6;
 
 // get the (flawed) screenPixel To MillimeterX value.
 var calibration = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
