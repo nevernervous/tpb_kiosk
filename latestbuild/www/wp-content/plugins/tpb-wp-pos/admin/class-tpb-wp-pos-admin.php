@@ -57,7 +57,14 @@ class Tpb_Wp_Pos_Admin {
         add_action( 'admin_init', array( $this, 'page_init' ) );
 
         // Ajax actions
-    	add_action( 'wp_ajax_tpb_sync_data', array( $this, 'ajax_sync_data' ) );
+        add_action( 'wp_ajax_tpb_sync_data', array( $this, 'ajax_sync_data' ) );
+
+        // Scheduled actions
+        add_filter( 'cron_schedules', array( $this, 'tpb_cron_schedules' ) );
+        //add_action( 'tpb_cron_sync', array( $this, 'sync_data_light' ) );
+        if ( ! wp_next_scheduled( 'tpb_cron_sync' ) ) {
+            wp_schedule_event( time(), 'ten_minutes',  'tpb_cron_sync' );
+        }
 	}
 
 	/**
@@ -105,6 +112,20 @@ class Tpb_Wp_Pos_Admin {
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/tpb-wp-pos-admin.js', array( 'jquery' ), $this->version, false );
 
 	}
+
+    /**
+     * Add custom schedules
+     *
+     * @since    1.0.0
+     */
+    public function tpb_cron_schedules( $schedules ) {
+        $schedules['ten_minutes'] = array(
+            'interval' => 10 * 60, // 10 minutes * 60 seconds
+            'display' => __( 'Every ten minues', 'tpb' )
+        );
+
+        return $schedules;
+    }
 
 	/**
 	 * Init the plugin page.
@@ -228,7 +249,7 @@ class Tpb_Wp_Pos_Admin {
     /**
      * Sync data
      *
-	 * @since    1.0.0
+     * @since    1.0.0
      */
     public function ajax_sync_data() {
         global $wpdb;
@@ -257,15 +278,26 @@ class Tpb_Wp_Pos_Admin {
             set_transient( 'tpb_sync_chunks', $chunks );
             set_transient( 'tpb_sync_total', $total );
 
-            // Disable all products before importing new ones
-            $wpdb->update(
-                $wpdb->posts,
-                array( 'post_status' => 'trash' ),
-                array( 'post_type' => 'product' ),
-                array( '%s' ),
-                array( '%s' )
-            );
+            // Products to ignore
+            $ids = $wpdb->get_col( $wpdb->prepare(
+                "
+                SELECT      pm.post_id
+                FROM        $wpdb->postmeta pm
+                WHERE       pm.meta_key = %s
+                            AND pm.meta_value LIKE %s
+                ",
+                'sync',
+                '%post_status%'
+            ) );
 
+            // Disable all products before importing new ones
+            $status = $wpdb->query(
+                "
+                UPDATE $wpdb->posts
+                SET post_status = 'trash'
+                WHERE post_type = 'product' ".
+                    ($ids ? "AND ID NOT IN (" . implode( ',', $ids ) . ")":"")
+            );
         }
 
         $total_inserted = 0;
@@ -275,10 +307,11 @@ class Tpb_Wp_Pos_Admin {
 
         $products_data = $this->get_products_data();
 
-    	// Parse products
-    	foreach( $products as $product ) {
-    		$product_id = $product['record_id'];
-    		$post_id = $products_data[$product_id]->ID;
+        // Parse products
+        foreach( $products as $product ) {
+            $product_id = $product['record_id'];
+            $post = $products_data[$product_id];
+            $post_id = $products_data[$product_id]->ID;
 
             $prices = explode( ',',  $product['prices'] );
             $formated_prices = array();
@@ -289,37 +322,52 @@ class Tpb_Wp_Pos_Admin {
 
             usort( $formated_prices, 'tpb_prices_usort' );
 
-    		// Set datas
-    		$post_data = array(
-    			'post_title' 	=> stripslashes($product['strain_name']),
-    			'post_content' 	=> print_r( $product, true ),
-    			'post_status' 	=> ( (bool)$product['in_stock'] ? 'publish' : 'trash' ),
-    			'post_type' 	=> 'product',
-    			'meta_input'	=> array(
-    				'product_id'    => $product_id,
-    				'in_stock'      => $product['in_stock'],
+            // Set datas
+            $post_data = array(
+                'post_title'    => stripslashes($product['strain_name']),
+                'post_content'  => print_r( $product, true ),
+                'post_status'   => ( (bool)$product['in_stock'] ? 'publish' : 'trash' ),
+                'post_type'     => 'product',
+                'meta_input'    => array(
+                    'product_id'    => $product_id,
+                    'in_stock'      => $product['in_stock'],
                     'prices'        => json_encode( $formated_prices ),
                     'default_price' => $formated_prices[0]['price'],
                     'brand'         => stripslashes($product['brand']),
                     'type'          => stripslashes($product['type']),
                     'sku'           => $product['SKU']
-    			)
-    		);
+                )
+            );
 
-    		// Product already exists
-    		if ( $post_id ) {
+            // Product already exists
+            if ( $post_id ) {
                 $post_data['ID'] = $post_id;
 
-    			// If product has not been updated since last time, continue
-    			if (strtotime( $products_data[$product_id]->post_modified ) > strtotime( $product['last_updated'] ) ) {
-    				$total_uptodate++;
+                // Ignore fields from sync
+                if ( $sync_fields = get_field( 'sync', $post_id ) ) {
+                    foreach( $sync_fields as $field ) {
+                        if ( isset( $post_data[$field] ) )
+                            unset( $post_data[$field] );
+                        else if ( isset( $post_data['meta_input'][$field] ) )
+                            unset( $post_data['meta_input'][$field] );
+                    }
+                }
+
+                if ( !isset( $post_data['post_title'] ) || !$post_data['post_title'] )
+                    $post_data['post_title'] = $post->post_title;
+                if ( !isset( $post_data['post_status'] ) || !$post_data['post_status'] )
+                    $post_data['post_status'] = $post->post_status;
+
+                // If product has not been updated since last time, continue
+                if (strtotime( $products_data[$product_id]->post_modified ) > strtotime( $product['last_updated'] ) ) {
+                    $total_uptodate++;
 
                     // Insert/update post
                     $inserted_id = wp_insert_post( $post_data );
 
-    				continue;
-    			}
-    		} else {
+                    continue;
+                }
+            } else {
                 // ACF tabs
                 $tabs = null;
                 if ( $product['category'] == 'Flowers') {
@@ -329,19 +377,19 @@ class Tpb_Wp_Pos_Admin {
                         'icon' => 'fa-newspaper-o',
                         'title' => 'Highlights',
                         'text' => trim_text( stripslashes($product['description']), 400, false, false ),
-                        'graphs' => array(
-                            array(
-                                'label' => 'LOREM',
-                                'value' => '123456789',
-                                'percent' => '0.5'
-                            ),
-                            array(
-                                'label' => 'LOREM',
-                                'value' => '123456789',
-                                'percent' => '0.5'
-                            )
-                        ),
-                        'video' => 'https://www.youtube.com/watch?v=EigAuKCD_wY'
+                        // 'graphs' => array(
+                        //     array(
+                        //         'label' => 'LOREM',
+                        //         'value' => '123456789',
+                        //         'percent' => '0.5'
+                        //     ),
+                        //     array(
+                        //         'label' => 'LOREM',
+                        //         'value' => '123456789',
+                        //         'percent' => '0.5'
+                        //     )
+                        // ),
+                        'video' => $product['video']
                     );
 
                     // Flavor
@@ -408,19 +456,19 @@ class Tpb_Wp_Pos_Admin {
                     }
 
                     // Reviews
-                    $tabs[] = array(
-                        'type' => 'reviews',
-                        'icon' => 'fa-comments',
-                        'title' => 'Reviews',
-                        'reviews' => array(
-                            array(
-                                'name' => 'John Doe',
-                                'photo' => '#',
-                                'note' => '3',
-                                'text' => 'Lorem ipsum'
-                            )
-                        )
-                    );
+                    // $tabs[] = array(
+                    //     'type' => 'reviews',
+                    //     'icon' => 'fa-comments',
+                    //     'title' => 'Reviews',
+                    //     'reviews' => array(
+                    //         array(
+                    //             'name' => 'John Doe',
+                    //             'photo' => '#',
+                    //             'note' => '3',
+                    //             'text' => 'Lorem ipsum'
+                    //         )
+                    //     )
+                    // );
                 } else if ( $product['category'] == 'Concentrates') {
                     $tabs = array(
                         array(
@@ -428,33 +476,33 @@ class Tpb_Wp_Pos_Admin {
                             'icon' => 'fa-newspaper-o',
                             'title' => 'Highlights',
                             'text' => trim_text( stripslashes($product['description']), 400, false, false ),
-                            'graphs' => array(
-                                array(
-                                    'label' => 'LOREM',
-                                    'value' => '123456789',
-                                    'percent' => '0.5'
-                                ),
-                                array(
-                                    'label' => 'LOREM',
-                                    'value' => '123456789',
-                                    'percent' => '0.5'
-                                )
-                            ),
-                            'video' => 'https://www.youtube.com/watch?v=EigAuKCD_wY'
+                            // 'graphs' => array(
+                            //     array(
+                            //         'label' => 'LOREM',
+                            //         'value' => '123456789',
+                            //         'percent' => '0.5'
+                            //     ),
+                            //     array(
+                            //         'label' => 'LOREM',
+                            //         'value' => '123456789',
+                            //         'percent' => '0.5'
+                            //     )
+                            // ),
+                            'video' => $product['video']
                         ),
-                        array(
-                            'type' => 'reviews',
-                            'icon' => 'fa-comments',
-                            'title' => 'Reviews',
-                            'reviews' => array(
-                                array(
-                                    'name' => 'John Doe',
-                                    'photo' => '#',
-                                    'note' => '3',
-                                    'text' => 'Lorem ipsum'
-                                )
-                            )
-                        )
+                        // array(
+                        //     'type' => 'reviews',
+                        //     'icon' => 'fa-comments',
+                        //     'title' => 'Reviews',
+                        //     'reviews' => array(
+                        //         array(
+                        //             'name' => 'John Doe',
+                        //             'photo' => '#',
+                        //             'note' => '3',
+                        //             'text' => 'Lorem ipsum'
+                        //         )
+                        //     )
+                        // )
                     );
                 } else if ( $product['category'] == 'Edibles') {
                     $tabs = array(
@@ -463,33 +511,33 @@ class Tpb_Wp_Pos_Admin {
                             'icon' => 'fa-newspaper-o',
                             'title' => 'Highlights',
                             'text' => trim_text( stripslashes($product['description']), 400, false, false ),
-                            'graphs' => array(
-                                array(
-                                    'label' => 'LOREM',
-                                    'value' => '123456789',
-                                    'percent' => '0.5'
-                                ),
-                                array(
-                                    'label' => 'LOREM',
-                                    'value' => '123456789',
-                                    'percent' => '0.5'
-                                )
-                            ),
-                            'video' => 'https://www.youtube.com/watch?v=EigAuKCD_wY'
+                            // 'graphs' => array(
+                            //     array(
+                            //         'label' => 'LOREM',
+                            //         'value' => '123456789',
+                            //         'percent' => '0.5'
+                            //     ),
+                            //     array(
+                            //         'label' => 'LOREM',
+                            //         'value' => '123456789',
+                            //         'percent' => '0.5'
+                            //     )
+                            // ),
+                            'video' => $product['video']
                         ),
-                        array(
-                            'type' => 'reviews',
-                            'icon' => 'fa-comments',
-                            'title' => 'Reviews',
-                            'reviews' => array(
-                                array(
-                                    'name' => 'John Doe',
-                                    'photo' => '#',
-                                    'note' => '3',
-                                    'text' => 'Lorem ipsum'
-                                )
-                            )
-                        )
+                        // array(
+                        //     'type' => 'reviews',
+                        //     'icon' => 'fa-comments',
+                        //     'title' => 'Reviews',
+                        //     'reviews' => array(
+                        //         array(
+                        //             'name' => 'John Doe',
+                        //             'photo' => '#',
+                        //             'note' => '3',
+                        //             'text' => 'Lorem ipsum'
+                        //         )
+                        //     )
+                        // )
                     );
                 } else if ( $product['category'] == 'Other') {
                     $tabs = array(
@@ -498,33 +546,33 @@ class Tpb_Wp_Pos_Admin {
                             'icon' => 'fa-newspaper-o',
                             'title' => 'Highlights',
                             'text' => trim_text( stripslashes($product['description']), 400, false, false ),
-                            'graphs' => array(
-                                array(
-                                    'label' => 'LOREM',
-                                    'value' => '123456789',
-                                    'percent' => '0.5'
-                                ),
-                                array(
-                                    'label' => 'LOREM',
-                                    'value' => '123456789',
-                                    'percent' => '0.5'
-                                )
-                            ),
-                            'video' => 'https://www.youtube.com/watch?v=EigAuKCD_wY'
+                            // 'graphs' => array(
+                            //     array(
+                            //         'label' => 'LOREM',
+                            //         'value' => '123456789',
+                            //         'percent' => '0.5'
+                            //     ),
+                            //     array(
+                            //         'label' => 'LOREM',
+                            //         'value' => '123456789',
+                            //         'percent' => '0.5'
+                            //     )
+                            // ),
+                            'video' => $product['video']
                         ),
-                        array(
-                            'type' => 'reviews',
-                            'icon' => 'fa-comments',
-                            'title' => 'Reviews',
-                            'reviews' => array(
-                                array(
-                                    'name' => 'John Doe',
-                                    'photo' => '#',
-                                    'note' => '3',
-                                    'text' => 'Lorem ipsum'
-                                )
-                            )
-                        )
+                        // array(
+                        //     'type' => 'reviews',
+                        //     'icon' => 'fa-comments',
+                        //     'title' => 'Reviews',
+                        //     'reviews' => array(
+                        //         array(
+                        //             'name' => 'John Doe',
+                        //             'photo' => '#',
+                        //             'note' => '3',
+                        //             'text' => 'Lorem ipsum'
+                        //         )
+                        //     )
+                        // )
                     );
                 }
 
@@ -544,23 +592,27 @@ class Tpb_Wp_Pos_Admin {
                             $post_data['meta_input']['_tabs_'.$cnt.'_text'] = 'field_586bb2c9b118c';
                             $post_data['meta_input']['tabs_'.$cnt.'_text'] = $tab['text'];
 
-                            $post_data['meta_input']['_tabs_'.$cnt.'_graphs'] = 'field_586cc97c03ec8';
-                            $post_data['meta_input']['tabs_'.$cnt.'_graphs'] = count($tab['graphs']);
+                            if ( $tab['graphs'] ) {
+                                $post_data['meta_input']['_tabs_'.$cnt.'_graphs'] = 'field_586cc97c03ec8';
+                                $post_data['meta_input']['tabs_'.$cnt.'_graphs'] = count($tab['graphs']);
 
-                            $i = 0;
-                            foreach( $tab['graphs'] as $graph ) {
-                                $post_data['meta_input']['_tabs_'.$cnt.'_graphs_'.$i.'_label'] = 'field_586cc9cb03eca';
-                                $post_data['meta_input']['tabs_'.$cnt.'_graphs_'.$i.'_label'] = $graph['label'];
-                                $post_data['meta_input']['_tabs_'.$cnt.'_graphs_'.$i.'_value'] = 'field_586cc9d603ecb';
-                                $post_data['meta_input']['tabs_'.$cnt.'_graphs_'.$i.'_value'] = $graph['value'];
-                                $post_data['meta_input']['_tabs_'.$cnt.'_graphs_'.$i.'_percent'] = 'field_586cc9a703ec9';
-                                $post_data['meta_input']['tabs_'.$cnt.'_graphs_'.$i.'_percent'] = $graph['percent'];
+                                $i = 0;
+                                foreach( $tab['graphs'] as $graph ) {
+                                    $post_data['meta_input']['_tabs_'.$cnt.'_graphs_'.$i.'_label'] = 'field_586cc9cb03eca';
+                                    $post_data['meta_input']['tabs_'.$cnt.'_graphs_'.$i.'_label'] = $graph['label'];
+                                    $post_data['meta_input']['_tabs_'.$cnt.'_graphs_'.$i.'_value'] = 'field_586cc9d603ecb';
+                                    $post_data['meta_input']['tabs_'.$cnt.'_graphs_'.$i.'_value'] = $graph['value'];
+                                    $post_data['meta_input']['_tabs_'.$cnt.'_graphs_'.$i.'_percent'] = 'field_586cc9a703ec9';
+                                    $post_data['meta_input']['tabs_'.$cnt.'_graphs_'.$i.'_percent'] = $graph['percent'];
 
-                                $i++;
+                                    $i++;
+                                }
                             }
 
-                            $post_data['meta_input']['_tabs_'.$cnt.'_video'] = 'field_586cc9de03ecc';
-                            $post_data['meta_input']['tabs_'.$cnt.'_video'] = $tab['video'];
+                            if ( $tab['video'] ) {
+                                $post_data['meta_input']['_tabs_'.$cnt.'_video'] = 'field_586cc9de03ecc';
+                                $post_data['meta_input']['tabs_'.$cnt.'_video'] = $tab['video'];
+                            }
 
                         }  else if ( $tab['type'] == 'attributes' ) {
 
@@ -647,13 +699,13 @@ class Tpb_Wp_Pos_Admin {
                 }
             }
 
-    		// Insert/update post
-    		$inserted_id = wp_insert_post( $post_data );
+            // Insert/update post
+            $inserted_id = wp_insert_post( $post_data );
 
-    		// Set category
-    		if ( $inserted_id > 0 ) {
-    			wp_set_post_terms( $inserted_id, $product['category'], 'product_category' );
-    		}
+            // Set category
+            if ( $inserted_id > 0 ) {
+                wp_set_post_terms( $inserted_id, $product['category'], 'product_category' );
+            }
 
             // Set image
             if ( $product['photo'] ) {
@@ -715,16 +767,16 @@ class Tpb_Wp_Pos_Admin {
                 }
             }
 
-    		// Count results
-    		if ( $inserted_id > 0 ) {
-				if ( $post_id )
-					$total_updated++;
-				else
-    				$total_inserted++;
-    		} else {
-    			$total_errors++;
-    		}
-    	}
+            // Count results
+            if ( $inserted_id > 0 ) {
+                if ( $post_id )
+                    $total_updated++;
+                else
+                    $total_inserted++;
+            } else {
+                $total_errors++;
+            }
+        }
 
         // Increment done counter
         $done += count($products);
@@ -754,15 +806,139 @@ class Tpb_Wp_Pos_Admin {
             delete_transient( 'tpb_sync_chunks' );
         }
 
-    	// Return results
+        // Return results
         echo json_encode( array(
-        	'total_inserted' 	=> $total_inserted,
-        	'total_updated' 	=> $total_updated,
-        	'total_uptodate' 	=> $total_uptodate,
+            'total_inserted'    => $total_inserted,
+            'total_updated'     => $total_updated,
+            'total_uptodate'    => $total_uptodate,
             'total_errors'      => $total_errors,
             'done'              => $done,
             'total'             => $total,
-        	'products' 	        => $products,
+            'products'          => $products,
+        ) );
+
+        die();
+    }
+
+    /**
+     * Sync data light
+     *
+     * @since    1.0.0
+     */
+    public function sync_data_light() {
+        global $wpdb;
+
+        $home = get_option( 'home' );
+        if ( strpos( $home, 'the.peak.beyond' ) !== false )
+            return false;
+
+        $data_url = get_option( 'tpb_wp_pos_data_url' );
+
+        // Get data
+        $data = file_get_contents( $data_url );
+        $products = json_decode( $data, true );
+
+        $total = count($products);
+
+        // Products to ignore
+        $ids = $wpdb->get_col( $wpdb->prepare(
+            "
+            SELECT      pm.post_id
+            FROM        $wpdb->postmeta pm
+            WHERE       pm.meta_key = %s
+                        AND pm.meta_value LIKE %s
+            ",
+            'sync',
+            '%post_status%'
+        ) );
+
+        // Disable all products before importing new ones
+        $status = $wpdb->query(
+            "
+            UPDATE $wpdb->posts
+            SET post_status = 'trash'
+            WHERE post_type = 'product' ".
+                ($ids ? "AND ID NOT IN (" . implode( ',', $ids ) . ")":"")
+        );
+
+        $total_updated = 0;
+        $total_errors = 0;
+
+        $products_data = $this->get_products_data();
+
+        // Parse products
+        foreach( $products as $product ) {
+            $product_id = $product['record_id'];
+            $post = $products_data[$product_id];
+            $post_id = $products_data[$product_id]->ID;
+
+            // Product doesn't exist, continue
+            if ( !$post_id ) {
+                continue;
+            }
+
+            $prices = explode( ',',  $product['prices'] );
+            $formated_prices = array();
+            foreach( $prices as $raw ) {
+                $raw = explode( ':',  $raw );
+                $formated_prices[] = array( 'unit' => $raw[0], 'price' => round($raw[1]) );
+            }
+
+            usort( $formated_prices, 'tpb_prices_usort' );
+
+            // Set datas
+            $post_data = array(
+                'ID'            => $post_id,
+                'post_title'    => stripslashes($product['strain_name']),
+                'post_content'  => print_r( $product, true ),
+                'post_status'   => ( (bool)$product['in_stock'] ? 'publish' : 'trash' ),
+                'post_type'     => 'product',
+                'meta_input'    => array(
+                    'product_id'    => $product_id,
+                    'in_stock'      => $product['in_stock'],
+                    'prices'        => json_encode( $formated_prices ),
+                    'default_price' => $formated_prices[0]['price'],
+                    'brand'         => stripslashes($product['brand']),
+                    'type'          => stripslashes($product['type']),
+                    'sku'           => $product['SKU']
+                )
+            );
+
+            // Ignore fields from sync
+            if ( $sync_fields = get_field( 'sync', $post_id ) ) {
+                foreach( $sync_fields as $field ) {
+                    if ( isset( $post_data[$field] ) )
+                        unset( $post_data[$field] );
+                    else if ( isset( $post_data['meta_input'][$field] ) )
+                        unset( $post_data['meta_input'][$field] );
+                }
+            }
+
+            if ( !isset( $post_data['post_title'] ) || !$post_data['post_title'] )
+                $post_data['post_title'] = $post->post_title;
+            if ( !isset( $post_data['post_status'] ) || !$post_data['post_status'] )
+                $post_data['post_status'] = $post->post_status;
+
+            // Insert/update post
+            $inserted_id = wp_insert_post( $post_data );
+
+            // Count results
+            if ( $inserted_id > 0 ) {
+                $total_updated++;
+            } else {
+                $total_errors++;
+            }
+        }
+
+        // Clean cache
+        if ( function_exists( 'rocket_clean_domain' ) )
+            rocket_clean_domain();
+
+        // Return results
+        echo json_encode( array(
+            'total_updated'     => $total_updated,
+            'total_errors'      => $total_errors,
+            'products'          => $products,
         ) );
 
         die();
@@ -779,7 +955,7 @@ class Tpb_Wp_Pos_Admin {
     		global $wpdb;
 
     		$results = $wpdb->get_results( $wpdb->prepare( "
-		        SELECT p.ID, pm.meta_value, p.post_modified FROM {$wpdb->postmeta} pm
+		        SELECT p.ID, p.post_title, p.post_status, pm.meta_value, p.post_modified FROM {$wpdb->postmeta} pm
 		        LEFT JOIN {$wpdb->posts} p ON p.ID = pm.post_id
 		        WHERE pm.meta_key = '%s'
 		        AND p.post_type = '%s'

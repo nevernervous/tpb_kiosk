@@ -43,7 +43,8 @@
 			
 		});
 
-		 $(window).on('printorder', function() {	 
+		 $(window).on('printorder', function() {
+	 /*
 		  qz.security.setCertificatePromise(function(resolve, reject) {
 				$.ajax("wp-content/plugins/tpb-wp-pos/assets/signing/digital-certificate.txt").then(resolve, reject);
 			});
@@ -59,14 +60,11 @@
 					  return qz.printers.find("POS-80")              
 					}).then(function(printer) {
 					var config = qz.configs.create(printer);       // Create a default config for the found printer
-					var data = [{
-						type: 'html',
-						format: 'file', // or 'plain' if the data is raw HTML
-						data:'wp-content/plugins/tpb-wp-pos/log.html'
-					}];
-				  return qz.print(config, data);
-				}).catch(function(e) { console.error(e); });
+					var data = ['testing this printer'];
+				  return qz.print(config, data);				}).catch(function(e) { console.error(e); });
+
 				
-		  })		  
+	*/	
+  })		  
 	
  

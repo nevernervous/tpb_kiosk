@@ -4,7 +4,7 @@
 
 var site = (function() {
 	var activeObject = false;
-	var recognitionDelay = 800;
+	var recognitionDelay = 0;
 	var virtualKeyboard = true;
 
 	/**
@@ -27,7 +27,7 @@ var site = (function() {
 		});
 
 		// Update files asynchronously
-		updateFiles();
+		//updateFiles();
 	}
 
 
@@ -40,7 +40,7 @@ var site = (function() {
 			userEvent = 'click';
 
 		$('.screen-intro').on(userEvent, hideScreenIntro);
-		$('body').on(userEvent, '.btn-cart-back, .btn-checkout-back, .btn-catalogue', showScreenCatalogue);
+		$('body').on(userEvent, '.btn-cart-back, .btn-checkout-back, .btn-catalogue, .link-catalogue', showScreenCatalogue);
 		$('body').on(userEvent+(userEvent=='touchstart'?' touchmove touchend':''), '.link-product', showScreenProduct);
 		$('body').on(userEvent, '.btn-add-to-cart', showScreenAddToCart);
 		$('body').on(userEvent, '.btn-cart-checkout, .toggle-cart', showScreenCheckout);
@@ -62,9 +62,10 @@ var site = (function() {
 		$('body').on('change', '.list-filter', listFilter);
 		$('body').on(userEvent, 'label', checkInput);
 		$('body').on(userEvent, '.btn-submit', submitForm);
-		$('body').on(userEvent, '.input-text', inputTextFocus);
+		//$('body').on(userEvent, '.input-text', inputTextFocus);
 
-		$('body').on(userEvent, touchFeedback);
+		if (userEvent == 'touchstart')
+			$('body').on(userEvent, touchFeedback);
 
 		// Causes bug on linux/chromium install
 		// if (virtualKeyboard)
@@ -422,9 +423,13 @@ var site = (function() {
 	var showScreenInactive = function() {
 		// Selectors
 		var screen = $('.screen-inactive');
-		if (!$('.screen-reset').is(':visible'))
+		if (!$('.screen-reset').is(':visible')) {
 			toggleScreenUser(screen);
+
+			resetSessionTimeout = setTimeout(resetSession, inactivityDelay);
+		}
 	}
+	var resetSessionTimeout = null;
 
 
 	/**
@@ -434,6 +439,8 @@ var site = (function() {
 		// Selectors
 		var screen = $('.screen-inactive');
 		toggleScreenUser(screen);
+
+		clearTimeout(resetSessionTimeout);
 	}
 
 
@@ -593,8 +600,8 @@ var site = (function() {
 		if (newScreen.hasClass('screen-product')) {
 			if (newScreen.attr('data-pattern') === activeObject) {
 				$('.sidebar-areas .area-checkout .product-prices').remove();
-				newScreen.find('.product-prices').appendTo($('.sidebar-areas .area-checkout .area-text'));
-				newScreen.find('.product-add-to-cart').remove();
+				newScreen.find('.product-prices').clone().appendTo($('.sidebar-areas .area-checkout .area-text'));
+				// newScreen.find('.product-add-to-cart').remove();
 			}
 		} else {
 			switchTabWait = false;
@@ -1364,6 +1371,8 @@ var site = (function() {
 
 		// Process touches with OOR
 		process_touches(e)
+
+		inactivityHandler();
 
 		e.preventDefault && e.preventDefault();
 		e.stopPropagation && e.stopPropagation();
@@ -2144,8 +2153,10 @@ var site = (function() {
 			var field = activeStep.find('[name="user_name"]');
 			var userName = field.val();
 
-			if (userName == '')
+			if (userName == '' || activeStep.find('.btn-checkout-next').hasClass('is-sent'))
 				return;
+
+			activeStep.find('.btn-checkout-next').addClass('is-sent');
 
 			$.post(
 				WRK.ajax_url,
@@ -2166,6 +2177,7 @@ var site = (function() {
 						$(window).trigger('printorder');
 					} else {
 						alert('Error while saving user name, please try again.');
+						activeStep.find('.btn-checkout-next').removeClass('is-sent');
 					}
 
 					$('#osk-container:visible .osk-hide').click();

@@ -96,12 +96,15 @@ class Tpb_Wp_Pos_Public {
 		 * class.
 		 */
 
+		
+		 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/tpb-wp-pos-public.js', array( 'jquery' ), $this->version, false );
 
-		// Print scripts
-		wp_enqueue_script( 'rsvp', plugin_dir_url( __FILE__ ) . 'js/dependencies/rsvp-3.1.0.min.js', false, 1, true );
-		wp_enqueue_script( 'sha-256', plugin_dir_url( __FILE__ ) . 'js/dependencies/sha-256.min.js', false, 1, true );
-		wp_enqueue_script( 'qz-tray', plugin_dir_url( __FILE__ ) . 'js/qz-tray.js', false, 1, true );
+		//print scripts
+		wp_enqueue_script( 'rsvp', plugin_dir_url( __FILE__ ) . 'js/dependencies/rsvp-3.1.0.min.js', array( 'jquery' ), 1, false );
+		wp_enqueue_script( 'sha', plugin_dir_url( __FILE__ ) . 'js/dependencies/sha-256.min.js', array( 'jquery' ),1, false ); 
+		wp_enqueue_script( 'qztray', plugin_dir_url( __FILE__ ) . 'js/qz-tray.js', array( 'jquery' ), 1, false );
+
 	}
 
 
@@ -145,8 +148,8 @@ class Tpb_Wp_Pos_Public {
 
     	}
 		//$results = print_r($order, true);
-
-
+		
+		
 		//  MJ Freeway
 		/*
 		$nid = Tpb_Wp_Pos_Public::check_user($user);
@@ -155,55 +158,75 @@ class Tpb_Wp_Pos_Public {
 		}else {
 			$checkout = false;
 		}
-
-		$file = WP_PLUGIN_DIR."/tpb-wp-pos/log.txt";
+		
+		$file = WP_PLUGIN_DIR."/tpb-wp-pos/log.txt";  
 		file_put_contents($file, $checkout);
-	*/
+	*/	
+	
 
-
-
-
-		 ////  Greenbits Receipt
-
+		
+	
+		 ////  Greenbits Receipt  
+		
 		$receipt = Tpb_Wp_Pos_Public::printReceipt($order, $user);
-		$file = WP_PLUGIN_DIR."/tpb-wp-pos/log.html";
+		$file = WP_PLUGIN_DIR."/tpb-wp-pos/log.txt";  
 		file_put_contents($file, $receipt);
-
+	
     	// Do things here to create order in POS
     	// ...
     	$result = true;
 
     	return $result;
     }
-
-
-    /**
-     * printReceipt
-     */
 	public function printReceipt($order, $customer) {
-		$text = '###Customer Order###</br></br>' ;
-		$text.='Patient Name: '.$customer.'<br>' ;
+		$prints = '###Customer Order###\n\n';
+		$text = '###Customer Order### <br><br>';
+		$prints.='Patient Name: '.$customer.'\n';
+		$text.='Patient Name: '.$customer.'<br>';
 		$total = 0;
 		foreach($order as $o) {
-			$text.='Product: '.$o['title'].' ('.$o['sku'].')'.'<br>' ;
+			$prints.='Product: '.$o['title'].' ('.$o['sku'].')'.'\n';
+			$text.='Product: '.$o['title'].' ('.$o['sku'].')'.'<br>';
+			$text.='Size: '.$o['unit'].'<br>';
+			$prints.='Quantity: '.$o['qty'].'\n';
 			$text.='Quantity: '.$o['qty'].'<br>' ;
+			
+			$prints.='Cost: '.$o['total_price'].'\n\n';
 			$text.='Cost: '.$o['total_price'].'<br>' .'<br>' ;
 			$total+=intval($o['total_price']);
 		}
 		$text.='Total: $'.$total;
+		$prints.='Total: $'.$total;
 
-		return $text;
+		$to = 'thepeakbeyondreceipts@gmail.com';
+
+			$subject = 'Customer order from '.$customer;
+
+			$headers = "From: thepeakbeyondorders@gmail.com \r\n";
+			$headers .= "Reply-To: thepeakbeyondorders@gmail.com \r\n";
+			$headers .= "MIME-Version: 1.0\r\n";
+			$headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+
+			$message = $text;
+
+
+			mail($to, $subject, $message, $headers);
+		
+		return $prints;
+		
+		
+		
 	}
-
-
-	/**
-	 * check_user
-	 */
+	
+	
+	
 	public function check_user($name) {
+		
 		$parts = explode(" ", $name);
 		$lastname = array_pop($parts);
 		$firstname = implode(" ", $parts);
-
+		
+		 
 		$url = "https://i.gomjfreeway.com/Training77/api/order/patient_list";
 		$data = array('first_name' =>$firstname, 'last_name'=>$lastname);
 		$data_string = json_encode($data);
@@ -215,7 +238,7 @@ class Tpb_Wp_Pos_Public {
 			  'location_nid' =>'45',
 			  'data'=>$data_string
 		 );
-
+		 
 			$curl = curl_init($url);    // we init curl by passing the url
 			curl_setopt($curl, CURLOPT_HEADER, false);
 			 curl_setopt($curl,CURLOPT_POST,true);   // to send a POST request
@@ -227,10 +250,10 @@ class Tpb_Wp_Pos_Public {
 			//$xml = new SimpleXMLElement($result);
 			//echo $result;
 			$pot = json_decode($result,true);
-
-			$success =  $pot['response_details']['success'];
+			
+			$success =  $pot['response_details']['success'];	
 			$patients = count($pot['response_details']['patients']);
-
+			
 			if($success ==1 && $patients ==1) {
 				$r= $pot['response_details']['patients'][0]['nid'];
 			}else if($patients>1) {
@@ -240,17 +263,12 @@ class Tpb_Wp_Pos_Public {
 			}
 			return $r;
 	}
-
-
-	/**
-	 * mjFreeway
-	 */
 	public function mjFreeway($id, $ordr) {
 		$url = "https://i.gomjfreeway.com/Training77/api/order/update_order";
 		$pot='';
 		$oID='';
 		foreach($ordr as $o) {
-
+			
 			$order = array('patient_nid'=>$id,
 			  'product_sku'=>$o['sku'],
 			  'qty'=>$o['qty'],
@@ -258,7 +276,7 @@ class Tpb_Wp_Pos_Public {
 			  'pricing_weight_id'=>'5',
 			  'order_source'=>'Online'
 			);
-
+		
 		$ord = json_encode($order);
 		$access_token_parameters = array(
 			  'version' =>'4',
@@ -267,9 +285,9 @@ class Tpb_Wp_Pos_Public {
 			  'format' =>'JSON',
 			  'location_nid' =>'45',
 			  'data'=>$ord
-
+			  
 		 );
-
+		
 		$curl = curl_init($url);    // we init curl by passing the url
 		curl_setopt($curl, CURLOPT_HEADER, false);
 	    curl_setopt($curl,CURLOPT_POST,true);   // to send a POST request
@@ -282,8 +300,11 @@ class Tpb_Wp_Pos_Public {
 		//echo $result;
 		$pot = json_decode($result,true);
 		$oID= $pot['response_details']['order_id'];
-
+		
 		}
 		return print_r($pot, true);
 	}
+	
+	
+	
 }

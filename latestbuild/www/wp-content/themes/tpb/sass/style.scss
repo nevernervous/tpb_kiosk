@@ -1772,12 +1772,34 @@ img {
 
 	.phrase {
 		position: absolute;
-		top: 665px;
+		top: 615px;
 		left: 12px;
 
 		font-size: 90px;
 		font-weight: 200;
 		line-height: 1.1;
+
+		small {
+			display: block;
+			margin-top: 20px;
+
+			font-size: 58px;
+
+			div {
+				display: inline-block;
+				padding: 25px 40px;
+
+				background-color: rgba($white, 0.2);
+				border-radius: 50px;
+
+				font-size: 50px;
+				line-height: 1;
+
+				&:hover {
+					background-color: rgba($white, 0.1);
+				}
+			}
+		}
 	}
 }
 
@@ -2930,6 +2952,42 @@ img {
 
 			font: 200 44px/80px $raleway;
 			@include placeholder();
+		}
+
+
+		.btn-checkout-next {
+			margin: 0 auto;
+			overflow: hidden;
+			width: 220px;
+
+			transition: border 0.3s ease, background 0.3s ease, width 0.3s ease;
+
+			white-space: nowrap;
+
+			.text-on,
+			.text-off {
+				display: block;
+				margin: 0 auto;
+			}
+
+			.text-off {
+				display: none;
+			}
+
+			&.is-sent {
+				width: 300px;
+
+				border-color: rgba($white, 0);
+				background-color: rgba($white, 0.2);
+
+				.text-on {
+					display: none;
+				}
+
+				.text-off {
+					display: block;
+				}
+			}
 		}
 	}
 
