@@ -4,7 +4,7 @@
 
 var site = (function() {
 	var activeObject = false;
-	var recognitionDelay = 0;
+	var recognitionDelay = 800;
 	var virtualKeyboard = true;
 
 	/**
@@ -27,7 +27,7 @@ var site = (function() {
 		});
 
 		// Update files asynchronously
-		//updateFiles();
+		updateFiles();
 	}
 
 
