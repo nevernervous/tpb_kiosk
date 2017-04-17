@@ -2967,6 +2967,24 @@ img {
 			@include placeholder();
 		}
 
+		.double {
+			label {
+				font-size: 60px;
+			}
+
+			.input-text {
+				float: left;
+				width: 48%;
+
+				font-size: 34px;
+				@include placeholder(rgba($white, 0.2), 34px);
+
+				& + .input-text {
+					float: right;
+				}
+			}
+		}
+
 
 		.btn-checkout-next {
 			margin: 0 auto;
