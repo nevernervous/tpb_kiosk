@@ -156,12 +156,15 @@ class Tpb_Wp_Pos_Public {
 		$nid = Tpb_Wp_Pos_Public::check_user($user, $phone);
 		if($nid !='multiple' && $nid !='none') {
 			$checkout = Tpb_Wp_Pos_Public::mjFreeway($nid, $order);
+			$file = WP_PLUGIN_DIR."/tpb-wp-pos/log.txt";  
+			file_put_contents($file, $checkout);
+			$result = true
 		}else {
 			$checkout = false;
+			$result = false;
 		}
 		
-		$file = WP_PLUGIN_DIR."/tpb-wp-pos/log.txt";  
-		file_put_contents($file, $checkout);
+		return $result;
 	
 	
 
@@ -258,6 +261,8 @@ class Tpb_Wp_Pos_Public {
 			if($success ==1 && $patients ==1) {
 				if($phone = preg_replace('/\D+/', '', $pot['response_details']['patients'][0]['phone_mobile']) || $phone = preg_replace('/\D+/', '', $pot['response_details']['patients'][0]['phone_home'])) {
 					$r= $pot['response_details']['patients'][0]['nid'];
+				}else {
+					$r = 'none';
 				}
 			}else if($patients>1) {
 				$r= 'multiple';
