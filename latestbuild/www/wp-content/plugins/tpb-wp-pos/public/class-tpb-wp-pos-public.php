@@ -158,7 +158,7 @@ class Tpb_Wp_Pos_Public {
 			$checkout = Tpb_Wp_Pos_Public::mjFreeway($nid, $order);
 			$file = WP_PLUGIN_DIR."/tpb-wp-pos/log.txt";  
 			file_put_contents($file, $checkout);
-			$result = true
+			$result = true;
 		}else {
 			$checkout = false;
 			$result = false;
