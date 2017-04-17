@@ -2192,10 +2192,15 @@ var site = (function() {
 		var nextStep = activeStep.next('.step');
 
 		if (activeStep.hasClass('step-login')) {
-			var field = activeStep.find('[name="user_name"]');
-			var userName = field.val();
+			var fieldName = activeStep.find('[name="user_name"]');
+			var fieldPhone = activeStep.find('[name="phone"]');
+			var userName = fieldName.val();
+			if (fieldPhone.length == 1)
+				var phone = fieldPhone.val();
+			else
+				var phone = false;
 
-			if (userName == '' || activeStep.find('.btn-checkout-next').hasClass('is-sent'))
+			if (userName == '' || activeStep.find('.btn-checkout-next').hasClass('is-sent') || (fieldPhone.length == 1 && phone == '') )
 				return;
 
 			activeStep.find('.btn-checkout-next').addClass('is-sent');
@@ -2204,7 +2209,8 @@ var site = (function() {
 				WRK.ajax_url,
 				{
 					'action': 'tpb_handle_checkout',
-					'user_name': userName
+					'user_name': userName,
+					'phone': phone
 				},
 				function(response) {
 					//console.debug(response);
@@ -2218,7 +2224,7 @@ var site = (function() {
 
 						$(window).trigger('printorder');
 					} else {
-						alert('Error while saving user name, please try again.');
+						alert('Error while saving info, please try again.');
 						activeStep.find('.btn-checkout-next').removeClass('is-sent');
 					}
 

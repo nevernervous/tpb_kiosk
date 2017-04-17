@@ -301,12 +301,14 @@
     function tpb_ajax_handle_checkout() {
     	// Get products
         $user_name = sanitize_user( $_REQUEST['user_name'] );
+        $phone = $_REQUEST['phone'];
 
         if ( $user_name == '')
         	die('0');
 
-        // Save user name
+        // Save user infos
         $_SESSION['user_name'] = $user_name;
+        $_SESSION['phone'] = $phone;
 
         // Send order
         $result = Tpb_Wp_Pos_Public::send_order();
@@ -314,6 +316,7 @@
         if ( $result ) {
 	        echo json_encode( array(
 	            'user_name' => $user_name,
+	            'phone' => $phone,
 	            'success' => 1
 	        ) );
         	die();

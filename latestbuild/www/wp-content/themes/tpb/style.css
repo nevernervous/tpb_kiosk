@@ -2789,6 +2789,47 @@ img {
   filter: progid:DXImageTransform.Microsoft.Alpha(enabled=false);
   opacity: 1;
 }
+.screen-checkout .form-checkout .double label {
+  font-size: 60px;
+}
+.screen-checkout .form-checkout .double .input-text {
+  float: left;
+  width: 48%;
+  font-size: 34px;
+}
+.screen-checkout .form-checkout .double .input-text::-webkit-input-placeholder {
+  color: rgba(255, 255, 255, 0.2);
+  font: 200 34px/80px Raleway, sans-serif;
+  filter: progid:DXImageTransform.Microsoft.Alpha(enabled=false);
+  opacity: 1;
+}
+.screen-checkout .form-checkout .double .input-text::-moz-placeholder {
+  color: rgba(255, 255, 255, 0.2);
+  font: 200 34px/80px Raleway, sans-serif;
+  filter: progid:DXImageTransform.Microsoft.Alpha(enabled=false);
+  opacity: 1;
+}
+.screen-checkout .form-checkout .double .input-text:-ms-input-placeholder {
+  color: rgba(255, 255, 255, 0.2);
+  font: 200 34px/80px Raleway, sans-serif;
+  filter: progid:DXImageTransform.Microsoft.Alpha(enabled=false);
+  opacity: 1;
+}
+.screen-checkout .form-checkout .double .input-text:-moz-placeholder {
+  color: rgba(255, 255, 255, 0.2);
+  font: 200 34px/80px Raleway, sans-serif;
+  filter: progid:DXImageTransform.Microsoft.Alpha(enabled=false);
+  opacity: 1;
+}
+.screen-checkout .form-checkout .double .input-text.placeheld {
+  color: rgba(255, 255, 255, 0.2);
+  font: 200 34px/80px Raleway, sans-serif;
+  filter: progid:DXImageTransform.Microsoft.Alpha(enabled=false);
+  opacity: 1;
+}
+.screen-checkout .form-checkout .double .input-text + .input-text {
+  float: right;
+}
 .screen-checkout .form-checkout .btn-checkout-next {
   margin: 0 auto;
   overflow: hidden;

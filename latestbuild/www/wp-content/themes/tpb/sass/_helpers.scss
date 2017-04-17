@@ -28,15 +28,6 @@
 	clear: both;
 }
 
-@mixin placeholder($color:#ccc, $size:14px, $font:arial) {
-	&::-webkit-input-placeholder { color: $color; font: #{$size}/1 #{$font}; @include opacity(1); }
-	&::-moz-placeholder { color: $color; font: #{$size}/1 #{$font}; @include opacity(1); }
-	&:-ms-input-placeholder { color: $color; font: #{$size}/1 #{$font}; @include opacity(1); }
-	&:-moz-placeholder { color: $color; font: #{$size}/1 #{$font}; @include opacity(1); }
-	&.placeheld { color: $color; font: #{$size}/1 #{$font}; @include opacity(1); }
-}
-
-
 @mixin placeholder($color:rgba($white, 0.2), $size:44px, $line-heght:80px, $font:$raleway) {
 	&::-webkit-input-placeholder { color: $color; font: 200 #{$size}/$line-heght #{$font}; @include opacity(1); }
 	&::-moz-placeholder { color: $color; font: 200 #{$size}/$line-heght #{$font}; @include opacity(1); }
