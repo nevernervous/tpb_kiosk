@@ -2,7 +2,7 @@
 
 	<div class="site-main is-hidden">
 		<?php
-			if ( false === get_field( 'object_recognition', 'options' ) )
+			if ( false === tpb_object_recognition() )
 				get_template_part( 'screen-catalogue' );
 			else
 				get_template_part( 'screen-select' );

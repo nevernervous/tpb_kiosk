@@ -632,6 +632,20 @@
 	}
 
 
+	/**
+	 * Object recognition
+	 */
+	function tpb_object_recognition() {
+		$option = get_field( 'object_recognition', 'options' );
+		$path = '/var/tmp/tpb_object_recognition_disabled';
+
+		if ( $option === false || file_exists( $path ) ) {
+			return false;
+		}
+
+		return true;
+	}
+
 
 /* =============================================================================
    ACF
