@@ -1536,10 +1536,10 @@ img {
 }
 
 .object-recognition-disabled .sidebar-head {
-  top: 420px;
+  top: 410px;
 }
 .object-recognition-disabled .site-sidebar .btn-session {
-  bottom: 480px;
+  bottom: 470px;
 }
 .object-recognition-disabled .sidebar-areas {
   display: none !important;
