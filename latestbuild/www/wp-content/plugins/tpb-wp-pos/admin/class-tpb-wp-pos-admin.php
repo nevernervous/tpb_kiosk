@@ -423,7 +423,7 @@ class Tpb_Wp_Pos_Admin {
             $post_data = array(
                 'post_title'    => stripslashes($product['strain_name']),
                 'post_content'  => print_r( $product, true ),
-                'post_status'   => ( (bool)$product['in_stock'] ? 'publish' : 'trash' ),
+                'post_status'   => ( (bool)$product['in_stock'] ? 'publish' : 'draft' ),
                 'post_type'     => 'product',
                 'meta_input'    => array(
                     'product_id'    => $product_id,
@@ -802,6 +802,10 @@ class Tpb_Wp_Pos_Admin {
                     $post_data['meta_input']['tabs'] = serialize( $types );
                 }
             }
+
+            // Default status
+            $post_data['post_status'] = 'draft';
+            $post_data['meta_input']['sync_post_status'] = 1;
 
             // Insert/update post
             $inserted_id = wp_insert_post( $post_data );
