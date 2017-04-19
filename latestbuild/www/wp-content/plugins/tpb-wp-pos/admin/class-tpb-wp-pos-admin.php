@@ -62,7 +62,7 @@ class Tpb_Wp_Pos_Admin {
 
         // Scheduled actions
         add_filter( 'cron_schedules', array( $this, 'tpb_cron_schedules' ) );
-        //add_action( 'tpb_cron_sync', array( $this, 'sync_data_light' ) );
+        add_action( 'tpb_cron_sync', array( $this, 'sync_data_light' ) );
         if ( ! wp_next_scheduled( 'tpb_cron_sync' ) ) {
             wp_schedule_event( time(), 'ten_minutes',  'tpb_cron_sync' );
         }
