@@ -127,9 +127,9 @@ class Tpb_Wp_Pos_Public {
     		$prices = tbp_get_product_prices( $product_id );
 
     		$record_id = get_post_meta( $product_id, 'product_id', true );
-    		//$sku = get_post_meta( $product_id, 'sku', true );
+    		$sku = get_post_meta( $product_id, 'sku', true );
     		$title = $product->post_title;
-			$sku = 133;
+			//$sku = 133;
     		foreach( $amounts as $amount => $qty ) {
 				$unit = $prices[$amount]->unit;
 				$price = $prices[$amount]->price;
@@ -241,19 +241,19 @@ class Tpb_Wp_Pos_Public {
 					$success = "none";
 				}
 			}
-			return $success;
+			echo $success;
 		}else {
 			
 			$lastname = array_pop($parts);
 			$firstname = implode(" ", $parts);
+			$lname = Tpb_Wp_Pos_Public::theUser('last_name',$lastname,$phone);
 			
-			$fname = Tpb_Wp_Pos_Public::theUser('first_name',$firstname,$phone);
-			if($fname) {
-				$success = $fname;
+			if($lname) {
+				$success = $lname;
 			}else {
-				$lname = Tpb_Wp_Pos_Public::theUser('last_name',$lastname,$phone);
-				if($lname) {
-					$success = $lname;
+				$fname = Tpb_Wp_Pos_Public::theUser('first_name',$firstname,$phone);
+				if($fname) {
+					$success = $fname;
 				}else {
 					$success = "none";
 				}
@@ -291,7 +291,7 @@ class Tpb_Wp_Pos_Public {
 		//$xml = new SimpleXMLElement($result);
 		//echo $result;
 		$pot = json_decode($result,true);
-		$users = 0;
+		$users = false;
 		$success =  $pot['response_details']['success'];	
 		//$patients = count($pot['response_details']['patients']);
 
@@ -301,11 +301,13 @@ class Tpb_Wp_Pos_Public {
 			
 			foreach($pot['response_details']['patients'] as $user) {
 			//echo $pot['response_details']['patients'][0]['phone_mobile'];
-				if($phone = preg_replace('/\D+/', '', $user['phone_mobile']) || $phone = preg_replace('/\D+/', '', $user['phone_home'])) {
+				if($phone == preg_replace('/\D+/', '', $user['phone_mobile']) || $phone == preg_replace('/\D+/', '', $user['phone_home'])) {
 					$users= $user['nid'];
+					//echo $users;
 				}else {
-					$users = false;
+					//$users = false;
 				}
+				
 			}
 			if($users) {
 				return $users;
