@@ -226,51 +226,97 @@ class Tpb_Wp_Pos_Public {
 	
 	
 	public function check_user($name, $phone) {
-		
 		$parts = explode(" ", $name);
-		$lastname = array_pop($parts);
-		$firstname = implode(" ", $parts);
+
+		if(count($parts) == 1) {
+			
+			$fname = Tpb_Wp_Pos_Public::theUser('first_name',$name,$phone);
+			if($fname) {
+				$success = $fname;
+			}else {
+				$lname = Tpb_Wp_Pos_Public::theUser('last_name',$name,$phone);
+				if($lname) {
+					$success = $lname;
+				}else {
+					$success = "none";
+				}
+			}
+			echo $success;
+		}else {
+			
+			$lastname = array_pop($parts);
+			$firstname = implode(" ", $parts);
+			
+			$fname = Tpb_Wp_Pos_Public::theUser('first_name',$firstname,$phone);
+			if($fname) {
+				$success = $fname;
+			}else {
+				$lname = Tpb_Wp_Pos_Public::theUser('last_name',$lastname,$phone);
+				if($lname) {
+					$success = $lname;
+				}else {
+					$success = "none";
+				}
+			}
+			return $success;
 		
-		$url = "https://i.gomjfreeway.com/elementalwellness/api/order/patient_list";
-		$data = array('first_name' =>$firstname, 'last_name'=>$lastname);
+		}
+	}
+		
+		
+		
+	public function theUser($which, $who, $phone) {
+		
+	
+	$url = "https://i.gomjfreeway.com/elementalwellness/api/order/patient_list";
+		$data = array($which=>$who);
 		$data_string = json_encode($data);
 		$access_token_parameters = array(
-				'version' =>'4',
-			  'api_key'  	=>'977237471589bc2768d4be7.38775850',
+				'version' =>'8',
+        'api_key'  	=>'977237471589bc2768d4be7.38775850',
         'api_id'  => '349708323584adb34ed9179.68028223',
-			  'format' =>'JSON',
-			  'location_nid' =>'45',
+		  'format' =>'JSON',
+		  'location_nid' =>'45',
 			  'data'=>$data_string
 		 );
-		 
-			$curl = curl_init($url);    // we init curl by passing the url
-			curl_setopt($curl, CURLOPT_HEADER, false);
-			 curl_setopt($curl,CURLOPT_POST,true);   // to send a POST request
-			 curl_setopt($curl,CURLOPT_POSTFIELDS,$access_token_parameters);   // indicate the data to send
-			 curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);   // to return the transfer as a string of the return value of curl_exec() instead of outputting it out directly.
-			 curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);   // to stop cURL from verifying the peer's certificate.
-			 $result = curl_exec($curl);   // to perform the curl session
-			 curl_close($curl);   // to close the curl session
-			//$xml = new SimpleXMLElement($result);
-			//echo $result;
-			$pot = json_decode($result,true);
+	 
+	 	$curl = curl_init($url);    // we init curl by passing the url
+		curl_setopt($curl, CURLOPT_HEADER, false);
+	    curl_setopt($curl,CURLOPT_POST,true);   // to send a POST request
+	    curl_setopt($curl,CURLOPT_POSTFIELDS,$access_token_parameters);   // indicate the data to send
+	    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);   // to return the transfer as a string of the return value of curl_exec() instead of outputting it out directly.
+	    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);   // to stop cURL from verifying the peer's certificate.
+	    $result = curl_exec($curl);   // to perform the curl session
+	    curl_close($curl);   // to close the curl session
+		//$xml = new SimpleXMLElement($result);
+		//echo $result;
+		$pot = json_decode($result,true);
+		$users = 0;
+		$success =  $pot['response_details']['success'];	
+		//$patients = count($pot['response_details']['patients']);
+
+		
+		
+		if($success =='1') {
 			
-			$success =  $pot['response_details']['success'];	
-			$patients = count($pot['response_details']['patients']);
-			
-			if($success ==1 && $patients ==1) {
-				if($phone = preg_replace('/\D+/', '', $pot['response_details']['patients'][0]['phone_mobile']) || $phone = preg_replace('/\D+/', '', $pot['response_details']['patients'][0]['phone_home'])) {
-					$r= $pot['response_details']['patients'][0]['nid'];
+			foreach($pot['response_details']['patients'] as $user) {
+			//echo $pot['response_details']['patients'][0]['phone_mobile'];
+				if($phone = preg_replace('/\D+/', '', $user['phone_mobile']) || $phone = preg_replace('/\D+/', '', $user['phone_home'])) {
+					$users= $user['nid'];
 				}else {
-					$r = 'none';
+					$users = false;
 				}
-			}else if($patients>1) {
-				$r= 'multiple';
-			}else {
-				$r= 'none';
 			}
-			return $r;
-	}
+			if($users) {
+				return $users;
+			}else {
+				return false;
+			}
+		}else {
+			return false;
+		}
+		
+	}	
 	public function mjFreeway($id, $ordr) {
 		$url = "https://i.gomjfreeway.com/elementalwellness/api/order/update_order";
 		$pot='';
