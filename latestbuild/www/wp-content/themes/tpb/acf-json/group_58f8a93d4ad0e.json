@@ -1,0 +1,43 @@
+{
+    "key": "group_58f8a93d4ad0e",
+    "title": "Image",
+    "fields": [
+        {
+            "default_value": 0,
+            "message": "",
+            "ui": 0,
+            "ui_on_text": "Rounded shape",
+            "ui_off_text": "Original shape",
+            "key": "field_58f8a94f94e3c",
+            "label": "Disable rounded shape ?",
+            "name": "rounded_shape",
+            "type": "true_false",
+            "instructions": "Display the image in its original shape instead of cropping it with a rounded shape.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            }
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "attachment",
+                "operator": "==",
+                "value": "all"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": 1,
+    "description": "",
+    "modified": 1492691435
+}

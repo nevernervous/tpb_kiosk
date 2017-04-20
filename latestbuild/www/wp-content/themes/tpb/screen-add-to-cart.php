@@ -8,8 +8,12 @@
 	</h2>
 
 	<?php if ( has_post_thumbnail( $product->ID ) ): ?>
-	<?php $image = wp_get_attachment_image_src( get_post_thumbnail_id( $product->ID ), 'medium', false ); ?>
-	<div class="product-image">
+	<?php
+		$thumbnail_id = get_post_thumbnail_id( $product->ID );
+		$image = wp_get_attachment_image_src( $thumbnail_id, 'medium', false );
+		$rounded_shape = (bool)get_post_meta( $thumbnail_id, 'rounded_shape', true );
+	?>
+	<div class="product-image <?php echo $rounded_shape ? 'original-shape':''; ?>">
 		<img src="<?php echo $image[0]; ?>" alt="" width="<?php echo $image[1]; ?>" height="<?php echo $image[2]; ?>" class="image" />
 
 		<div class="waves">

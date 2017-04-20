@@ -313,6 +313,12 @@ img {
 		z-index: 3;
 	}
 
+	&.original-shape {
+		.image {
+			border-radius: 0;
+		}
+	}
+
 	.waves {
 		position: absolute;
 		top: 0;
@@ -500,6 +506,12 @@ img {
 
 				border-radius: 90px;
 				z-index: 2;
+			}
+
+			&.original-shape {
+				.image {
+					border-radius: 0;
+				}
 			}
 
 			&.blank {
