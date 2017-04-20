@@ -329,7 +329,7 @@ class Tpb_Wp_Pos_Public {
 			  'product_sku'=>$o['sku'],
 			  'qty'=>$o['qty'],
 			  'order_id'=>$oID,
-			  'pricing_weight_id'=>'5',
+			//  'pricing_weight_id'=>'5',
 			  'order_source'=>'Online'
 			);
 		
