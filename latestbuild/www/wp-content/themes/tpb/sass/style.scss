@@ -449,7 +449,7 @@ img {
 			.option {
 				padding: 6px 12px;
 
-				background-color: rgba(#1F0657, 0.8);
+				// background-color: rgba(#1F0657, 0.8);
 			}
 		}
 	}
@@ -823,6 +823,17 @@ img {
 		z-index: 2;
 	}
 
+	.canvas {
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+
+		transform: scale(1.2);
+		transition: filter 0.8s cubic-bezier(.65,.05,.36,1), transform 0.8s cubic-bezier(.65,.05,.36,1);
+	}
+
 	.image {
 		display: block;
 		position: absolute;
@@ -832,21 +843,6 @@ img {
 		height: 100%;
 
 		opacity: 0;
-	}
-
-	.canvas {
-		position: absolute;
-		top: 0;
-		right: 0;
-		bottom: 0;
-		left: 0;
-
-		transform: scale(1.2);
-		transition: transform 0.8s ease;
-
-		canvas {
-			transition: filter 0.8s ease;
-		}
 	}
 
 	&.is-blurred {
