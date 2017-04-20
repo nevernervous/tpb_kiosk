@@ -11,7 +11,11 @@ var site = (function() {
 	 * Init
 	 */
 	var init = function() {
-		siteBackground.init();
+		if ($('.site-background').hasClass('animated')) {
+			siteBackgroundAnimated.init();
+		} else {
+			siteBackgroundStatic.init();
+		}
 
 		bindEvents();
 
@@ -216,7 +220,11 @@ var site = (function() {
 		);
 
 		tl.call(function() {
-			siteBackground.speedUp();
+			if ($('.site-background').hasClass('animated')) {
+				siteBackgroundAnimated.speedUp();
+			} else {
+				$('.site-background').addClass('is-blurred');
+			}
 		}, null, null, 0.3)
 
 		tl.fromTo(
@@ -246,6 +254,10 @@ var site = (function() {
 			1.2
 		);
 
+		var startSidebar = 0.6;
+		if ($('.site-background').hasClass('animated'))
+			startSidebar = 1.2;
+
 		if (newScreen.hasClass('screen-select')) {
 			tl.fromTo(
 				$('.screen-select .phrase'),
@@ -271,17 +283,17 @@ var site = (function() {
 				{
 					alpha: 1
 				},
-				1.2
+				startSidebar
 			);
 
 			tl.call(function() {
-				$('.site-background').addClass('is-blurred');
+				$('.site-background.animated').addClass('is-blurred');
 				$('.site-sidebar').addClass('is-visible');
-			}, null, null, 1.2);
+			}, null, null, startSidebar);
 
 			tl.call(function() {
 				introScreen(newScreen);
-			}, null, null, 1.6);
+			}, null, null, startSidebar+0.4);
 		}
 
 		tl.fromTo(
@@ -293,7 +305,7 @@ var site = (function() {
 			{
 				alpha: 1
 			},
-			1.9
+			startSidebar+0.7
 		);
 
 		tl.call(function() {
@@ -3074,148 +3086,137 @@ var site = (function() {
    Background
    ========================================================================== */
 
-// var siteBackground = (function() {
-// 	var c = $('.site-background .canvas').get(0),
-// 		ctx = c.getContext( '2d' ),
-// 		image = $('.site-background .image'),
-// 		twopi = Math.PI * 2,
-// 		parts = [],
-// 		sizeBase,
-// 		cw,
-// 		opt,
-// 		count,
-// 		props = {scale: 0};
+var siteBackgroundStatic = (function() {
+	var c = $('.site-background .canvas canvas').get(0),
+		ctx = null,
+		image = $('.site-background .image'),
+		twopi = Math.PI * 2,
+		parts = [],
+		sizeBase,
+		cw,
+		opt,
+		count,
+		props = {scale: 0},
+		bokehEffect = true;
 
 
-// 	/**
-// 	 * Init
-// 	 */
-// 	var init = function() {
-// 		bindEvents();
+	/**
+	 * Init
+	 */
+	var init = function() {
+		ctx = c.getContext( '2d' );
 
-// 		resizeHandler();
-// 		create();
-// 		loop();
-// 	}
+		if (!$('.site-background').hasClass('bokeh-effect'))
+			bokehEffect = false;
 
+		bindEvents();
 
-// 	/**
-// 	 * Create
-// 	 */
-// 	var create = function() {
-// 		sizeBase = cw + ch;
-// 		count = Math.floor( sizeBase * 0.01 ),
-// 		opt = {
-// 			radiusMin: 10,
-// 			radiusMax: sizeBase * 0.03,
-// 			blurMin: 0,
-// 			blurMax: 10,
-// 		}
-
-// 		parts.length = 0;
-// 		for( var i = 0; i < count; i++ ) {
-// 			parts.push({
-// 				radius: rand( opt.radiusMin, opt.radiusMax ),
-// 				blur: rand( opt.blurMin, opt.blurMax ),
-// 				x: rand( 0, cw ),
-// 				y: rand( 0, ch ),
-// 				angle: rand( 0, twopi ),
-// 				vel: rand( 0.1, 0.5 ),
-// 				tick: rand( 0, 10000 ),
-// 				alpha: 0
-// 			});
-// 		}
-// 	}
+		resizeHandler();
+		create();
+		loop();
+	}
 
 
-// 	/**
-// 	 * Loop
-// 	 */
-// 	var loop = function() {
-// 		requestAnimationFrame( loop );
+	/**
+	 * Create
+	 */
+	var create = function() {
+		sizeBase = cw + ch;
+		count = Math.floor( sizeBase * 0.01 ),
+		opt = {
+			radiusMin: 10,
+			radiusMax: sizeBase * 0.03,
+			blurMin: 0,
+			blurMax: 10,
+		}
 
-// 		ctx.clearRect( 0, 0, cw, ch );
-// 		// ctx.globalCompositeOperation = 'lighten';
-// 		ctx.shadowBlur = 0;
-// 		// ctx.drawImage( c1, 0, 0 );
-// 		ctx.globalCompositeOperation = 'lighter';
-// 		ctx.drawImage(image.get(0), image.position().left, image.position().top, image.get(0).width, image.get(0).height);
-
-// 		// ctx.globalCompositeOperation = 'destination-in';
-
-// 		var i = parts.length;
-// 		ctx.shadowColor = 'white';
-// 		while( i-- ) {
-// 			var part = parts[ i ];
-
-// 			ctx.shadowBlur = part.blur;
-
-// 			part.x += Math.cos( part.angle ) * part.vel;
-// 			part.y += Math.sin( part.angle ) * part.vel;
-// 			part.angle += rand( -0.05, 0.05 );
-
-// 			ctx.beginPath();
-// 			ctx.arc( part.x, part.y, part.radius, 0, twopi );
-// 			ctx.fillStyle = hsla( 0, 0, 100, (0.01 + Math.cos( part.tick * 0.01 ) * 0.02) * part.alpha );
-// 			ctx.fill();
-
-// 			if( part.x - part.radius > cw ) { part.x = -part.radius }
-// 			if( part.x + part.radius < 0 )  { part.x = cw + part.radius }
-// 			if( part.y - part.radius > ch ) { part.y = -part.radius }
-// 			if( part.y + part.radius < 0 )  { part.y = ch + part.radius }
-
-// 			part.tick++;
-// 		}
-// 	}
+		parts.length = 0;
+		for( var i = 0; i < count; i++ ) {
+			parts.push({
+				radius: rand( opt.radiusMin, opt.radiusMax ),
+				blur: rand( opt.blurMin, opt.blurMax ),
+				x: rand( 0, cw ),
+				y: rand( 0, ch ),
+				angle: rand( 0, twopi ),
+				vel: rand( 0.1, 0.5 ),
+				tick: rand( 0, 10000 ),
+				alpha: 1
+			});
+		}
+	}
 
 
-// 	/**
-// 	 * Bind events
-// 	 */
-// 	var bindEvents = function() {
-// 		$(window).on('resize', resizeHandler)
-// 	}
+	/**
+	 * Loop
+	 */
+	var loop = function() {
+		requestAnimationFrame( loop );
+
+		ctx.clearRect( 0, 0, cw, ch );
+		// ctx.globalCompositeOperation = 'lighten';
+		ctx.shadowBlur = 0;
+		// ctx.drawImage( c1, 0, 0 );
+		ctx.globalCompositeOperation = 'lighter';
+		ctx.drawImage(image.get(0), image.position().left, image.position().top, image.get(0).width, image.get(0).height);
+
+		// ctx.globalCompositeOperation = 'destination-in';
+
+		if (bokehEffect) {
+			var i = parts.length;
+			ctx.shadowColor = 'white';
+			while( i-- ) {
+				var part = parts[ i ];
+
+				ctx.shadowBlur = part.blur;
+
+				part.x += Math.cos( part.angle ) * part.vel;
+				part.y += Math.sin( part.angle ) * part.vel;
+				part.angle += rand( -0.05, 0.05 );
+
+				ctx.beginPath();
+				ctx.arc( part.x, part.y, part.radius, 0, twopi );
+				ctx.fillStyle = hsla( 0, 0, 100, (0.01 + Math.cos( part.tick * 0.01 ) * 0.02) * part.alpha );
+				ctx.fill();
+
+				if( part.x - part.radius > cw ) { part.x = -part.radius }
+				if( part.x + part.radius < 0 )  { part.x = cw + part.radius }
+				if( part.y - part.radius > ch ) { part.y = -part.radius }
+				if( part.y + part.radius < 0 )  { part.y = ch + part.radius }
+
+				part.tick++;
+			}
+		}
+	}
 
 
-// 	/**
-// 	 * Resize
-// 	 */
-// 	var resizeHandler = function() {
-// 		cw = /*c1.width =*/ c.width = window.innerWidth,
-// 		ch = /*c1.height =*/ c.height = window.innerHeight;
-// 		// create();
-// 	}
+	/**
+	 * Bind events
+	 */
+	var bindEvents = function() {
+		$(window).on('resize', resizeHandler)
+	}
 
 
-// 	/**
-// 	 * Show dots
-// 	 */
-// 	var showDots = function() {
-// 		TweenMax.staggerFromTo(
-// 			parts,
-// 			1,
-// 			{
-// 				alpha: 0
-// 			},
-// 			{
-// 				alpha: 1
-// 			},
-// 			0.02
-// 		);
-// 	}
+	/**
+	 * Resize
+	 */
+	var resizeHandler = function() {
+		cw = /*c1.width =*/ c.width = window.innerWidth,
+		ch = /*c1.height =*/ c.height = window.innerHeight;
+		// create();
+	}
 
 
-// 	/**
-// 	 * Public API
-// 	 */
-// 	return {
-// 		init: init,
-// 		showDots: showDots
-// 	}
-// })();
+	/**
+	 * Public API
+	 */
+	return {
+		init: init
+	}
+})();
 
 
-var siteBackground = (function(){
+var siteBackgroundAnimated = (function(){
 
 	//------------------------------
 	// Mesh Properties
@@ -3242,8 +3243,8 @@ var siteBackground = (function(){
 		count: 2,
 		xyScalar: 1,
 		zOffset: 300,
-		ambient: '#000d78',
-		diffuse: '#5c015c',
+		ambient: $('.site-background').attr('data-light-ambient'),
+		diffuse: $('.site-background').attr('data-light-diffuse'),
 		speed: 0.001,
 		gravity: 1200,
 		dampening: 0.95,

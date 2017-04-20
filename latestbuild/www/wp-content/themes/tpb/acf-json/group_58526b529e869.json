@@ -43,6 +43,138 @@
             }
         },
         {
+            "multiple": 0,
+            "allow_null": 0,
+            "choices": {
+                "animated": "Animated",
+                "image": "Image"
+            },
+            "default_value": [
+                "animated"
+            ],
+            "ui": 0,
+            "ajax": 0,
+            "placeholder": "",
+            "return_format": "value",
+            "key": "field_58f8b20b92a03",
+            "label": "Background",
+            "name": "background",
+            "type": "select",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "default_value": "#000d78",
+            "key": "field_58f8b4a16bfa8",
+            "label": "Background ambient color",
+            "name": "background_color_ambient",
+            "type": "color_picker",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_58f8b20b92a03",
+                        "operator": "==",
+                        "value": "animated"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "default_value": "#5c015c",
+            "key": "field_58f8b4c86bfa9",
+            "label": "Background diffuse color",
+            "name": "background_color_diffuse",
+            "type": "color_picker",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_58f8b20b92a03",
+                        "operator": "==",
+                        "value": "animated"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "return_format": "array",
+            "preview_size": "thumbnail",
+            "library": "all",
+            "min_width": "",
+            "min_height": "",
+            "min_size": "",
+            "max_width": "",
+            "max_height": "",
+            "max_size": "",
+            "mime_types": "",
+            "key": "field_58f8b60899553",
+            "label": "Background image",
+            "name": "background_image",
+            "type": "image",
+            "instructions": "Format: 1920x1080",
+            "required": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_58f8b20b92a03",
+                        "operator": "==",
+                        "value": "image"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "default_value": 1,
+            "message": "",
+            "ui": 1,
+            "ui_on_text": "",
+            "ui_off_text": "",
+            "key": "field_58f8bb42dbcb9",
+            "label": "Background effect",
+            "name": "background_effect",
+            "type": "true_false",
+            "instructions": "Add bokeh effect over image",
+            "required": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_58f8b20b92a03",
+                        "operator": "==",
+                        "value": "image"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
             "placement": "top",
             "endpoint": 0,
             "key": "field_588f3704f4ab7",
@@ -544,5 +676,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1492421671
+    "modified": 1492696156
 }
