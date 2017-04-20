@@ -241,7 +241,7 @@ class Tpb_Wp_Pos_Public {
 					$success = "none";
 				}
 			}
-			echo $success;
+			return $success;
 		}else {
 			
 			$lastname = array_pop($parts);
