@@ -2952,6 +2952,10 @@ img {
 			font-size: 70px;
 			font-weight: 200;
 			line-height: 1.14;
+
+			.error-message {
+				font-weight: 300;
+			}
 		}
 
 		.input-text {

@@ -2224,7 +2224,8 @@ var site = (function() {
 
 						$(window).trigger('printorder');
 					} else {
-						alert('Error while saving info, please try again.');
+						activeStep.find('label .default-message').hide();
+						activeStep.find('label .error-message').show();
 						activeStep.find('.btn-checkout-next').removeClass('is-sent');
 					}
 

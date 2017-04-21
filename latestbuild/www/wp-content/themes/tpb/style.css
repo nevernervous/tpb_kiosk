@@ -2750,6 +2750,9 @@ img {
   font-weight: 200;
   line-height: 1.14;
 }
+.screen-checkout .form-checkout label .error-message {
+  font-weight: 300;
+}
 .screen-checkout .form-checkout .input-text {
   display: block;
   padding: 0 25px;
