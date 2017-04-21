@@ -267,6 +267,13 @@ class Tpb_Wp_Pos_Admin {
         } else {
 
             $data_url = get_option( 'tpb_wp_pos_data_url' );
+            if ( !$data_url ) {
+                // Return results
+                echo json_encode( array(
+                    'error' => 'No URL set'
+                ) );
+                die();
+            }
 
             // Get data
             $data = file_get_contents( $data_url );
@@ -339,6 +346,13 @@ class Tpb_Wp_Pos_Admin {
             return false;
 
         $data_url = get_option( 'tpb_wp_pos_data_url' );
+        if ( !$data_url ) {
+            // Return results
+            echo json_encode( array(
+                'error' => 'No URL set'
+            ) );
+            die();
+        }
 
         // Get data
         $data = file_get_contents( $data_url );
