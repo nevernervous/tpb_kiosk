@@ -847,6 +847,7 @@ img {
 }
 .products-list .product .product-image-thumb .image {
   display: block;
+  margin: 0 auto;
   position: relative;
   border-radius: 90px;
   z-index: 2;

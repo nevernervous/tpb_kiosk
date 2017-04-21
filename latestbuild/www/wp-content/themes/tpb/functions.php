@@ -174,6 +174,10 @@
         add_image_size( 'featured-small', 200, 200, true );
         add_image_size( 'featured-logo', 390, 130, true );
         add_image_size( 'featured-image', 390, 190, true );
+
+        add_image_size( 'thumbnail-preserved', 180, 180, false );
+        add_image_size( 'medium-preserved', 300, 300, false );
+
 	}
 	add_action( 'after_setup_theme', 'tpb_theme_features' );
 
