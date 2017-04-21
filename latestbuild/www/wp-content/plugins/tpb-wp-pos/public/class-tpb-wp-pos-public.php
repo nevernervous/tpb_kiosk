@@ -113,7 +113,7 @@ class Tpb_Wp_Pos_Public {
      *
 	 * @since    1.0.0
      */
-   public static function send_order() {
+  public static function send_order() {
     	if ( !isset( $_SESSION['cart'] ) || !$_SESSION['cart'] )
     		return false;
 
@@ -121,6 +121,7 @@ class Tpb_Wp_Pos_Public {
 		$user =  $_SESSION['user_name'];
 		$phone = $_SESSION['phone'];
     	$order = array();
+		$result = true;
 
     	foreach ( $cart as $product_id => $amounts ) {
     		$product = get_post( $product_id );
@@ -129,7 +130,7 @@ class Tpb_Wp_Pos_Public {
     		$record_id = get_post_meta( $product_id, 'product_id', true );
     		$sku = get_post_meta( $product_id, 'sku', true );
     		$title = $product->post_title;
-			//$sku = 133;
+		//	$sku = 133;
     		foreach( $amounts as $amount => $qty ) {
 				$unit = $prices[$amount]->unit;
 				$price = $prices[$amount]->price;
@@ -148,61 +149,74 @@ class Tpb_Wp_Pos_Public {
     		}
 
     	}
-		//$results = print_r($order, true);
+		
+		/*//////////////////////////////////////
+			comment out lines 161 to 176 
+			to remove mj freeway functionality
+		///////////////////////////////////////*/
 		
 		
-		//  MJ Freeway
+		////////////  MJ Freeway ////////////
 		
+		/// checks for a valid user ////
 		$nid = Tpb_Wp_Pos_Public::check_user($user, $phone);
 		if($nid !='multiple' && $nid !='none') {
+			// pushes order to mj freeway ///
 			$checkout = Tpb_Wp_Pos_Public::mjFreeway($nid, $order);
-			$file = WP_PLUGIN_DIR."/tpb-wp-pos/log.txt";  
+			
+			////saves receipt to a log file ///
+			$file = WP_PLUGIN_DIR."/tpb-wp-pos/mj-freeway-log.txt";  
 			file_put_contents($file, $checkout);
-			$result = true;
 		}else {
+			// invalid user ////
 			$checkout = false;
 			$result = false;
 		}
 		
+		
+		//Uncomment next line to add email functionality to the order////
+		// $email = Tpb_Wp_Pos_Public::sendEmail($order, $user);
+		
+		//Uncomment next line to add print functionality to the order////
+			////// you'll also need to uncomment the printorder function in js/tpb-wp-pos-public.js /////////
+		//$print = Tpb_Wp_Pos_Public::printReceipt($order, $user);
+		
+	
 		return $result;
 	
-	
+	}
 
-	 }	
+	 	
 	/*
 		 ////  Greenbits Receipt  
 		
 		$receipt = Tpb_Wp_Pos_Public::printReceipt($order, $user);
-		$file = WP_PLUGIN_DIR."/tpb-wp-pos/log.txt";  
-		file_put_contents($file, $receipt);
+		
 	
     	// Do things here to create order in POS
     	// ...
     	$result = true;
 
     	return $result;
-    }
-	 */
-	public function printReceipt($order, $customer) {
-		$prints = '###Customer Order###\n\n';
+		
+	*/	
+		
+    
+	 
+	public function sendEmail($order, $customer) {
+		
 		$text = '###Customer Order### <br><br>';
-		$prints.='Patient Name: '.$customer.'\n';
 		$text.='Patient Name: '.$customer.'<br>';
 		$total = 0;
 		foreach($order as $o) {
-			$prints.='Product: '.$o['title'].' ('.$o['sku'].')'.'\n';
 			$text.='Product: '.$o['title'].' ('.$o['sku'].')'.'<br>';
 			$text.='Size: '.$o['unit'].'<br>';
-			$prints.='Quantity: '.$o['qty'].'\n';
 			$text.='Quantity: '.$o['qty'].'<br>' ;
-			
-			$prints.='Cost: '.$o['total_price'].'\n\n';
 			$text.='Cost: '.$o['total_price'].'<br>' .'<br>' ;
 			$total+=intval($o['total_price']);
 		}
 		$text.='Total: $'.$total;
-		$prints.='Total: $'.$total;
-
+		
 		$to = 'thepeakbeyondreceipts@gmail.com';
 
 			$subject = 'Customer order from '.$customer;
@@ -217,14 +231,30 @@ class Tpb_Wp_Pos_Public {
 
 			mail($to, $subject, $message, $headers);
 		
-		return $prints;
-		
-		
-		
+		return true;	
+	}
+	
+	public function printOrder($order, $customer) {
+		$prints = '###Customer Order###'."\n\n";
+		$prints.='Patient Name: '.$customer."\n";
+		$total = 0;
+		foreach($order as $o) {
+			$prints.='Product: '.$o['title'].' ('.$o['sku'].')'."\n";
+			$prints.='Quantity: '.$o['qty']."\n";
+			
+			
+			$prints.='Cost: '.$o['total_price']."\n\n";
+			
+			$total+=intval($o['total_price']);
+		}
+		$prints.='Total: $'.$total;
+		$file = WP_PLUGIN_DIR."/tpb-wp-pos/receipt.txt";  
+		file_put_contents($file, $prints);
+		return true;	
 	}
 	
 	
-	
+	//// checks for valid mj freeway users /////////
 	public function check_user($name, $phone) {
 		$parts = explode(" ", $name);
 
@@ -241,7 +271,7 @@ class Tpb_Wp_Pos_Public {
 					$success = "none";
 				}
 			}
-			return $success;
+			echo $success;
 		}else {
 			
 			$lastname = array_pop($parts);
@@ -264,7 +294,7 @@ class Tpb_Wp_Pos_Public {
 	}
 		
 		
-		
+	//////////// validates the mj freeway user ////////////////	
 	public function theUser($which, $who, $phone) {
 		
 	
@@ -319,6 +349,10 @@ class Tpb_Wp_Pos_Public {
 		}
 		
 	}	
+	
+	
+	/////////////// posts the order to mj freeway ///////////////////
+	
 	public function mjFreeway($id, $ordr) {
 		$url = "https://i.gomjfreeway.com/elementalwellness/api/order/update_order";
 		$pot='';
@@ -329,13 +363,13 @@ class Tpb_Wp_Pos_Public {
 			  'product_sku'=>$o['sku'],
 			  'qty'=>$o['qty'],
 			  'order_id'=>$oID,
-			//  'pricing_weight_id'=>'5',
+			  'pricing_weight_id'=>'5',
 			  'order_source'=>'Online'
 			);
 		
 		$ord = json_encode($order);
 		$access_token_parameters = array(
-			  'version' =>'4',
+			  'version' =>'7',
 			  'api_key'  	=>'977237471589bc2768d4be7.38775850',
 				'api_id'  => '349708323584adb34ed9179.68028223',
 			  'format' =>'JSON',
@@ -364,30 +398,5 @@ class Tpb_Wp_Pos_Public {
 		return print_r($pot, true);
 	}
 	
-	public function sendSMS() {
-		//set POST variables
-		$url = 'http://thepeakbeyond.com/development/sms.php';
-		$fields = array(
-			'num' => ''
-		);
-
-		//url-ify the data for the POST
-		foreach($fields as $key=>$value) { $fields_string .= $key.'='.$value.'&'; }
-		rtrim($fields_string, '&');
-
-		//open connection
-		$ch = curl_init();
-
-		//set the url, number of POST vars, POST data
-		curl_setopt($ch,CURLOPT_URL, $url);
-		curl_setopt($ch,CURLOPT_POST, count($fields));
-		curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
-		
-		//execute post
-		$result = curl_exec($ch);
-
-		//close connection
-		curl_close($ch);
-	}
 	
 }

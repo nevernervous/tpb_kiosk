@@ -43,28 +43,36 @@
 			
 		});
 
-		 $(window).on('printorder', function() {
-	 /*
-		  qz.security.setCertificatePromise(function(resolve, reject) {
+		/*
+		//////////// Uncomment this function to enable printing ////////////////
+		$(window).on('printorder', function() {	
+			// set this to the name of the printer
+			var printerName = "add printer name here";
+			
+			qz.security.setCertificatePromise(function(resolve, reject) {
 				$.ajax("wp-content/plugins/tpb-wp-pos/assets/signing/digital-certificate.txt").then(resolve, reject);
 			});
 
-				 qz.security.setSignaturePromise(function(toSign) {
+			qz.security.setSignaturePromise(function(toSign) {
 				return function(resolve, reject) {
 					$.ajax("wp-content/plugins/tpb-wp-pos/assets/signing/sign-message.php?request=" + toSign).then(resolve, reject);
 				};
 			});
-		 
-		 
-					qz.websocket.connect().then(function() { 
-					  return qz.printers.find("POS-80")              
-					}).then(function(printer) {
-					var config = qz.configs.create(printer);       // Create a default config for the found printer
-					var data = ['testing this printer'];
-				  return qz.print(config, data);				}).catch(function(e) { console.error(e); });
 
+
+			qz.websocket.connect().then(function() { 
+			  return qz.printers.find(printerName)              
+			}).then(function(printer) {
+				var config = qz.configs.create(printer);       // Create a default config for the found printer
+				var data = [{
+					type: 'raw',
+					format: 'file', // or 'plain' if the data is raw HTML
+					data:'wp-content/plugins/tpb-wp-pos/receipt.txt'
+				}];
+				return qz.print(config, data);
+				}).catch(function(e) { console.error(e); });
 				
-	*/	
-  })		  
+		  })
+		*/	  
 	
  
