@@ -370,6 +370,35 @@ img {
 			}
 		}
 	}
+
+	&.full-height {
+		height: 600px;
+
+		&:after {
+			top: auto;
+			bottom: -15px;
+			height: 50px;
+
+			border-radius: 50%;
+			filter: blur(25px);
+			opacity: 0.5;
+		}
+
+		.image {
+			width: auto;
+			max-width: 100%;
+			height: auto;
+			max-height: 100%;
+		}
+
+		.waves {
+			display: none;
+		}
+
+		& + .product-add-to-cart {
+			top: 760px;
+		}
+	}
 }
 
 .product-prices {

@@ -178,6 +178,8 @@
         add_image_size( 'thumbnail-preserved', 180, 180, false );
         add_image_size( 'medium-preserved', 300, 300, false );
 
+        add_image_size( 'medium-tall', 300, 600, false );
+
 	}
 	add_action( 'after_setup_theme', 'tpb_theme_features' );
 

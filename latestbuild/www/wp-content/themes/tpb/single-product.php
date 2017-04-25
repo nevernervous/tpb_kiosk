@@ -20,9 +20,15 @@
 		<?php
 			$thumbnail_id = get_post_thumbnail_id( );
 			$rounded_shape = (bool)get_post_meta( $thumbnail_id, 'rounded_shape', true );
-			$image = wp_get_attachment_image_src( $thumbnail_id, 'medium'.($rounded_shape ? '-preserved':''), false );
+			$full_height = (bool)get_post_meta( $thumbnail_id, 'full_height', true );
+			$size = 'medium';
+			if ( $full_height )
+				$size = 'medium-tall';
+			elseif ( $rounded_shape )
+				$size = 'medium-preserved';
+			$image = wp_get_attachment_image_src( $thumbnail_id, $size, false );
 		?>
-		<div class="product-image <?php echo $rounded_shape ? 'original-shape':''; ?>">
+		<div class="product-image <?php echo $rounded_shape ? 'original-shape':''; ?> <?php echo $full_height ? 'full-height':''; ?>">
 			<img src="<?php echo $image[0]; ?>" alt="" width="<?php echo $image[1]; ?>" height="<?php echo $image[2]; ?>" class="image" />
 
 			<div class="waves">

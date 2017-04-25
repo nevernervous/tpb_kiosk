@@ -9,10 +9,29 @@
             "ui_on_text": "Rounded shape",
             "ui_off_text": "Original shape",
             "key": "field_58f8a94f94e3c",
-            "label": "Disable rounded shape ?",
+            "label": "Disable rounded shape",
             "name": "rounded_shape",
             "type": "true_false",
             "instructions": "Display the image in its original shape instead of cropping it with a rounded shape.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "default_value": 0,
+            "message": "",
+            "ui": 0,
+            "ui_on_text": "",
+            "ui_off_text": "",
+            "key": "field_58ff4ce3c3edf",
+            "label": "Full height",
+            "name": "full_height",
+            "type": "true_false",
+            "instructions": "Display a taller image on product page",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -39,5 +58,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1492691435
+    "modified": 1493126431
 }

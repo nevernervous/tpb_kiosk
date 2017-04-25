@@ -746,6 +746,29 @@ img {
 .product-image .waves .wave:nth-child(3) {
   animation-delay: 1.2s;
 }
+.product-image.full-height {
+  height: 600px;
+}
+.product-image.full-height:after {
+  top: auto;
+  bottom: -15px;
+  height: 50px;
+  border-radius: 50%;
+  filter: blur(25px);
+  opacity: 0.5;
+}
+.product-image.full-height .image {
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: 100%;
+}
+.product-image.full-height .waves {
+  display: none;
+}
+.product-image.full-height + .product-add-to-cart {
+  top: 760px;
+}
 
 .product-prices {
   overflow: hidden;
