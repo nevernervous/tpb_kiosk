@@ -2,10 +2,15 @@
 
 	<div class="site-main is-hidden">
 		<?php
-			if ( false === tpb_object_recognition() )
-				get_template_part( 'screen-catalogue' );
-			else
-				get_template_part( 'screen-select' );
+			$front_page = get_post( get_option( 'page_on_front' ) );
+			if ( $front_page ) {
+				get_template_part( 'screen-frontpage' );
+			} else {
+				if ( false === tpb_object_recognition() )
+					get_template_part( 'screen-catalogue' );
+				else
+					get_template_part( 'screen-select' );
+			}
 		?>
 	</div><!-- .site-main -->
 

@@ -93,6 +93,35 @@
 
 
 	/**
+	 * Get grouped categories
+	 */
+	function tpb_get_grouped_categories( $ids, $title ) {
+		$args = array(
+			'order' => 'ASC',
+			'orderby' => 'title',
+			'post_type' => 'product',
+			'posts_per_page' => -1,
+			'tax_query' => array(
+				array(
+					'taxonomy' => 'product_category',
+					'field'    => 'term_id',
+					'terms'    => $ids,
+				)
+			),
+		);
+		$products = get_posts( $args );
+
+		$category = (object)array(
+			'name' => $title,
+			'products' => $products,
+			'term_id' => $ids
+		);
+
+		return $category;
+	}
+
+
+	/**
 	 * Get product for add to cart screen
 	 */
 	function tpb_get_add_to_cart_product() {
@@ -239,15 +268,17 @@
 		global $wpdb;
 
 		if ( $term_id != null ) {
+			if ( is_array($term_id) )
+				$term_id = implode( ',', $term_id );
+
 			// Get posts
-			$post_ids = $wpdb->get_col( $wpdb->prepare(
+			$post_ids = $wpdb->get_col(
 				"
 				SELECT      object_id
 				FROM        $wpdb->term_relationships
-				WHERE       term_taxonomy_id = %d
-				",
-				$term_id
-			) );
+				WHERE       term_taxonomy_id IN ($term_id)
+				"
+			);
 		} else if ( $products != null ) {
 			$post_ids = array();
 

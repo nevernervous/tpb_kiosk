@@ -2871,3 +2871,89 @@ img {
 .screen-checkout .step-thank-you .message .text {
   display: block;
 }
+
+/* =============================================================================
+   SCREEN: =Frontpage
+   ========================================================================== */
+.screen-frontpage {
+  padding: 135px 50px 200px 160px;
+}
+.screen-frontpage .tab-header {
+  display: flex;
+  overflow: hidden;
+  width: 980px;
+  max-height: 176px;
+  align-items: center;
+  flex-direction: row;
+}
+.screen-frontpage .tab-header .page-logo {
+  margin: 0 60px 0 0;
+  width: auto;
+  max-width: 300px;
+  height: auto;
+  max-height: 176px;
+}
+.screen-frontpage .scroller {
+  overflow-y: scroll;
+  margin: 30px 0 0;
+  padding: 20px 0;
+  height: 560px;
+  -webkit-mask-image: -webkit-linear-gradient(top, transparent, black 20px, black 540px, transparent 560px);
+}
+.screen-frontpage .section {
+  margin: 80px 0;
+}
+.screen-frontpage .section-text {
+  width: 980px;
+}
+.screen-frontpage .section-text p:first-child {
+  margin-top: 0;
+}
+.screen-frontpage .section-text p:last-child {
+  margin-bottom: 0;
+}
+.screen-frontpage .section-text-image {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.screen-frontpage .section-text-image .image-container,
+.screen-frontpage .section-text-image .text {
+  width: 45%;
+}
+.screen-frontpage .section-text-image .image-container {
+  order: 1;
+}
+.screen-frontpage .section-text-image .image-container.right {
+  order: 3;
+}
+.screen-frontpage .section-text-image .text {
+  order: 2;
+}
+.screen-frontpage .section-text-image .text p:first-child {
+  margin-top: 0;
+}
+.screen-frontpage .section-text-image .text p:last-child {
+  margin-bottom: 0;
+}
+.screen-frontpage .section-gallery .images {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.screen-frontpage .section-gallery .images .image {
+  display: block;
+  margin: 20px;
+}
+.screen-frontpage .section-image .image {
+  display: block;
+  margin: 20px 0;
+}
+.screen-frontpage .section:first-child {
+  margin-top: 0;
+}
+.screen-frontpage .section:last-child {
+  margin-bottom: 0;
+}

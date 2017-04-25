@@ -203,7 +203,7 @@
 	 */
 	function tpb_custom_pages() {
 		$screen = trim(parse_url(add_query_arg(array()), PHP_URL_PATH), '/');
-		$screens = array( 'catalogue', 'select', 'add-to-cart', 'checkout', 'confirm-add-to-cart' );
+		$screens = array( 'catalogue', 'select', 'add-to-cart', 'checkout', 'confirm-add-to-cart', 'frontpage' );
 
 		if ( in_array( $screen, $screens ) && ( $load = locate_template( 'screen-'.$screen.'.php', true ) ) )
 			exit();
@@ -649,6 +649,24 @@
 
 		return true;
 	}
+
+
+	/**
+	 * Load a template part into a template with variables
+	 */
+	function aw_get_template_part( $slug, $vars ) {
+		if ( $vars ) {
+			foreach ( $vars as $name => $value ) {
+				global ${$name};
+				${$name} = $value;
+			}
+		}
+
+		$templates[] = "{$slug}.php";
+
+		locate_template($templates, true, false);
+	}
+
 
 
 /* =============================================================================
