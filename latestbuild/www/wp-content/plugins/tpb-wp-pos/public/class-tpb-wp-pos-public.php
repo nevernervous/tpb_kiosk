@@ -364,40 +364,32 @@ class Tpb_Wp_Pos_Public {
 				'unit_id'=> '5'
 			),
 			array(
-				'unit'=>'1 g',
-				'unit_id'=> '5'
-			),
-			array(
-				'unit'=>'1/16oz',
+				'unit'=>'1.75 g (1/16oz)',
 				'unit_id'=> '11'
 			),
 			array(
-				'unit'=>'1/8oz',
+				'unit'=>'3.5 g (1/8oz)',
 				'unit_id'=> '1'
 			),
 			array(
-				'unit'=>'1/4oz',
+				'unit'=>'7 g (1/4oz)',
 				'unit_id'=> '2'
 			),
 			array(
-				'unit'=>'1/2oz',
+				'unit'=>'14 g (1/2oz)',
 				'unit_id'=> '3'
 			),
 			array(
 				'unit'=>'28 g (1oz)',
 				'unit_id'=> '4'
-			),	
-			array(
-				'unit'=>'1oz',
-				'unit_id'=> '4'
-			),			
+			)				
 		);
 
 		$u = '';
 	
 		foreach($ordr as $o) {
 			foreach($unitArr as $unit) {
-				if($unit['unit']== $o['unit']) {
+				if (strpos($unit['unit'], trim($o['unit'])) !== false) {
 					$u = $unit['unit_id'];
 				}
 			}
