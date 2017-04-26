@@ -364,6 +364,10 @@ class Tpb_Wp_Pos_Public {
 				'unit_id'=> '5'
 			),
 			array(
+				'unit'=>'1 g',
+				'unit_id'=> '5'
+			),
+			array(
 				'unit'=>'1.75 g (1/16oz)',
 				'unit_id'=> '11'
 			),
