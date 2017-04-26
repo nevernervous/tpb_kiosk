@@ -58,6 +58,7 @@
 					<?php echo get_sub_field( 'text' ); ?>
 				</div><!-- .description -->
 
+				<?php $bottom_border = false; ?>
 				<div class="aside clearfix">
 					<?php if ( tpb_is_flower( get_the_ID() ) ): ?>
 					<div class="border has-logo">
@@ -70,7 +71,7 @@
 					<div class="border"></div>
 					<?php endif; ?>
 
-					<?php if ( $graphs = get_sub_field( 'graphs' ) ): ?>
+					<?php if ( $graphs = get_sub_field( 'graphs' ) ): $bottom_border = true; ?>
 					<div class="graphs clearfix">
 						<?php foreach( $graphs as $graph ): ?>
 						<div class="graph">
@@ -93,7 +94,7 @@
 					</div><!-- .graphs -->
 					<?php endif; ?>
 
-					<?php if ( $video = tpb_get_oembed_video( get_sub_field( 'video' ) ) ): ?>
+					<?php if ( $video = tpb_get_oembed_video( get_sub_field( 'video' ) ) ): $bottom_border = true; ?>
 					<div class="video-container">
 						<a href="<?php echo $video->video_url; ?>" class="btn-play link-video" target="_blank">
 							<div class="thumbnail" style="background-image: url('<?php echo $video->thumbnail_url; ?>');">
@@ -107,7 +108,9 @@
 					</div><!-- .video-container -->
 					<?php endif; ?>
 
+					<?php if ( $bottom_border ): ?>
 					<div class="border"></div>
+					<?php endif; ?>
 				</div><!-- .aside -->
 
 				<?php elseif ( get_row_layout() == 'text' ): ?>
@@ -119,14 +122,18 @@
 				<?php elseif ( get_row_layout() == 'flavor' ): ?>
 
 				<div class="description">
+					<?php if ( $aroma = get_sub_field( 'aroma' ) ): ?>
 					<p>
 						<b><?php _e( 'Aroma', 'tpb' ); ?></b><br/>
-						<?php echo get_sub_field( 'aroma' ); ?>
+						<?php echo $aroma; ?>
 					</p>
+					<?php endif; ?>
+					<?php if ( $flavor = get_sub_field( 'flavor' ) ): ?>
 					<p>
 						<b><?php _e( 'Flavor', 'tpb' ); ?></b><br/>
-						<?php echo get_sub_field( 'flavor' ); ?>
+						<?php echo $flavor; ?>
 					</p>
+					<?php endif; ?>
 				</div><!-- .description -->
 
 				<?php elseif ( get_row_layout() == 'attributes' ): ?>
