@@ -700,6 +700,117 @@
                 "class": "",
                 "id": ""
             }
+        },
+        {
+            "placement": "top",
+            "endpoint": 0,
+            "key": "field_590098ac6f0f1",
+            "label": "Order system",
+            "name": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "key": "field_590098e96f0f2",
+            "label": "API key",
+            "name": "mjf_api_key",
+            "type": "text",
+            "instructions": "MJ Freeway API key",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "key": "field_590098fc6f0f3",
+            "label": "API ID",
+            "name": "mjf_api_id",
+            "type": "text",
+            "instructions": "MJ Freeway API ID",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "key": "field_590099076f0f4",
+            "label": "Store URL",
+            "name": "mjf_store_url",
+            "type": "text",
+            "instructions": "MJ Freeway store URL",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "key": "field_590099236f0f5",
+            "label": "Order email",
+            "name": "order_email",
+            "type": "text",
+            "instructions": "Email address to send the order to. Leave empty to disable this functionality.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "key": "field_59009a256f0f6",
+            "label": "Order printer name",
+            "name": "order_printer",
+            "type": "text",
+            "instructions": "Printer name to print order on. Leave empty to disable this functionality.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            }
         }
     ],
     "location": [
@@ -719,5 +830,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1493210753
+    "modified": 1493211871
 }
