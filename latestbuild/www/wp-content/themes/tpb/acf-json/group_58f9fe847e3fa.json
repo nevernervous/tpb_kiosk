@@ -323,7 +323,7 @@
                             "append": "",
                             "key": "field_58f9feed5e57d",
                             "label": "Tab icon",
-                            "name": "tab_icon",
+                            "name": "icon",
                             "type": "text",
                             "instructions": "Font Awesome Icons key, find it here: http:\/\/fontawesome.io\/icons\/",
                             "required": 0,
@@ -416,5 +416,5 @@
     ],
     "active": 1,
     "description": "",
-    "modified": 1493125459
+    "modified": 1493208267
 }
