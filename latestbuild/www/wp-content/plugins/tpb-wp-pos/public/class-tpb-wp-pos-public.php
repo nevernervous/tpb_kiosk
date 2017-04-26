@@ -386,6 +386,10 @@ class Tpb_Wp_Pos_Public {
 			array(
 				'unit'=>'28 g (1oz)',
 				'unit_id'=> '4'
+			),	
+			array(
+				'unit'=>'1oz',
+				'unit_id'=> '4'
 			),			
 		);
 
