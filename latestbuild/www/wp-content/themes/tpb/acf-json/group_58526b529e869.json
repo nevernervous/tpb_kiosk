@@ -210,6 +210,33 @@
             }
         },
         {
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "key": "field_590093161766a",
+            "label": "Sidebar text",
+            "name": "sidebar_text",
+            "type": "text",
+            "instructions": "Text shown in the sidebar when object recognition is disabled.",
+            "required": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_58ef74f0e7170",
+                        "operator": "!=",
+                        "value": "1"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
             "message": "<img src=\"\/wp-content\/themes\/tpb\/img\/patterns.jpg\" alt=\"\" \/>",
             "esc_html": 0,
             "new_lines": "wpautop",
@@ -219,7 +246,15 @@
             "type": "message",
             "instructions": "",
             "required": 0,
-            "conditional_logic": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_58ef74f0e7170",
+                        "operator": "==",
+                        "value": "1"
+                    }
+                ]
+            ],
             "wrapper": {
                 "width": "",
                 "class": "",
@@ -281,7 +316,15 @@
             "type": "repeater",
             "instructions": "Select the product to associate to each pattern.",
             "required": 0,
-            "conditional_logic": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_58ef74f0e7170",
+                        "operator": "==",
+                        "value": "1"
+                    }
+                ]
+            ],
             "wrapper": {
                 "width": "",
                 "class": "",
@@ -676,5 +719,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1492696156
+    "modified": 1493210753
 }

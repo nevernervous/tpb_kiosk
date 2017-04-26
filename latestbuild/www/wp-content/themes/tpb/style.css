@@ -1336,6 +1336,14 @@ img {
   opacity: 0;
   transition: opacity 0.5s ease;
 }
+.site-sidebar .sidebar-text {
+  position: absolute;
+  top: 580px;
+  left: 40px;
+  right: 40px;
+  font-size: 16px;
+  text-align: center;
+}
 .site-sidebar.is-visible {
   background: rgba(0, 0, 0, 0.5);
 }
@@ -1533,9 +1541,6 @@ img {
 
 .object-recognition-disabled .sidebar-head {
   top: 410px;
-}
-.object-recognition-disabled .site-sidebar .btn-session {
-  bottom: 470px;
 }
 .object-recognition-disabled .sidebar-areas {
   display: none !important;
