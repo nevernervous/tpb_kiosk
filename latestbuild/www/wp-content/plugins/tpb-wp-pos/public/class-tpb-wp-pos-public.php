@@ -217,7 +217,7 @@ class Tpb_Wp_Pos_Public {
 		}
 		$text.='Total: $'.$total;
 		
-		$to = 'thepeakbeyondreceipts@gmail.com';
+		$to = 'peakbeyondorders@gmail.com';
 
 			$subject = 'Customer order from '.$customer;
 
@@ -271,7 +271,7 @@ class Tpb_Wp_Pos_Public {
 					$success = "none";
 				}
 			}
-			echo $success;
+			return $success;
 		}else {
 			
 			$lastname = array_pop($parts);
@@ -357,13 +357,47 @@ class Tpb_Wp_Pos_Public {
 		$url = "https://i.gomjfreeway.com/elementalwellness/api/order/update_order";
 		$pot='';
 		$oID='';
+		
+		$unitArr = array (
+			array(
+				'unit'=>'1 gram',
+				'unit_id'=> '5'
+			),
+			array(
+				'unit'=>'1.75 g (1/16oz)',
+				'unit_id'=> '11'
+			),
+			array(
+				'unit'=>'3.5 g (1/8oz)',
+				'unit_id'=> '1'
+			),
+			array(
+				'unit'=>'7 g (1/4oz)',
+				'unit_id'=> '2'
+			),
+			array(
+				'unit'=>'14 g (1/2oz)',
+				'unit_id'=> '3'
+			),
+			array(
+				'unit'=>'28 g (1oz)',
+				'unit_id'=> '4'
+			),			
+		);
+
+		$u = '';
+	
 		foreach($ordr as $o) {
-			
+			foreach($unitArr as $unit) {
+				if($unit['unit']== $o['unit']) {
+					$u = $unit['unit_id'];
+				}
+			}
 			$order = array('patient_nid'=>$id,
 			  'product_sku'=>$o['sku'],
 			  'qty'=>$o['qty'],
 			  'order_id'=>$oID,
-			  'pricing_weight_id'=>'5',
+			  'pricing_weight_id'=>$u,
 			  'order_source'=>'Online'
 			);
 		
