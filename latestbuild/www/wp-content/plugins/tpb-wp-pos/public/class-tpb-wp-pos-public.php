@@ -175,7 +175,7 @@ class Tpb_Wp_Pos_Public {
 		
 		
 		//Uncomment next line to add email functionality to the order////
-		// $email = Tpb_Wp_Pos_Public::sendEmail($order, $user);
+		 $email = Tpb_Wp_Pos_Public::sendEmail($order, $user);
 		
 		//Uncomment next line to add print functionality to the order////
 			////// you'll also need to uncomment the printorder function in js/tpb-wp-pos-public.js /////////
