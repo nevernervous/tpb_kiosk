@@ -181,7 +181,7 @@
 .fancybox-overlay {
 	position: absolute;
 	top: 0;
-	left: 500px;
+	left: 0;
 	overflow: hidden;
 	display: none;
 	z-index: 8010;

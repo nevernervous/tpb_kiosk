@@ -68,7 +68,7 @@
 		<?php elseif ( get_row_layout() == 'category' ): ?>
 
 		<?php
-			$categories = tpb_get_grouped_categories( get_sub_field( 'categories' ), 'title' );
+			$categories = tpb_get_grouped_categories( get_sub_field( 'categories' ), get_sub_field( 'page_title' ) );
 			$is_active = ($cnt == 0);
 			aw_get_template_part( 'tab-category', array( 'category' => $categories, 'is_active' => $is_active ) );
 		?>

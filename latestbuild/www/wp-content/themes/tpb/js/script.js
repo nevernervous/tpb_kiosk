@@ -21,15 +21,6 @@ var site = (function() {
 
 		setTimeout(introCycle, 4000);
 
-		// Fancybox
-		$(".fancybox").fancybox({
-			openEffect  : 'none',
-			closeEffect : 'none',
-			helpers : {
-				media : {}
-			}
-		});
-
 		// Update files asynchronously
 		//updateFiles();
 	}
@@ -66,6 +57,7 @@ var site = (function() {
 		$('body').on('change', '.list-filter', listFilter);
 		$('body').on(userEvent, 'label', checkInput);
 		$('body').on(userEvent, '.btn-submit', submitForm);
+		$('body').on(userEvent, '.fancybox', fancyboxOpen);
 		// $('body').on(userEvent, '.input-text', inputTextFocus);
 
 		if (userEvent == 'touchstart')
@@ -2002,6 +1994,30 @@ var site = (function() {
 		e.preventDefault();
 	}
 
+
+	/**
+	 * Fancybox open
+	 */
+	var fancyboxOpen = function(e) {
+		var link = $(this);
+		var url = link.attr('href');
+
+		$.fancybox.open(
+			{
+				href: url
+			},
+			{
+				autoCenter: true,
+				openEffect  : 'none',
+				closeEffect : 'none',
+				helpers : {
+					media : {}
+				}
+			}
+		);
+
+		e.preventDefault();
+	}
 
 	/**
 	 * Touch feedback
