@@ -172,7 +172,7 @@ class Tpb_Wp_Pos_Public {
 			$checkout = false;
 			$result = false;
 		}
-		
+		if($result) {
 		
 		//Uncomment next line to add email functionality to the order////
 		 $email = Tpb_Wp_Pos_Public::sendEmail($order, $user);
@@ -181,7 +181,8 @@ class Tpb_Wp_Pos_Public {
 			////// you'll also need to uncomment the printorder function in js/tpb-wp-pos-public.js /////////
 		//$print = Tpb_Wp_Pos_Public::printReceipt($order, $user);
 		
-	
+		
+		}
 		return $result;
 	
 	}
@@ -234,7 +235,7 @@ class Tpb_Wp_Pos_Public {
 		return true;	
 	}
 	
-	public function printOrder($order, $customer) {
+	public function printReceipt($order, $customer) {
 		$prints = '###Customer Order###'."\n\n";
 		$prints.='Patient Name: '.$customer."\n";
 		$total = 0;
