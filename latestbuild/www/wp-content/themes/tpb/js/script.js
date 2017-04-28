@@ -77,8 +77,8 @@ var site = (function() {
 
 		$('.site-sidebar').on('stateactive stateinactive stateinfo statecheckout', switchSidebar);
 		$('.site-sidebar .sidebar-areas').on('touchstart touchmove touchend', touchesHandler);
-		$('.site-sidebar .sidebar-areas').on('no_object_recognized', areaHandler);
-		$('.site-sidebar .sidebar-areas').on('object_recognized', areaHandler);
+		$(document).on('no_object_recognized', areaHandler);
+		$(document).on('object_recognized', areaHandler);
 
 		$('body').on(userEvent, inactivityHandler);
 		$('body').on(userEvent, '.btn-inactive-cancel', hideScreenInactive);
@@ -1423,12 +1423,6 @@ var site = (function() {
 		var area = $(this);
 		var sidebar = $('.site-sidebar');
 
-		// Test dev
-		if (window.location.href.indexOf('click') !== -1) {
-			e.type = 'object_recognized';
-			e.detail.pattern = 'CCE';
-		}
-
 		if (e.type == 'object_recognized' && activeObject === false) {
 			console.debug('New objet recognized ('+e.detail.pattern+'), waiting for init in '+recognitionDelay+'ms');
 
@@ -1451,7 +1445,7 @@ var site = (function() {
 			objectOffTimeout = undefined;
 
 			console.debug('Active objet recognized again ('+e.detail.pattern+'), doing nothing');
-		} else if (e.type == 'no_object_recognized' && e.detail.touch_map.length == 0 && activeObject !== false && objectOffTimeout == undefined) {
+		} else if (e.type == 'no_object_recognized' && activeObject !== false && objectOffTimeout == undefined) {
 			console.debug('Objet pulled off, waiting for clearing screen in '+recognitionDelay+'ms');
 
 			// Object has been removed, prepare to do corresponding actions after delay
