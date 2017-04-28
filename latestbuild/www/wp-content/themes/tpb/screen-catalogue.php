@@ -125,8 +125,8 @@
 						<li class="option" data-value="name-asc">
 							A-Z
 						</li>
-						<li class="option" data-value="name-desc">
-							Z-A
+						<li class="option" data-value="brand-asc">
+							Brand
 						</li>
 					</ul>
 				</div><!-- .filters -->
@@ -141,7 +141,7 @@
 								$prices = tbp_get_product_prices( $product->ID );
 								$type = get_post_meta( $product->ID, 'type', true );
 							?>
-							<article class="product link-product" data-url="<?php echo get_the_permalink( $product->ID ); ?>" data-type="<?php echo sanitize_title( $type) ; ?>" data-price="<?php echo $prices[0]->price; ?>" data-name="<?php echo $product->post_title; ?>">
+							<article class="product link-product" data-url="<?php echo get_the_permalink( $product->ID ); ?>" data-type="<?php echo sanitize_title( $type) ; ?>" data-price="<?php echo $prices[0]->price; ?>" data-name="<?php echo $product->post_title; ?>" data-brand="<?php echo get_post_meta( $product->ID, 'brand', true ); ?>">
 								<?php if ( has_post_thumbnail( $product->ID ) ): ?>
 								<?php
 									$image = wp_get_attachment_image_src( get_post_thumbnail_id( $product->ID ), 'thumbnail', false );
