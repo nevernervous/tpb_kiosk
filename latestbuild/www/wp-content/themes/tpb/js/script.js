@@ -1705,7 +1705,11 @@ var site = (function() {
 			});
 			price = formatter.format(price);
 
-			output.text('$'+price);
+			var displayPrice = '$'+price;
+			if ($('body').hasClass('price-without-tax'))
+				displayPrice += '*';
+
+			output.text(displayPrice);
 
 			changeCartPrice();
 		} else if ( $('.screen-add-to-cart').length == 1) {
@@ -1722,7 +1726,11 @@ var site = (function() {
 			});
 			price = formatter.format(price);
 
-			output.text('$'+price);
+			var displayPrice = '$'+price;
+			if ($('body').hasClass('price-without-tax'))
+				displayPrice += '*';
+
+			output.text(displayPrice);
 		}
 	}
 
@@ -1740,7 +1748,7 @@ var site = (function() {
 		var total = 0;
 
 		prices.each(function() {
-			total += Number($(this).text().replace('$', ''));
+			total += Number($(this).text().replace('$', '').replace('*', ''));
 		});
 
 		var price = Math.round(total*100)/100;
@@ -1749,7 +1757,11 @@ var site = (function() {
 		});
 		price = formatter.format(price);
 
-		$('.order-total .total').text('$'+price);
+		var displayPrice = '$'+price;
+		if ($('body').hasClass('price-without-tax'))
+			displayPrice += '*';
+
+		$('.order-total .total').text(displayPrice);
 
 		// Update cart session
 		clearTimeout(updateCartTimeout);

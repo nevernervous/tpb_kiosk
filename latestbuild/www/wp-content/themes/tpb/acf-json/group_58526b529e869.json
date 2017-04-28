@@ -348,6 +348,25 @@
             }
         },
         {
+            "default_value": 1,
+            "message": "",
+            "ui": 1,
+            "ui_on_text": "With tax",
+            "ui_off_text": "Without tax",
+            "key": "field_5902fd15686bb",
+            "label": "Display price",
+            "name": "tax",
+            "type": "true_false",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
             "layouts": [
                 {
                     "key": "5890a1741e4e9",
@@ -830,5 +849,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1493211871
+    "modified": 1493368145
 }

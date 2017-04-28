@@ -1570,6 +1570,7 @@ img {
 .screen-tabs {
 	.tab {
 		display: none;
+		position: relative;
 
 		&.is-active {
 			display: block;
@@ -1657,6 +1658,12 @@ img {
 			margin-bottom: 10px;
 		}
 	}
+}
+
+.note-footer {
+	position: absolute;
+
+	font-size: 14px;
 }
 
 
@@ -2388,6 +2395,11 @@ img {
 			}
 		}
 	}
+
+	.note-footer {
+		bottom: 149px;
+		right: 50px;
+	}
 }
 
 
@@ -2502,7 +2514,11 @@ img {
 				}
 			}
 		}
+	}
 
+	.note-footer {
+		bottom: -30px;
+		right: 0;
 	}
 }
 
@@ -2760,6 +2776,11 @@ img {
 			display: none;
 		}
 	}
+
+	.note-footer {
+		bottom: 20px;
+		right: 50px;
+	}
 }
 
 
@@ -2904,7 +2925,7 @@ img {
 		text-align: right;
 		text-transform: uppercase;
 
-				border-top: 1px solid rgba($white, 0.2);
+		border-top: 1px solid rgba($white, 0.2);
 
 		.label,
 		.total {
@@ -2915,6 +2936,15 @@ img {
 
 		.total {
 			width: 100px;
+		}
+
+		.note-footer {
+			margin-top: 10px;
+			position: relative;
+
+			font-size: 14px;
+			font-weight: 300;
+			text-transform: none;
 		}
 	}
 

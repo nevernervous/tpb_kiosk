@@ -34,7 +34,17 @@
 			<div class="product-prices <?php echo count($prices) == 1 ? 'prices-simple':'prices-multiple'; ?>">
 				<?php $cnt=0; foreach( $prices as $price ): ?>
 				<div class="price btn-add-to-cart" data-value="<?php echo $cnt; ?>" data-id="<?php the_ID(); ?>">
-					$<?php echo number_format($price->price, 2).($price->unit?'<small>/'.$price->unit.'</small>':''); ?>
+					<?php
+						$display_price = '$'.number_format($price->price, 2);
+
+						if ( get_field( 'tax', 'options' ) === false )
+							$display_price.= '*';
+
+						if ( $price->unit )
+							$display_price .= '<span>/'.$price->unit.'</span>';
+
+						echo $display_price;
+					?>
 				</div><!-- .price -->
 				<?php $cnt++; endforeach; ?>
 			</div><!-- .product-prices -->
@@ -351,4 +361,10 @@
 			<?php endif; ?>
 		</ul>
 	</div><!-- .nav-tabs -->
+
+	<?php if ( get_field( 'tax', 'options' ) === false ): ?>
+	<div class="note-footer">
+		<?php _e( '* tax not included', 'tpb' ); ?>
+	</div><!-- .note-footer -->
+	<?php endif; ?>
 </div><!-- .screen-product -->

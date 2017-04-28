@@ -35,7 +35,17 @@
 					<?php $cnt= 0; foreach( $prices as $price ): ?>
 					<li class="option <?php echo ((!isset($_GET['price']) && $cnt==0) || ($_GET['price'] == $cnt)) ? 'is-selected"':''; ?>" data-value="<?php echo $cnt; ?>" data-price="<?php echo $price->price; ?>">
 						<div class="price">
-							$<?php echo number_format($price->price, 2).($price->unit?'<small>/'.$price->unit.'</small>':''); ?>
+							<?php
+								$display_price = '$'.number_format($price->price, 2);
+
+								if ( get_field( 'tax', 'options' ) === false )
+									$display_price.= '*';
+
+								if ( $price->unit )
+									$display_price .= '<span>/'.$price->unit.'</span>';
+
+								echo $display_price;
+							?>
 						</div>
 					</li>
 					<?php $cnt++; endforeach; ?>
@@ -78,7 +88,18 @@
 			<div class="btn-user btn-text btn-text-xl btn-add-to-cart btn-submit">
 				<span class="text-on">
 					<span class="qty-price">
-						$<?php echo !isset($_GET['price']) ? number_format($prices[0]->price, 2) : number_format($prices[$_GET['price']]->price, 2); ?>
+
+						<?php
+							if ( !isset($_GET['price']) )
+								$display_price = '$'.number_format($prices[0]->price, 2);
+							else
+								$display_price = '$'.number_format($prices[$_GET['price']]->price, 2);
+
+							if ( get_field( 'tax', 'options' ) === false )
+								$display_price.= '*';
+
+							echo $display_price;
+						?>
 					</span>
 
 					<span class="cta">
@@ -102,4 +123,10 @@
 			</div>
 		</div><!-- .actions -->
 	</form>
-</div><!-- .screen-add-to-car -->
+
+	<?php if ( get_field( 'tax', 'options' ) === false ): ?>
+	<div class="note-footer">
+		<?php _e( '* tax not included', 'tpb' ); ?>
+	</div><!-- .note-footer -->
+	<?php endif; ?>
+</div><!-- .screen-add-to-cart -->

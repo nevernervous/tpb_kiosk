@@ -1706,6 +1706,7 @@ img {
 
 .screen-tabs .tab {
   display: none;
+  position: relative;
 }
 .screen-tabs .tab.is-active {
   display: block;
@@ -1777,6 +1778,11 @@ img {
 .nav-tabs .btn-tab i {
   display: block;
   margin-bottom: 10px;
+}
+
+.note-footer {
+  position: absolute;
+  font-size: 14px;
 }
 
 /* =============================================================================
@@ -2321,6 +2327,10 @@ img {
   display: inline-block;
   min-width: 13px;
 }
+.screen-product .note-footer {
+  bottom: 149px;
+  right: 50px;
+}
 
 /* =============================================================================
    SCREEN: =Catalogue
@@ -2407,6 +2417,10 @@ img {
 }
 .screen-catalogue .catalogue-home .ad.small .discount-text:before {
   content: '> ';
+}
+.screen-catalogue .note-footer {
+  bottom: -30px;
+  right: 0;
 }
 
 /* =============================================================================
@@ -2604,6 +2618,10 @@ img {
 .screen-add-to-cart .form-add-to-cart .is-hidden {
   display: none;
 }
+.screen-add-to-cart .note-footer {
+  bottom: 20px;
+  right: 50px;
+}
 
 /* =============================================================================
    SCREEN: =Checkout
@@ -2719,6 +2737,13 @@ img {
 }
 .screen-checkout .order-total .total {
   width: 100px;
+}
+.screen-checkout .order-total .note-footer {
+  margin-top: 10px;
+  position: relative;
+  font-size: 14px;
+  font-weight: 300;
+  text-transform: none;
 }
 .screen-checkout .cta {
   position: absolute;

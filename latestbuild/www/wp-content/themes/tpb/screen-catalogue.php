@@ -161,8 +161,18 @@
 									<?php
 										$infos = array();
 
-										if ( $prices )
-											$infos[] = '$'.number_format($prices[0]->price, 2).($prices[0]->unit?'<span>/'.$prices[0]->unit.'</span>':'');
+										if ( $prices ) {
+											$price = '$'.number_format($prices[0]->price, 2);
+
+											if ( get_field( 'tax', 'options' ) === false )
+												$price.= '*';
+
+											if ( $prices[0]->unit )
+												$price .= '<span>/'.$prices[0]->unit.'</span>';
+
+											$infos[] = $price;
+										}
+
 										if ( $type )
 											$infos[] = $type;
 									 ?>
@@ -179,6 +189,12 @@
 				<?php _e( 'No products found.', 'tpb' ); ?>
 				<?php endif; ?>
 			</div><!-- .products-list -->
+
+			<?php if ( get_field( 'tax', 'options' ) === false ): ?>
+			<div class="note-footer">
+				<?php _e( '* tax not included', 'tpb' ); ?>
+			</div><!-- .note-footer -->
+			<?php endif; ?>
 		</div><!-- .tab -->
 		<?php $cnt++; endforeach; ?>
 		<?php endif; ?>
