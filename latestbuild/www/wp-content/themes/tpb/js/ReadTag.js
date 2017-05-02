@@ -1,44 +1,41 @@
-var serialport = require("node_modules/serialport");
-var SerialPort = serialport.SerialPort;
+console.log('read tag js loaded');
+var socket = io.connect('http://localhost:3000');
 
-var TagValue;
+socket.on('tag_put', function (data) {
+    console.log(data);
+    var sidebar = $('.site-sidebar .sidebar-areas')[0];
 
-// Here make sure you have proper path to the Serail Port USB RFID Reader we have was ttyUSB0
-var serialPort = new SerialPort("/dev/ttyUSB0", {
-  baudrate: 2400,
-  parser: serialport.parsers.readline("\r\n")
+    if (OBJECTS.hasOwnProperty(data)){
+        var event = new CustomEvent('object_recognized', {detail: {
+            'pattern': data,
+            'object_url': OBJECTS[data]
+
+        }});
+        $('.site-sidebar').data('state', 'info');
+        sidebar.dispatchEvent(event);
+
+    } else {
+        var event = new CustomEvent('no_object_recognized', {detail: {
+            'pattern': data,
+            'object_url': null,
+            'touch_map': [],
+
+        }});
+        sidebar.dispatchEvent(event);
+
+    }
+
 });
 
+socket.on('tag_remove', function (data) {
+    console.log('tag removed');
+    var sidebar = $('.site-sidebar .sidebar-areas')[0];
+    var event = new CustomEvent('no_object_recognized', {detail: {
+        'pattern': data,
+        'object_url': null,
+        'touch_map': [],
 
-// This Function call is going to Close the COM Port.
-function vClosecom()
-{
-	serialPort.close(function (err) {
-    console.log('port closed', err);
-	});
-}
+    }});
+    sidebar.dispatchEvent(event);
 
-serialPort.on("open", function () {
-	console.log('open');
-	serialPort.on('data', function(data) // This is going to receive the data
-	{
-		console.log(data);
-		TagValue = data; // Compare the received data with stored known value and determine the tags
-
-		if (OBJECTS.hasOwnProperty(TagValue)){
-			var event = new CustomEvent('object_recognized', {detail: {
-				'pattern': TagValue,
-				'object_url': OBJECTS[TagValue]
-			}});
-
-			document.dispatchEvent(event)
-		} else {
-			var event = new CustomEvent('no_object_recognized', {detail: {
-				'pattern': TagValue,
-				'object_url': null
-			}});
-
-			document.dispatchEvent(event)
-		}
-	});
 });
