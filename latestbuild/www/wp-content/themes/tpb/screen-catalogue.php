@@ -125,8 +125,8 @@
 						<li class="option" data-value="name-asc">
 							A-Z
 						</li>
-						<li class="option" data-value="brand-asc">
-							Brand
+						<li class="option" data-value="name-desc">
+							Z-A
 						</li>
 					</ul>
 				</div><!-- .filters -->
@@ -141,7 +141,7 @@
 								$prices = tbp_get_product_prices( $product->ID );
 								$type = get_post_meta( $product->ID, 'type', true );
 							?>
-							<article class="product link-product" data-url="<?php echo get_the_permalink( $product->ID ); ?>" data-type="<?php echo sanitize_title( $type) ; ?>" data-price="<?php echo $prices[0]->price; ?>" data-name="<?php echo $product->post_title; ?>" data-brand="<?php echo get_post_meta( $product->ID, 'brand', true ); ?>">
+							<article class="product link-product" data-url="<?php echo get_the_permalink( $product->ID ); ?>" data-type="<?php echo sanitize_title( $type) ; ?>" data-price="<?php echo $prices[0]->price; ?>" data-name="<?php echo $product->post_title; ?>">
 								<?php if ( has_post_thumbnail( $product->ID ) ): ?>
 								<?php
 									$image = wp_get_attachment_image_src( get_post_thumbnail_id( $product->ID ), 'thumbnail', false );
@@ -161,18 +161,8 @@
 									<?php
 										$infos = array();
 
-										if ( $prices ) {
-											$price = '$'.number_format($prices[0]->price, 2);
-
-											if ( get_field( 'tax', 'options' ) === false )
-												$price.= '*';
-
-											if ( $prices[0]->unit )
-												$price .= '<span>/'.$prices[0]->unit.'</span>';
-
-											$infos[] = $price;
-										}
-
+										if ( $prices )
+											$infos[] = '$'.$prices[0]->price.($prices[0]->unit?'<span>/'.$prices[0]->unit.'</span>':'');
 										if ( $type )
 											$infos[] = $type;
 									 ?>
@@ -189,12 +179,6 @@
 				<?php _e( 'No products found.', 'tpb' ); ?>
 				<?php endif; ?>
 			</div><!-- .products-list -->
-
-			<?php if ( get_field( 'tax', 'options' ) === false ): ?>
-			<div class="note-footer">
-				<?php _e( '* tax not included', 'tpb' ); ?>
-			</div><!-- .note-footer -->
-			<?php endif; ?>
 		</div><!-- .tab -->
 		<?php $cnt++; endforeach; ?>
 		<?php endif; ?>

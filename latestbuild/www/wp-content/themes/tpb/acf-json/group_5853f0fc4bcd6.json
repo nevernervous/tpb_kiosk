@@ -3,13 +3,27 @@
     "title": "Product",
     "fields": [
         {
-            "placement": "top",
-            "endpoint": 0,
-            "key": "field_58ee150d77e7e",
-            "label": "Tabs",
-            "name": "",
-            "type": "tab",
-            "instructions": "",
+            "layout": "vertical",
+            "choices": {
+                "post_status": "post_status",
+                "post_title": "post_title",
+                "in_stock": "in_stock",
+                "prices": "prices",
+                "default_price": "default_price",
+                "brand": "brand",
+                "type": "type",
+                "sku": "sku"
+            },
+            "default_value": [],
+            "allow_custom": 0,
+            "save_custom": 0,
+            "toggle": 1,
+            "return_format": "value",
+            "key": "field_58e201197d0c6",
+            "label": "Sync",
+            "name": "sync",
+            "type": "checkbox",
+            "instructions": "Select which fields to ignore during sync.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -678,355 +692,6 @@
                 "class": "",
                 "id": ""
             }
-        },
-        {
-            "placement": "top",
-            "endpoint": 0,
-            "key": "field_58ee150677e7d",
-            "label": "Data",
-            "name": "",
-            "type": "tab",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            }
-        },
-        {
-            "default_value": 0,
-            "message": "",
-            "ui": 0,
-            "ui_on_text": "Checked",
-            "ui_off_text": "Not checked",
-            "key": "field_58ef34c1cf8b5",
-            "label": "Enter all values manually",
-            "name": "sync_all",
-            "type": "true_false",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "toggle-all",
-                "id": ""
-            }
-        },
-        {
-            "default_value": 0,
-            "message": "",
-            "ui": 0,
-            "ui_on_text": "Checked",
-            "ui_off_text": "Not checked",
-            "key": "field_58ee5a2588640",
-            "label": "Enter \"Status\" value manually",
-            "name": "sync_post_status",
-            "type": "true_false",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "toggle-all-child",
-                "id": ""
-            }
-        },
-        {
-            "default_value": 0,
-            "message": "",
-            "ui": 0,
-            "ui_on_text": "",
-            "ui_off_text": "",
-            "key": "field_58ee5a3588641",
-            "label": "Enter \"Title\" value manually",
-            "name": "sync_post_title",
-            "type": "true_false",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "toggle-all-child",
-                "id": ""
-            }
-        },
-        {
-            "default_value": 0,
-            "message": "",
-            "ui": 0,
-            "ui_on_text": "",
-            "ui_off_text": "",
-            "key": "field_58ee57afe5cb3",
-            "label": "Enter \"In stock\" value manually",
-            "name": "sync_in_stock",
-            "type": "true_false",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "toggle-all-child",
-                "id": ""
-            }
-        },
-        {
-            "default_value": "",
-            "maxlength": "",
-            "placeholder": "",
-            "prepend": "",
-            "append": "",
-            "key": "field_58ee15b3e16da",
-            "label": "In stock",
-            "name": "in_stock",
-            "type": "text",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": [
-                [
-                    {
-                        "field": "field_58ee57afe5cb3",
-                        "operator": "==",
-                        "value": "1"
-                    }
-                ]
-            ],
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            }
-        },
-        {
-            "default_value": 0,
-            "message": "",
-            "ui": 0,
-            "ui_on_text": "",
-            "ui_off_text": "",
-            "key": "field_58ee582835f2b",
-            "label": "Enter \"Prices\" value manually",
-            "name": "sync_prices",
-            "type": "true_false",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "toggle-all-child",
-                "id": ""
-            }
-        },
-        {
-            "default_value": "",
-            "maxlength": "",
-            "placeholder": "",
-            "prepend": "",
-            "append": "",
-            "key": "field_58ee15c0e16db",
-            "label": "Prices",
-            "name": "prices",
-            "type": "text",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": [
-                [
-                    {
-                        "field": "field_58ee582835f2b",
-                        "operator": "==",
-                        "value": "1"
-                    }
-                ]
-            ],
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            }
-        },
-        {
-            "default_value": 0,
-            "message": "",
-            "ui": 0,
-            "ui_on_text": "",
-            "ui_off_text": "",
-            "key": "field_58ee5918a9efa",
-            "label": "Enter \"Default price\" value manually",
-            "name": "sync_default_price",
-            "type": "true_false",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "toggle-all-child",
-                "id": ""
-            }
-        },
-        {
-            "default_value": "",
-            "maxlength": "",
-            "placeholder": "",
-            "prepend": "",
-            "append": "",
-            "key": "field_58ee15c6e16dc",
-            "label": "Default price",
-            "name": "default_price",
-            "type": "text",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": [
-                [
-                    {
-                        "field": "field_58ee5918a9efa",
-                        "operator": "==",
-                        "value": "1"
-                    }
-                ]
-            ],
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            }
-        },
-        {
-            "default_value": 0,
-            "message": "",
-            "ui": 0,
-            "ui_on_text": "",
-            "ui_off_text": "",
-            "key": "field_58ee592fa9efb",
-            "label": "Enter \"Brand\" value manually",
-            "name": "sync_brand",
-            "type": "true_false",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "toggle-all-child",
-                "id": ""
-            }
-        },
-        {
-            "default_value": "",
-            "maxlength": "",
-            "placeholder": "",
-            "prepend": "",
-            "append": "",
-            "key": "field_58ee15d1e16dd",
-            "label": "Brand",
-            "name": "brand",
-            "type": "text",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": [
-                [
-                    {
-                        "field": "field_58ee592fa9efb",
-                        "operator": "==",
-                        "value": "1"
-                    }
-                ]
-            ],
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            }
-        },
-        {
-            "default_value": 0,
-            "message": "",
-            "ui": 0,
-            "ui_on_text": "",
-            "ui_off_text": "",
-            "key": "field_58ee5940a9efc",
-            "label": "Enter \"Type\" value manually",
-            "name": "sync_type",
-            "type": "true_false",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "toggle-all-child",
-                "id": ""
-            }
-        },
-        {
-            "default_value": "",
-            "maxlength": "",
-            "placeholder": "",
-            "prepend": "",
-            "append": "",
-            "key": "field_58ee15d9e16de",
-            "label": "Type",
-            "name": "type",
-            "type": "text",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": [
-                [
-                    {
-                        "field": "field_58ee5940a9efc",
-                        "operator": "==",
-                        "value": "1"
-                    }
-                ]
-            ],
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            }
-        },
-        {
-            "default_value": 0,
-            "message": "",
-            "ui": 0,
-            "ui_on_text": "",
-            "ui_off_text": "",
-            "key": "field_58ee5953a9efd",
-            "label": "Enter \"SKU\" value manually",
-            "name": "sync_sku",
-            "type": "true_false",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "toggle-all-child",
-                "id": ""
-            }
-        },
-        {
-            "default_value": "",
-            "maxlength": "",
-            "placeholder": "",
-            "prepend": "",
-            "append": "",
-            "key": "field_58ee15dee16df",
-            "label": "SKU",
-            "name": "sku",
-            "type": "text",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": [
-                [
-                    {
-                        "field": "field_58ee5953a9efd",
-                        "operator": "==",
-                        "value": "1"
-                    }
-                ]
-            ],
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            }
         }
     ],
     "location": [
@@ -1046,5 +711,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1492074092
+    "modified": 1491207017
 }

@@ -10,12 +10,6 @@ set -e
 SITE=$1
 BRANCH=$2
 
-# check for branch name from text file and use that if branch not spevified
-if [ "$BRANCH" == "" ] && [ -f /var/www/$SITE/branch.txt ]; then
-    BRANCH=$(cat /var/www/$SITE/branch.txt)
-    echo "found previous branch config: $BRANCH for site $SITE"
-fi
-
 if [ "$SITE" == "" ] || [ "$BRANCH" == "" ]; then 
     echo "USAGE: ./site_update.sh site_name branch_name"
     exit 0
@@ -49,7 +43,7 @@ fi
 #  // don't check now, will fail if branch not found
 
 # confirm name correct
-echo "going to apply branch $BRANCH to $SITE"
+echo "is $SITE the correct site?"
 read -p "Continue (y/n)?" choice
 if [[ ! $choice =~ ^[Yy]$ ]]
 then
@@ -70,10 +64,6 @@ git checkout $BRANCH
 # do sync
 echo "sync files"
 rsync -v -rlt --exclude=wp-config.php ./latestbuild/www/ /var/www/$SITE/
-
-# record branch name
-echo "record branch name"
-echo "$BRANCH" > /var/www/$SITE/branch.txt
 
 # apply file permissions
 echo "apply permissions"

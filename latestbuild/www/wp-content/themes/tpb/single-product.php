@@ -34,17 +34,7 @@
 			<div class="product-prices <?php echo count($prices) == 1 ? 'prices-simple':'prices-multiple'; ?>">
 				<?php $cnt=0; foreach( $prices as $price ): ?>
 				<div class="price btn-add-to-cart" data-value="<?php echo $cnt; ?>" data-id="<?php the_ID(); ?>">
-					<?php
-						$display_price = '$'.number_format($price->price, 2);
-
-						if ( get_field( 'tax', 'options' ) === false )
-							$display_price.= '*';
-
-						if ( $price->unit )
-							$display_price .= '<span>/'.$price->unit.'</span>';
-
-						echo $display_price;
-					?>
+					$<?php echo $price->price.($price->unit?'<small>/'.$price->unit.'</small>':''); ?>
 				</div><!-- .price -->
 				<?php $cnt++; endforeach; ?>
 			</div><!-- .product-prices -->
@@ -68,7 +58,6 @@
 					<?php echo get_sub_field( 'text' ); ?>
 				</div><!-- .description -->
 
-				<?php $bottom_border = false; ?>
 				<div class="aside clearfix">
 					<?php if ( tpb_is_flower( get_the_ID() ) ): ?>
 					<div class="border has-logo">
@@ -81,7 +70,7 @@
 					<div class="border"></div>
 					<?php endif; ?>
 
-					<?php if ( $graphs = get_sub_field( 'graphs' ) ): $bottom_border = true; ?>
+					<?php if ( $graphs = get_sub_field( 'graphs' ) ): ?>
 					<div class="graphs clearfix">
 						<?php foreach( $graphs as $graph ): ?>
 						<div class="graph">
@@ -104,7 +93,7 @@
 					</div><!-- .graphs -->
 					<?php endif; ?>
 
-					<?php if ( $video = tpb_get_oembed_video( get_sub_field( 'video' ) ) ): $bottom_border = true; ?>
+					<?php if ( $video = tpb_get_oembed_video( get_sub_field( 'video' ) ) ): ?>
 					<div class="video-container">
 						<a href="<?php echo $video->video_url; ?>" class="btn-play link-video" target="_blank">
 							<div class="thumbnail" style="background-image: url('<?php echo $video->thumbnail_url; ?>');">
@@ -118,9 +107,7 @@
 					</div><!-- .video-container -->
 					<?php endif; ?>
 
-					<?php if ( $bottom_border ): ?>
 					<div class="border"></div>
-					<?php endif; ?>
 				</div><!-- .aside -->
 
 				<?php elseif ( get_row_layout() == 'text' ): ?>
@@ -132,18 +119,14 @@
 				<?php elseif ( get_row_layout() == 'flavor' ): ?>
 
 				<div class="description">
-					<?php if ( $aroma = get_sub_field( 'aroma' ) ): ?>
 					<p>
 						<b><?php _e( 'Aroma', 'tpb' ); ?></b><br/>
-						<?php echo $aroma; ?>
+						<?php echo get_sub_field( 'aroma' ); ?>
 					</p>
-					<?php endif; ?>
-					<?php if ( $flavor = get_sub_field( 'flavor' ) ): ?>
 					<p>
 						<b><?php _e( 'Flavor', 'tpb' ); ?></b><br/>
-						<?php echo $flavor; ?>
+						<?php echo get_sub_field( 'flavor' ); ?>
 					</p>
-					<?php endif; ?>
 				</div><!-- .description -->
 
 				<?php elseif ( get_row_layout() == 'attributes' ): ?>
@@ -287,8 +270,8 @@
 					<li class="option" data-value="name-asc">
 						A-Z
 					</li>
-					<li class="option" data-value="brand-asc">
-						Brand
+					<li class="option" data-value="name-desc">
+						Z-A
 					</li>
 				</ul>
 			</div><!-- .filters -->
@@ -302,7 +285,7 @@
 							$prices = tbp_get_product_prices( $product->ID );
 							$type = get_post_meta( $product->ID, 'type', true );
 						?>
-						<article class="product link-product" data-url="<?php echo get_the_permalink( $product->ID ); ?>" data-type="<?php echo sanitize_title( $type ); ?>" data-price="<?php echo $prices[0]->price; ?>" data-name="<?php echo $product->post_title; ?>" data-brand="<?php echo get_post_meta( $product->ID, 'brand', true ); ?>">
+						<article class="product link-product" data-url="<?php echo get_the_permalink( $product->ID ); ?>" data-type="<?php echo sanitize_title( $type ); ?>" data-price="<?php echo $prices[0]->price; ?>" data-name="<?php echo $product->post_title; ?>">
 							<?php if ( has_post_thumbnail( $product->ID ) ): ?>
 							<?php
 								$image = wp_get_attachment_image_src( get_post_thumbnail_id( $product->ID ), 'thumbnail', false );
@@ -323,7 +306,7 @@
 									$infos = array();
 
 									if ( $prices )
-										$infos[] = '$'.number_format($prices[0]->price, 2).($prices[0]->unit?'<span>/'.$prices[0]->unit.'</span>':'');
+										$infos[] = '$'.$prices[0]->price.($prices[0]->unit?'<span>/'.$prices[0]->unit.'</span>':'');
 									if ( $type )
 										$infos[] = $type;
 								 ?>
@@ -361,10 +344,4 @@
 			<?php endif; ?>
 		</ul>
 	</div><!-- .nav-tabs -->
-
-	<?php if ( get_field( 'tax', 'options' ) === false ): ?>
-	<div class="note-footer">
-		<?php _e( '* tax not included', 'tpb' ); ?>
-	</div><!-- .note-footer -->
-	<?php endif; ?>
 </div><!-- .screen-product -->

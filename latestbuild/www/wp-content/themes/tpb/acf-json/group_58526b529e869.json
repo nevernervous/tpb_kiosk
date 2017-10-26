@@ -43,138 +43,6 @@
             }
         },
         {
-            "multiple": 0,
-            "allow_null": 0,
-            "choices": {
-                "animated": "Animated",
-                "image": "Image"
-            },
-            "default_value": [
-                "animated"
-            ],
-            "ui": 0,
-            "ajax": 0,
-            "placeholder": "",
-            "return_format": "value",
-            "key": "field_58f8b20b92a03",
-            "label": "Background",
-            "name": "background",
-            "type": "select",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            }
-        },
-        {
-            "default_value": "#000d78",
-            "key": "field_58f8b4a16bfa8",
-            "label": "Background ambient color",
-            "name": "background_color_ambient",
-            "type": "color_picker",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": [
-                [
-                    {
-                        "field": "field_58f8b20b92a03",
-                        "operator": "==",
-                        "value": "animated"
-                    }
-                ]
-            ],
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            }
-        },
-        {
-            "default_value": "#5c015c",
-            "key": "field_58f8b4c86bfa9",
-            "label": "Background diffuse color",
-            "name": "background_color_diffuse",
-            "type": "color_picker",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": [
-                [
-                    {
-                        "field": "field_58f8b20b92a03",
-                        "operator": "==",
-                        "value": "animated"
-                    }
-                ]
-            ],
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            }
-        },
-        {
-            "return_format": "array",
-            "preview_size": "thumbnail",
-            "library": "all",
-            "min_width": "",
-            "min_height": "",
-            "min_size": "",
-            "max_width": "",
-            "max_height": "",
-            "max_size": "",
-            "mime_types": "",
-            "key": "field_58f8b60899553",
-            "label": "Background image",
-            "name": "background_image",
-            "type": "image",
-            "instructions": "Format: 1920x1080",
-            "required": 0,
-            "conditional_logic": [
-                [
-                    {
-                        "field": "field_58f8b20b92a03",
-                        "operator": "==",
-                        "value": "image"
-                    }
-                ]
-            ],
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            }
-        },
-        {
-            "default_value": 1,
-            "message": "",
-            "ui": 1,
-            "ui_on_text": "",
-            "ui_off_text": "",
-            "key": "field_58f8bb42dbcb9",
-            "label": "Background effect",
-            "name": "background_effect",
-            "type": "true_false",
-            "instructions": "Add bokeh effect over image",
-            "required": 0,
-            "conditional_logic": [
-                [
-                    {
-                        "field": "field_58f8b20b92a03",
-                        "operator": "==",
-                        "value": "image"
-                    }
-                ]
-            ],
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            }
-        },
-        {
             "placement": "top",
             "endpoint": 0,
             "key": "field_588f3704f4ab7",
@@ -191,52 +59,6 @@
             }
         },
         {
-            "default_value": 1,
-            "message": "",
-            "ui": 1,
-            "ui_on_text": "Enabled",
-            "ui_off_text": "Disabled",
-            "key": "field_58ef74f0e7170",
-            "label": "Object recognition",
-            "name": "object_recognition",
-            "type": "true_false",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            }
-        },
-        {
-            "default_value": "",
-            "maxlength": "",
-            "placeholder": "",
-            "prepend": "",
-            "append": "",
-            "key": "field_590093161766a",
-            "label": "Sidebar text",
-            "name": "sidebar_text",
-            "type": "text",
-            "instructions": "Text shown in the sidebar when object recognition is disabled.",
-            "required": 0,
-            "conditional_logic": [
-                [
-                    {
-                        "field": "field_58ef74f0e7170",
-                        "operator": "!=",
-                        "value": "1"
-                    }
-                ]
-            ],
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            }
-        },
-        {
             "message": "<img src=\"\/wp-content\/themes\/tpb\/img\/patterns.jpg\" alt=\"\" \/>",
             "esc_html": 0,
             "new_lines": "wpautop",
@@ -246,15 +68,7 @@
             "type": "message",
             "instructions": "",
             "required": 0,
-            "conditional_logic": [
-                [
-                    {
-                        "field": "field_58ef74f0e7170",
-                        "operator": "==",
-                        "value": "1"
-                    }
-                ]
-            ],
+            "conditional_logic": 0,
             "wrapper": {
                 "width": "",
                 "class": "",
@@ -316,15 +130,7 @@
             "type": "repeater",
             "instructions": "Select the product to associate to each pattern.",
             "required": 0,
-            "conditional_logic": [
-                [
-                    {
-                        "field": "field_58ef74f0e7170",
-                        "operator": "==",
-                        "value": "1"
-                    }
-                ]
-            ],
+            "conditional_logic": 0,
             "wrapper": {
                 "width": "",
                 "class": "",
@@ -338,25 +144,6 @@
             "label": "Catalogue",
             "name": "",
             "type": "tab",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            }
-        },
-        {
-            "default_value": 1,
-            "message": "",
-            "ui": 1,
-            "ui_on_text": "With tax",
-            "ui_off_text": "Without tax",
-            "key": "field_5902fd15686bb",
-            "label": "Display price",
-            "name": "tax",
-            "type": "true_false",
             "instructions": "",
             "required": 0,
             "conditional_logic": 0,
@@ -684,152 +471,6 @@
                 "class": "",
                 "id": ""
             }
-        },
-        {
-            "placement": "top",
-            "endpoint": 0,
-            "key": "field_58f48bf67c2a3",
-            "label": "Checkout",
-            "name": "",
-            "type": "tab",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            }
-        },
-        {
-            "default_value": 0,
-            "message": "",
-            "ui": 1,
-            "ui_on_text": "Enabled",
-            "ui_off_text": "Disabled",
-            "key": "field_58f48bff7c2a4",
-            "label": "Two fields authentication",
-            "name": "two_fields_auth",
-            "type": "true_false",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            }
-        },
-        {
-            "placement": "top",
-            "endpoint": 0,
-            "key": "field_590098ac6f0f1",
-            "label": "Order system",
-            "name": "",
-            "type": "tab",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            }
-        },
-        {
-            "default_value": "",
-            "maxlength": "",
-            "placeholder": "",
-            "prepend": "",
-            "append": "",
-            "key": "field_590098e96f0f2",
-            "label": "API key",
-            "name": "mjf_api_key",
-            "type": "text",
-            "instructions": "MJ Freeway API key",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            }
-        },
-        {
-            "default_value": "",
-            "maxlength": "",
-            "placeholder": "",
-            "prepend": "",
-            "append": "",
-            "key": "field_590098fc6f0f3",
-            "label": "API ID",
-            "name": "mjf_api_id",
-            "type": "text",
-            "instructions": "MJ Freeway API ID",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            }
-        },
-        {
-            "default_value": "",
-            "maxlength": "",
-            "placeholder": "",
-            "prepend": "",
-            "append": "",
-            "key": "field_590099076f0f4",
-            "label": "Store URL",
-            "name": "mjf_store_url",
-            "type": "text",
-            "instructions": "MJ Freeway store URL",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            }
-        },
-        {
-            "default_value": "",
-            "maxlength": "",
-            "placeholder": "",
-            "prepend": "",
-            "append": "",
-            "key": "field_590099236f0f5",
-            "label": "Order email",
-            "name": "order_email",
-            "type": "text",
-            "instructions": "Email address to send the order to. Leave empty to disable this functionality.",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            }
-        },
-        {
-            "default_value": "",
-            "maxlength": "",
-            "placeholder": "",
-            "prepend": "",
-            "append": "",
-            "key": "field_59009a256f0f6",
-            "label": "Order printer name",
-            "name": "order_printer",
-            "type": "text",
-            "instructions": "Printer name to print order on. Leave empty to disable this functionality.",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            }
         }
     ],
     "location": [
@@ -849,5 +490,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1493368145
+    "modified": 1489478973
 }

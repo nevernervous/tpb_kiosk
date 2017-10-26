@@ -11,11 +11,7 @@ var site = (function() {
 	 * Init
 	 */
 	var init = function() {
-		if ($('.site-background').hasClass('animated')) {
-			siteBackgroundAnimated.init();
-		} else {
-			siteBackgroundStatic.init();
-		}
+		siteBackground.init();
 
 		bindEvents();
 
@@ -66,7 +62,7 @@ var site = (function() {
 		$('body').on('change', '.list-filter', listFilter);
 		$('body').on(userEvent, 'label', checkInput);
 		$('body').on(userEvent, '.btn-submit', submitForm);
-		// $('body').on(userEvent, '.input-text', inputTextFocus);
+		//$('body').on(userEvent, '.input-text', inputTextFocus);
 
 		if (userEvent == 'touchstart')
 			$('body').on(userEvent, touchFeedback);
@@ -77,8 +73,8 @@ var site = (function() {
 
 		$('.site-sidebar').on('stateactive stateinactive stateinfo statecheckout', switchSidebar);
 		$('.site-sidebar .sidebar-areas').on('touchstart touchmove touchend', touchesHandler);
-		$(document).on('no_object_recognized', areaHandler);
-		$(document).on('object_recognized', areaHandler);
+		$('.site-sidebar .sidebar-areas').on('no_object_recognized', areaHandler);
+		$('.site-sidebar .sidebar-areas').on('object_recognized', areaHandler);
 
 		$('body').on(userEvent, inactivityHandler);
 		$('body').on(userEvent, '.btn-inactive-cancel', hideScreenInactive);
@@ -170,19 +166,24 @@ var site = (function() {
 	var hideScreenIntro = function(e) {
 		var container = $('.site-container');
 		var screen = $('.screen-intro');
-		var newScreen = $('.site-main > .screen');
 		var elements = screen.find('.phrase, .phrase-small');
 		var tips = screen.find('.tip');
 		var background = $('.site-background');
 		var ui = $('.site-ui, .site-main');
 
+		// Get coordinates
+		if (e.pageX != undefined && e.pageY != undefined) {
+			var x = e.pageX;
+			var y = e.pageY;
+		} else {
+			var x = e.touches[0].screenX;
+			var y = e.touches[0].screenY;
+		}
+
 		// Before animation
 		ui.removeClass('is-hidden');
 		screen.css({pointerEvents: 'none'});
 		stopIntroCycle = true;
-
-		if (!newScreen.hasClass('screen-select'))
-			newScreen.css({opacity: 0});
 
 		// Animation
 		var tl = new TimelineLite();
@@ -220,11 +221,7 @@ var site = (function() {
 		);
 
 		tl.call(function() {
-			if ($('.site-background').hasClass('animated')) {
-				siteBackgroundAnimated.speedUp();
-			} else {
-				$('.site-background').addClass('is-blurred');
-			}
+			siteBackground.speedUp();
 		}, null, null, 0.3)
 
 		tl.fromTo(
@@ -254,47 +251,20 @@ var site = (function() {
 			1.2
 		);
 
-		var startSidebar = 0.6;
-		if ($('.site-background').hasClass('animated'))
-			startSidebar = 1.2;
-
-		if (newScreen.hasClass('screen-select')) {
-			tl.fromTo(
-				$('.screen-select .phrase'),
-				1.2,
-				{
-					alpha: 0,
-					x: 25
-				},
-				{
-					alpha: 1,
-					x: 0,
-					ease: Power3.easeOut
-				},
-				1.6
-			);
-		} else {
-			tl.fromTo(
-				$('.site-sidebar'),
-				1.2,
-				{
-					alpha: 0
-				},
-				{
-					alpha: 1
-				},
-				startSidebar
-			);
-
-			tl.call(function() {
-				$('.site-background.animated').addClass('is-blurred');
-				$('.site-sidebar').addClass('is-visible');
-			}, null, null, startSidebar);
-
-			tl.call(function() {
-				introScreen(newScreen);
-			}, null, null, startSidebar+0.4);
-		}
+		tl.fromTo(
+			$('.screen-select .phrase'),
+			1.2,
+			{
+				alpha: 0,
+				x: 25
+			},
+			{
+				alpha: 1,
+				x: 0,
+				ease: Power3.easeOut
+			},
+			1.6
+		);
 
 		tl.fromTo(
 			$('.site-topbar'),
@@ -305,20 +275,14 @@ var site = (function() {
 			{
 				alpha: 1
 			},
-			startSidebar+0.7
+			1.9
 		);
 
 		tl.call(function() {
 			ui.css({opacity: ''});
 			background.css({transform: '', opacity: ''});
-			$('.site-ui .logo, .site-topbar').css({opacity: ''});
+			$('.screen-select .phrase, .site-ui .logo, .site-topbar').css({opacity: ''});
 			screen.remove();
-
-			if (newScreen.hasClass('screen-select')) {
-				$('.screen-select .phrase, .site-ui .logo, .site-topbar').css({opacity: ''});
-			} else {
-				switchTabWait = false;
-			}
 		});
 
 		tl.play();
@@ -1423,6 +1387,12 @@ var site = (function() {
 		var area = $(this);
 		var sidebar = $('.site-sidebar');
 
+		// Test dev
+		if (window.location.href.indexOf('click') !== -1) {
+			e.type = 'object_recognized';
+			e.detail.pattern = 'CCE';
+		}
+
 		if (e.type == 'object_recognized' && activeObject === false) {
 			console.debug('New objet recognized ('+e.detail.pattern+'), waiting for init in '+recognitionDelay+'ms');
 
@@ -1445,7 +1415,7 @@ var site = (function() {
 			objectOffTimeout = undefined;
 
 			console.debug('Active objet recognized again ('+e.detail.pattern+'), doing nothing');
-		} else if (e.type == 'no_object_recognized' && activeObject !== false && objectOffTimeout == undefined) {
+		} else if (e.type == 'no_object_recognized' && e.detail.touch_map.length == 0 && activeObject !== false && objectOffTimeout == undefined) {
 			console.debug('Objet pulled off, waiting for clearing screen in '+recognitionDelay+'ms');
 
 			// Object has been removed, prepare to do corresponding actions after delay
@@ -1693,17 +1663,7 @@ var site = (function() {
 
 			// Change price
 			var price = unitPrice*qty;
-
-			var formatter = new Intl.NumberFormat('en-US', {
-				minimumFractionDigits: 2,
-			});
-			price = formatter.format(price);
-
-			var displayPrice = '$'+price;
-			if ($('body').hasClass('price-without-tax'))
-				displayPrice += '*';
-
-			output.text(displayPrice);
+			output.text('$'+price);
 
 			changeCartPrice();
 		} else if ( $('.screen-add-to-cart').length == 1) {
@@ -1714,17 +1674,7 @@ var site = (function() {
 
 			// Change price
 			var price = unitPrice*qty;
-
-			var formatter = new Intl.NumberFormat('en-US', {
-				minimumFractionDigits: 2,
-			});
-			price = formatter.format(price);
-
-			var displayPrice = '$'+price;
-			if ($('body').hasClass('price-without-tax'))
-				displayPrice += '*';
-
-			output.text(displayPrice);
+			output.text('$'+price);
 		}
 	}
 
@@ -1742,20 +1692,10 @@ var site = (function() {
 		var total = 0;
 
 		prices.each(function() {
-			total += Number($(this).text().replace('$', '').replace('*', ''));
+			total += Number($(this).text().replace('$', ''));
 		});
 
-		var price = Math.round(total*100)/100;
-		var formatter = new Intl.NumberFormat('en-US', {
-			minimumFractionDigits: 2,
-		});
-		price = formatter.format(price);
-
-		var displayPrice = '$'+price;
-		if ($('body').hasClass('price-without-tax'))
-			displayPrice += '*';
-
-		$('.order-total .total').text(displayPrice);
+		$('.order-total .total').text('$'+(Math.round(total*100)/100));
 
 		// Update cart session
 		clearTimeout(updateCartTimeout);
@@ -2210,15 +2150,10 @@ var site = (function() {
 		var nextStep = activeStep.next('.step');
 
 		if (activeStep.hasClass('step-login')) {
-			var fieldName = activeStep.find('[name="user_name"]');
-			var fieldPhone = activeStep.find('[name="phone"]');
-			var userName = fieldName.val();
-			if (fieldPhone.length == 1)
-				var phone = fieldPhone.val();
-			else
-				var phone = false;
+			var field = activeStep.find('[name="user_name"]');
+			var userName = field.val();
 
-			if (userName == '' || activeStep.find('.btn-checkout-next').hasClass('is-sent') || (fieldPhone.length == 1 && phone == '') )
+			if (userName == '' || activeStep.find('.btn-checkout-next').hasClass('is-sent'))
 				return;
 
 			activeStep.find('.btn-checkout-next').addClass('is-sent');
@@ -2227,8 +2162,7 @@ var site = (function() {
 				WRK.ajax_url,
 				{
 					'action': 'tpb_handle_checkout',
-					'user_name': userName,
-					'phone': phone
+					'user_name': userName
 				},
 				function(response) {
 					//console.debug(response);
@@ -2242,8 +2176,7 @@ var site = (function() {
 
 						$(window).trigger('printorder');
 					} else {
-						activeStep.find('label .default-message').hide();
-						activeStep.find('label .error-message').show();
+						alert('Error while saving user name, please try again.');
 						activeStep.find('.btn-checkout-next').removeClass('is-sent');
 					}
 
@@ -3092,137 +3025,148 @@ var site = (function() {
    Background
    ========================================================================== */
 
-var siteBackgroundStatic = (function() {
-	var c = $('.site-background .canvas canvas').get(0),
-		ctx = null,
-		image = $('.site-background .image'),
-		twopi = Math.PI * 2,
-		parts = [],
-		sizeBase,
-		cw,
-		opt,
-		count,
-		props = {scale: 0},
-		bokehEffect = true;
+// var siteBackground = (function() {
+// 	var c = $('.site-background .canvas').get(0),
+// 		ctx = c.getContext( '2d' ),
+// 		image = $('.site-background .image'),
+// 		twopi = Math.PI * 2,
+// 		parts = [],
+// 		sizeBase,
+// 		cw,
+// 		opt,
+// 		count,
+// 		props = {scale: 0};
 
 
-	/**
-	 * Init
-	 */
-	var init = function() {
-		ctx = c.getContext( '2d' );
+// 	/**
+// 	 * Init
+// 	 */
+// 	var init = function() {
+// 		bindEvents();
 
-		if (!$('.site-background').hasClass('bokeh-effect'))
-			bokehEffect = false;
-
-		bindEvents();
-
-		resizeHandler();
-		create();
-		loop();
-	}
+// 		resizeHandler();
+// 		create();
+// 		loop();
+// 	}
 
 
-	/**
-	 * Create
-	 */
-	var create = function() {
-		sizeBase = cw + ch;
-		count = Math.floor( sizeBase * 0.01 ),
-		opt = {
-			radiusMin: 10,
-			radiusMax: sizeBase * 0.03,
-			blurMin: 0,
-			blurMax: 10,
-		}
+// 	/**
+// 	 * Create
+// 	 */
+// 	var create = function() {
+// 		sizeBase = cw + ch;
+// 		count = Math.floor( sizeBase * 0.01 ),
+// 		opt = {
+// 			radiusMin: 10,
+// 			radiusMax: sizeBase * 0.03,
+// 			blurMin: 0,
+// 			blurMax: 10,
+// 		}
 
-		parts.length = 0;
-		for( var i = 0; i < count; i++ ) {
-			parts.push({
-				radius: rand( opt.radiusMin, opt.radiusMax ),
-				blur: rand( opt.blurMin, opt.blurMax ),
-				x: rand( 0, cw ),
-				y: rand( 0, ch ),
-				angle: rand( 0, twopi ),
-				vel: rand( 0.1, 0.5 ),
-				tick: rand( 0, 10000 ),
-				alpha: 1
-			});
-		}
-	}
-
-
-	/**
-	 * Loop
-	 */
-	var loop = function() {
-		requestAnimationFrame( loop );
-
-		ctx.clearRect( 0, 0, cw, ch );
-		// ctx.globalCompositeOperation = 'lighten';
-		ctx.shadowBlur = 0;
-		// ctx.drawImage( c1, 0, 0 );
-		ctx.globalCompositeOperation = 'lighter';
-		ctx.drawImage(image.get(0), image.position().left, image.position().top, image.get(0).width, image.get(0).height);
-
-		// ctx.globalCompositeOperation = 'destination-in';
-
-		if (bokehEffect) {
-			var i = parts.length;
-			ctx.shadowColor = 'white';
-			while( i-- ) {
-				var part = parts[ i ];
-
-				ctx.shadowBlur = part.blur;
-
-				part.x += Math.cos( part.angle ) * part.vel;
-				part.y += Math.sin( part.angle ) * part.vel;
-				part.angle += rand( -0.05, 0.05 );
-
-				ctx.beginPath();
-				ctx.arc( part.x, part.y, part.radius, 0, twopi );
-				ctx.fillStyle = hsla( 0, 0, 100, (0.01 + Math.cos( part.tick * 0.01 ) * 0.02) * part.alpha );
-				ctx.fill();
-
-				if( part.x - part.radius > cw ) { part.x = -part.radius }
-				if( part.x + part.radius < 0 )  { part.x = cw + part.radius }
-				if( part.y - part.radius > ch ) { part.y = -part.radius }
-				if( part.y + part.radius < 0 )  { part.y = ch + part.radius }
-
-				part.tick++;
-			}
-		}
-	}
+// 		parts.length = 0;
+// 		for( var i = 0; i < count; i++ ) {
+// 			parts.push({
+// 				radius: rand( opt.radiusMin, opt.radiusMax ),
+// 				blur: rand( opt.blurMin, opt.blurMax ),
+// 				x: rand( 0, cw ),
+// 				y: rand( 0, ch ),
+// 				angle: rand( 0, twopi ),
+// 				vel: rand( 0.1, 0.5 ),
+// 				tick: rand( 0, 10000 ),
+// 				alpha: 0
+// 			});
+// 		}
+// 	}
 
 
-	/**
-	 * Bind events
-	 */
-	var bindEvents = function() {
-		$(window).on('resize', resizeHandler)
-	}
+// 	/**
+// 	 * Loop
+// 	 */
+// 	var loop = function() {
+// 		requestAnimationFrame( loop );
+
+// 		ctx.clearRect( 0, 0, cw, ch );
+// 		// ctx.globalCompositeOperation = 'lighten';
+// 		ctx.shadowBlur = 0;
+// 		// ctx.drawImage( c1, 0, 0 );
+// 		ctx.globalCompositeOperation = 'lighter';
+// 		ctx.drawImage(image.get(0), image.position().left, image.position().top, image.get(0).width, image.get(0).height);
+
+// 		// ctx.globalCompositeOperation = 'destination-in';
+
+// 		var i = parts.length;
+// 		ctx.shadowColor = 'white';
+// 		while( i-- ) {
+// 			var part = parts[ i ];
+
+// 			ctx.shadowBlur = part.blur;
+
+// 			part.x += Math.cos( part.angle ) * part.vel;
+// 			part.y += Math.sin( part.angle ) * part.vel;
+// 			part.angle += rand( -0.05, 0.05 );
+
+// 			ctx.beginPath();
+// 			ctx.arc( part.x, part.y, part.radius, 0, twopi );
+// 			ctx.fillStyle = hsla( 0, 0, 100, (0.01 + Math.cos( part.tick * 0.01 ) * 0.02) * part.alpha );
+// 			ctx.fill();
+
+// 			if( part.x - part.radius > cw ) { part.x = -part.radius }
+// 			if( part.x + part.radius < 0 )  { part.x = cw + part.radius }
+// 			if( part.y - part.radius > ch ) { part.y = -part.radius }
+// 			if( part.y + part.radius < 0 )  { part.y = ch + part.radius }
+
+// 			part.tick++;
+// 		}
+// 	}
 
 
-	/**
-	 * Resize
-	 */
-	var resizeHandler = function() {
-		cw = /*c1.width =*/ c.width = window.innerWidth,
-		ch = /*c1.height =*/ c.height = window.innerHeight;
-		// create();
-	}
+// 	/**
+// 	 * Bind events
+// 	 */
+// 	var bindEvents = function() {
+// 		$(window).on('resize', resizeHandler)
+// 	}
 
 
-	/**
-	 * Public API
-	 */
-	return {
-		init: init
-	}
-})();
+// 	/**
+// 	 * Resize
+// 	 */
+// 	var resizeHandler = function() {
+// 		cw = /*c1.width =*/ c.width = window.innerWidth,
+// 		ch = /*c1.height =*/ c.height = window.innerHeight;
+// 		// create();
+// 	}
 
 
-var siteBackgroundAnimated = (function(){
+// 	/**
+// 	 * Show dots
+// 	 */
+// 	var showDots = function() {
+// 		TweenMax.staggerFromTo(
+// 			parts,
+// 			1,
+// 			{
+// 				alpha: 0
+// 			},
+// 			{
+// 				alpha: 1
+// 			},
+// 			0.02
+// 		);
+// 	}
+
+
+// 	/**
+// 	 * Public API
+// 	 */
+// 	return {
+// 		init: init,
+// 		showDots: showDots
+// 	}
+// })();
+
+
+var siteBackground = (function(){
 
 	//------------------------------
 	// Mesh Properties
@@ -3249,8 +3193,8 @@ var siteBackgroundAnimated = (function(){
 		count: 2,
 		xyScalar: 1,
 		zOffset: 300,
-		ambient: $('.site-background').attr('data-light-ambient'),
-		diffuse: $('.site-background').attr('data-light-diffuse'),
+		ambient: '#000d78',
+		diffuse: '#5c015c',
 		speed: 0.001,
 		gravity: 1200,
 		dampening: 0.95,

@@ -443,7 +443,7 @@ img {
 			.option {
 				padding: 6px 12px;
 
-				// background-color: rgba(#1F0657, 0.8);
+				background-color: rgba(#1F0657, 0.8);
 			}
 		}
 	}
@@ -811,17 +811,6 @@ img {
 		z-index: 2;
 	}
 
-	.canvas {
-		position: absolute;
-		top: 0;
-		right: 0;
-		bottom: 0;
-		left: 0;
-
-		transform: scale(1.2);
-		transition: filter 0.8s cubic-bezier(.65,.05,.36,1), transform 0.8s cubic-bezier(.65,.05,.36,1);
-	}
-
 	.image {
 		display: block;
 		position: absolute;
@@ -831,6 +820,21 @@ img {
 		height: 100%;
 
 		opacity: 0;
+	}
+
+	.canvas {
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+
+		transform: scale(1.2);
+		transition: transform 0.8s ease;
+
+		canvas {
+			transition: filter 0.8s ease;
+		}
 	}
 
 	&.is-blurred {
@@ -1082,16 +1086,6 @@ img {
 
 		opacity: 0;
 		transition: opacity 0.5s ease;
-	}
-
-	.sidebar-text {
-		position: absolute;
-		top: 580px;
-		left: 40px;
-		right: 40px;
-
-		font-size: 16px;
-		text-align: center;
 	}
 
 	&.is-visible {
@@ -1354,16 +1348,6 @@ img {
 	}
 }
 
-.object-recognition-disabled {
-	.sidebar-head {
-		top: 410px;
-	}
-
-	.sidebar-areas {
-		display: none !important;
-	}
-}
-
 
 /* =============================================================================
    Main
@@ -1570,7 +1554,6 @@ img {
 .screen-tabs {
 	.tab {
 		display: none;
-		position: relative;
 
 		&.is-active {
 			display: block;
@@ -1658,12 +1641,6 @@ img {
 			margin-bottom: 10px;
 		}
 	}
-}
-
-.note-footer {
-	position: absolute;
-
-	font-size: 14px;
 }
 
 
@@ -2395,11 +2372,6 @@ img {
 			}
 		}
 	}
-
-	.note-footer {
-		bottom: 149px;
-		right: 50px;
-	}
 }
 
 
@@ -2514,11 +2486,7 @@ img {
 				}
 			}
 		}
-	}
 
-	.note-footer {
-		bottom: -30px;
-		right: 0;
 	}
 }
 
@@ -2776,11 +2744,6 @@ img {
 			display: none;
 		}
 	}
-
-	.note-footer {
-		bottom: 20px;
-		right: 50px;
-	}
 }
 
 
@@ -2925,7 +2888,7 @@ img {
 		text-align: right;
 		text-transform: uppercase;
 
-		border-top: 1px solid rgba($white, 0.2);
+				border-top: 1px solid rgba($white, 0.2);
 
 		.label,
 		.total {
@@ -2936,15 +2899,6 @@ img {
 
 		.total {
 			width: 100px;
-		}
-
-		.note-footer {
-			margin-top: 10px;
-			position: relative;
-
-			font-size: 14px;
-			font-weight: 300;
-			text-transform: none;
 		}
 	}
 
@@ -2985,10 +2939,6 @@ img {
 			font-size: 70px;
 			font-weight: 200;
 			line-height: 1.14;
-
-			.error-message {
-				font-weight: 300;
-			}
 		}
 
 		.input-text {
@@ -3002,24 +2952,6 @@ img {
 
 			font: 200 44px/80px $raleway;
 			@include placeholder();
-		}
-
-		.double {
-			label {
-				font-size: 60px;
-			}
-
-			.input-text {
-				float: left;
-				width: 48%;
-
-				font-size: 34px;
-				@include placeholder(rgba($white, 0.2), 34px);
-
-				& + .input-text {
-					float: right;
-				}
-			}
 		}
 
 
